@@ -28,7 +28,6 @@ jobs:
       - run: npm install
       - run: npm gulp grails3Release
       - name: Set up JDK 8
-        working-directory: grails3/plugin
         uses: actions/setup-java@v3
         with:
           java-version: '8'
