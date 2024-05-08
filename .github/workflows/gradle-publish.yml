@@ -24,7 +24,7 @@ jobs:
       - name: Setup up node
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: '20.5.1'
       - run: npm install
       - run: npm gulp grails3Release
       - name: Set up JDK 8
