@@ -15,6 +15,7 @@ import wrap from 'gulp-wrap';
 
 import { grails3CleanTask, grails3DebugTask, grails3ReleaseTask } from './gulp-tasks/grails3.js';
 import { grails2CleanTask, grails2DebugTask, grails2ReleaseTask } from './gulp-tasks/grails2.js';
+import { grails4CleanTask, grails4DebugTask, grails4ReleaseTask } from './gulp-tasks/grails4.js';
 import { paths, timestamp } from './gulp-tasks/paths.js';
 
 export const clean = (cb) => {
@@ -105,8 +106,12 @@ export const grails3Clean = gulp.series(grails3CleanTask);
 export const grails3Debug = gulp.series(debug, grails3CleanTask, grails3DebugTask);
 export const grails3Release = gulp.series(release, grails3CleanTask, grails3ReleaseTask);
 
-export const debugAll = gulp.series(grails2Debug, grails3Debug);
-export const releaseAll = gulp.series(grails2Release, grails3Release);
-export const cleanAll = gulp.series(clean, grails2Clean, grails3Clean);
+export const grails4Clean = gulp.series(grails4CleanTask);
+export const grails4Debug = gulp.series(debug, grails4CleanTask, grails4DebugTask);
+export const grails4Release = gulp.series(release, grails4CleanTask, grails4ReleaseTask);
+
+export const debugAll = gulp.series(grails2Debug, grails3Debug, grails4Debug);
+export const releaseAll = gulp.series(grails2Release, grails3Release, grails4Release);
+export const cleanAll = gulp.series(clean, grails2Clean, grails3Clean, grails4Clean);
 
 //gulp.task('default', ['build']);
