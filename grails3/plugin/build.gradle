@@ -5,18 +5,18 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+        classpath "com.gorylenko.gradle-git-properties:com.gorylenko.gradle-git-properties.gradle.plugin:1.5.2"
     }
 }
 
-plugins {
-    id "com.jfrog.bintray" version "1.1"
-}
 
 apply plugin:"eclipse"
 apply plugin:"idea"
 apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"org.grails.grails-gsp"
+apply plugin: "com.gorylenko.gradle-git-properties"
+apply plugin: 'maven-publish'
 
 version "2.2.0"
 group "org.grails.plugins"
@@ -60,6 +60,44 @@ dependencies {
     testCompile 'net.bytebuddy:byte-buddy:1.14.0'
 }
 
+gitProperties {
+    keys = ['git.branch', 'git.commit.id', 'git.commit.time', 'git.commit.id.abbrev']
+    failOnNoGitDirectory = true
+    extProperty = 'gitProps' // git properties will be put in a map at project.ext.gitProps
+}
+
+generateGitProperties.outputs.upToDateWhen { false } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
+
+jar {
+    dependsOn generateGitProperties
+    manifest {
+        attributes("Built-By": System.getProperty("user.name"))
+        attributes(["Plugin-Version"        : version,
+                    "Plugin-Title"          : project.name,
+                    "Plugin-Build-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                    "Git-Commit"            : "${-> project.ext.gitProps['git.commit.id.abbrev']}",
+                    "Git-Branch"            : "${-> project.ext.gitProps['git.branch']}"])
+    }
+    from sourceSets.main.output
+    exclude 'git.properties'
+}
+
+
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task packageJavadoc(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+task packageGroovydoc(type: Jar) {
+    from groovydoc
+    classifier = 'groovydoc'
+}
+
 task repairPublicFiles(type: Copy) { // https://github.com/grails/grails-core/issues/629
     from 'src/main/resources/static'
     into 'build/resources/main/static'
@@ -67,30 +105,37 @@ task repairPublicFiles(type: Copy) { // https://github.com/grails/grails-core/is
 processResources.finalizedBy repairPublicFiles
 
 bootRepackage.enabled = false
-bintray {
-    pkg {
-        repo = 'grails-plugins'
-        userOrg = 'sheehan'
-        name = 'console'
-        desc = 'A web-based Groovy console for interactive runtime application management and debugging.'
-        websiteUrl = 'https://grails.org/plugins.html#plugin/console'
-        issueTrackerUrl = 'https://github.com/sheehan/grails-console/issues'
-        vcsUrl = 'https://github.com/sheehan/grails-console'
-        licenses = ['Apache-2.0']
-        publicDownloadNumbers = true
-        attributes = [pluginScope: 'runtime']
-    }
-}
 
-grailsPublish {
-    userOrg = 'sheehan'
-    repo = 'grails-plugins'
-    githubSlug = 'sheehan/grails-console'
-    websiteUrl = 'https://grails.org/plugins.html#plugin/console'
-    license {
-        name = 'Apache-2.0'
+publishing {
+    publications {
+        gpr(MavenPublication) {
+            pom.withXml {
+                def pomNode = asNode()
+                pomNode.dependencyManagement.replaceNode {}
+
+                // simply remove dependencies without a version
+                // version-less dependencies are handled with dependencyManagement
+                // see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/8 for more complete solutions
+                pomNode.dependencies.dependency.findAll {
+                    it.version.text().isEmpty()
+                }.each {
+                    it.replaceNode {}
+                }
+            }
+            from components.java
+            artifact sourceJar
+            artifact packageJavadoc
+            artifact packageGroovydoc
+        }
     }
-    title = "console"
-    desc = "A web-based Groovy console for interactive runtime application management and debugging."
-    developers = [mattsheehan:"Matt Sheehan"]
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
+            credentials {
+                username = project.findProperty("gpr.user1") ?: System.getenv("GITHUB_USERNAME1")
+                password = project.findProperty("gpr.key1") ?: System.getenv("GITHUB_TOKEN1")
+            }
+        }
+    }
 }
