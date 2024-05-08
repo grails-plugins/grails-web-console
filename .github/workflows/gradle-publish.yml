@@ -20,35 +20,29 @@ jobs:
       packages: write
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup up node
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-    - run: npm install
-    - run: npm gulp grails3Release
-    - name: Set up JDK 8
-      working-directory: grails3/plugin
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'zulu'
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
-
-    - name: Build with Gradle
-      working-directory: grails3/plugin
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-      with:
-        arguments: build
-
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
-    - name: Publish to GitHub Packages
-      working-directory: grails3/plugin
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-      with:
-        arguments: publishGprPublicationToGitHubPackagesRepository
-      env:
-        GITHUB_USERNAME: ${{ github.actor }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Setup up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - run: npm install
+      - run: npm gulp grails3Release
+      - name: Set up JDK 8
+        working-directory: grails3/plugin
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'zulu'
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build
+        working-directory: grails3/plugin
+      - name: Publish to GitHub Packages
+        run: ./gradlew publishGprPublicationToGitHubPackagesRepository
+        working-directory: grails3/plugin
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
