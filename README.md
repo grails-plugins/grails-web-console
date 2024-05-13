@@ -9,7 +9,7 @@ The [1.X](https://grails.org/plugin/console) version is for Grails 2.
 
 The [2.0.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.0 - 3.2.
 
-The [2.1.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.3+.
+The [2.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.3+.
 
 ### Grails 2
 
@@ -34,7 +34,19 @@ grails.project.dependency.resolution = {
 Add a dependency in build.gradle
 
 ```groovy
-runtime 'org.grails.plugins:grails-console:2.2.0'
+runtime 'org.grails.plugins:grails-console:2.1.1'
+```
+
+For upgraded handler version use below version.
+
+```groovy
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vsachinv:grails-console:2.2.0'
+}
 ```
 
 ## Usage
