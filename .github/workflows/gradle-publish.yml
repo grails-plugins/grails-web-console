@@ -26,6 +26,7 @@ jobs:
         with:
           node-version: '20.5.1'
       - run: npm install
+      - run: npm install --global gulp-cli
       - run: npm gulp grails3Release
       - name: Set up JDK 8
         uses: actions/setup-java@v3
