@@ -49,6 +49,37 @@ dependencies {
 }
 ```
 
+
+### Grails 4+
+
+Add a dependency in build.gradle
+
+```groovy
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vsachinv:grails-console:4.0-M1'
+}
+```
+
+In addition if you don't want to use jitpack.io then use following github package registry:
+
+```groovy
+repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    
+```    
+
 ## Usage
 
 Use a browser to navigate to the /console page of your running app, e.g. http://localhost:8080/{app-name}/console
