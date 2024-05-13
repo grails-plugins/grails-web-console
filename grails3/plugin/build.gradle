@@ -133,8 +133,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
             credentials {
-                username = project.findProperty("gpr.user1") ?: System.getenv("GITHUB_USERNAME1")
-                password = project.findProperty("gpr.key1") ?: System.getenv("GITHUB_TOKEN1")
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
     }
