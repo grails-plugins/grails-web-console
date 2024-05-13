@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew build
         working-directory: grails4/plugin
       - name: Publish to GitHub Packages
-        run: ./gradlew publishGprPublicationToGitHubPackagesRepository
+        run: ./gradlew publishMavenJarPublicationToGitHubPackagesRepository
         working-directory: grails4/plugin
         env:
           GITHUB_USERNAME: ${{ github.actor }}
