@@ -15,4 +15,5 @@ build/
 .project
 
 /src/main/resources/static/*
+/src/main/resources/public/*
 /grails-app/views/console/_*

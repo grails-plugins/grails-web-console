@@ -1,12 +1,13 @@
 buildscript {
     repositories {
         mavenLocal()
+        maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.0.10"
-        classpath "gradle.plugin.com.gorylenko.gradle-git-properties:gradle-git-properties:2.2.3"
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:3.3.4"
+        classpath "com.gorylenko.gradle-git-properties:gradle-git-properties:2.3.2"
     }
 }
 
@@ -19,11 +20,12 @@ apply plugin:"org.grails.grails-gsp"
 apply plugin: "com.gorylenko.gradle-git-properties"
 apply plugin: 'maven-publish'
 
-version "4.0-M1"
+version "5.0-M1"
 group "org.grails.plugins"
 
 repositories {
     mavenLocal()
+    mavenCentral()
     maven { url "https://repo.grails.org/grails/core" }
 }
 
@@ -36,34 +38,33 @@ configurations {
 
 dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    compile "org.springframework.boot:spring-boot-starter-logging"
-    compile "org.springframework.boot:spring-boot-autoconfigure"
-    compile "org.grails:grails-core"
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    compile "org.springframework.boot:spring-boot-starter-tomcat"
-    compile "org.grails:grails-web-boot"
-    compile "org.grails:grails-logging"
-    compile "org.grails:grails-plugin-rest"
-    compile "org.grails:grails-plugin-databinding"
-    compile "org.grails:grails-plugin-i18n"
-    compile "org.grails:grails-plugin-services"
-    compile "org.grails:grails-plugin-url-mappings"
-    compile "org.grails:grails-plugin-interceptors"
-    compile "org.grails.plugins:cache"
-    compile "org.grails.plugins:async"
-    compile "org.grails.plugins:scaffolding"
-    compile "org.grails.plugins:gsp"
     compileOnly "io.micronaut:micronaut-inject-groovy"
     console "org.grails:grails-console"
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-starter-validation"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.grails:grails-core"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.grails:grails-web-boot"
+    implementation "org.grails:grails-logging"
+    implementation "org.grails:grails-plugin-rest"
+    implementation "org.grails:grails-plugin-databinding"
+    implementation "org.grails:grails-plugin-i18n"
+    implementation "org.grails:grails-plugin-services"
+    implementation "org.grails:grails-plugin-url-mappings"
+    implementation "org.grails:grails-plugin-interceptors"
+    implementation "org.grails.plugins:cache"
+    implementation "org.grails.plugins:async"
+    implementation "org.grails.plugins:scaffolding"
+    implementation "org.grails.plugins:gsp"
     profile "org.grails.profiles:web-plugin"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.10"
-    testCompile "io.micronaut:micronaut-inject-groovy"
-    testCompile "org.grails:grails-gorm-testing-support"
-    testCompile "org.mockito:mockito-core"
-    testCompile "org.grails:grails-web-testing-support"
-    testCompile 'net.bytebuddy:byte-buddy:1.14.0'
+    runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:3.3.4"
+    testImplementation "io.micronaut:micronaut-inject-groovy"
+    testImplementation "org.grails:grails-gorm-testing-support"
+    testImplementation "org.mockito:mockito-core"
+    testImplementation "org.grails:grails-web-testing-support"
 
-    compile 'commons-io:commons-io:2.4'
+    implementation 'commons-io:commons-io:2.7'
 }
 
 bootRun {
@@ -133,6 +134,10 @@ tasks.withType(GroovyCompile) {
         forkOptions.jvmArgs = ['-Xmx1024m']
     }
 }
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
 // enable if you wish to package this plugin as a standalone application
 bootJar.enabled = false
 
@@ -167,6 +172,7 @@ publishing {
                 password project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
             }
             url project.findProperty("nexusUrl") ?: System.getenv("NEXUS_URL")
+            allowInsecureProtocol = project.findProperty("isNexusUrlInsecure") ? true : false
         }
 
     }

@@ -1,4 +1,4 @@
-package grails3.app
+package grails5.app
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration

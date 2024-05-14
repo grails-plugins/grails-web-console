@@ -16,6 +16,7 @@ import wrap from 'gulp-wrap';
 import { grails3CleanTask, grails3DebugTask, grails3ReleaseTask } from './gulp-tasks/grails3.js';
 import { grails2CleanTask, grails2DebugTask, grails2ReleaseTask } from './gulp-tasks/grails2.js';
 import { grails4CleanTask, grails4DebugTask, grails4ReleaseTask } from './gulp-tasks/grails4.js';
+import { grails5CleanTask, grails5DebugTask, grails5ReleaseTask } from './gulp-tasks/grails5.js';
 import { paths, timestamp } from './gulp-tasks/paths.js';
 
 export const clean = (cb) => {
