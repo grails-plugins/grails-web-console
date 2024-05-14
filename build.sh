@@ -21,3 +21,15 @@ cd grails4/plugin
 
 echo
 realpath build/libs/grails-console-*.jar
+
+
+# for Grails 5
+
+npx gulp grails5Release
+
+cd grails5/plugin
+./gradlew clean
+./gradlew jar
+
+echo
+realpath build/libs/grails-console-*.jar

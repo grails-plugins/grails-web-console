@@ -110,8 +110,12 @@ export const grails4Clean = gulp.series(grails4CleanTask);
 export const grails4Debug = gulp.series(debug, grails4CleanTask, grails4DebugTask);
 export const grails4Release = gulp.series(release, grails4CleanTask, grails4ReleaseTask);
 
-export const debugAll = gulp.series(grails2Debug, grails3Debug, grails4Debug);
-export const releaseAll = gulp.series(grails2Release, grails3Release, grails4Release);
-export const cleanAll = gulp.series(clean, grails2Clean, grails3Clean, grails4Clean);
+export const grails5Clean = gulp.series(grails5CleanTask);
+export const grails5Debug = gulp.series(debug, grails5CleanTask, grails5DebugTask);
+export const grails5Release = gulp.series(release, grails5CleanTask, grails5ReleaseTask);
+
+export const debugAll = gulp.series(grails2Debug, grails3Debug, grails4Debug, grails5DebugTask);
+export const releaseAll = gulp.series(grails2Release, grails3Release, grails4Release, grails5ReleaseTask);
+export const cleanAll = gulp.series(clean, grails2Clean, grails3Clean, grails4Clean, grails5CleanTask);
 
 //gulp.task('default', ['build']);

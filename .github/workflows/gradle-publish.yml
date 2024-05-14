@@ -27,7 +27,7 @@ jobs:
           node-version: '20.5.1'
       - run: npm install
       - run: npm install --global gulp-cli
-      - run: npm gulp grails4Release
+      - run: npm gulp grails5Release
       - name: Set up JDK 8
         uses: actions/setup-java@v3
         with:
@@ -39,10 +39,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
-        working-directory: grails4/plugin
+        working-directory: grails5/plugin
       - name: Publish to GitHub Packages
         run: ./gradlew publishMavenJarPublicationToGitHubPackagesRepository
-        working-directory: grails4/plugin
+        working-directory: grails5/plugin
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
