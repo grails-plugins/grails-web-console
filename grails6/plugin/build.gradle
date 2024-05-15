@@ -10,7 +10,6 @@ plugins {
     id "maven-publish"
 }
 
-version "5.0-M1"
 group "org.grails.plugins"
 
 repositories {
