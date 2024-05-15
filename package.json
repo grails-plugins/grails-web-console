@@ -30,8 +30,12 @@
     "grails2:release": "gulp grails2Release",
     "grails3:debug": "gulp grails3Debug",
     "grails3:release": "gulp grails3Release",
+    "grails4:debug": "gulp grails4Debug",
     "grails4:release": "gulp grails4Release",
+    "grails5:debug": "gulp grails5Debug",
     "grails5:release": "gulp grails5Release",
+    "grails6:debug": "gulp grails6Debug",
+    "grails6:release": "gulp grails6Release",
     "release-all": "gulp releaseAll",
     "test": "gulp test",
     "watch": "gulp watch"

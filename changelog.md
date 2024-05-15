@@ -1,3 +1,12 @@
+### v6.0-M1
+*   Upgrade to Grails 6.2
+
+### v5.0-M1
+*   Upgrade to Grails 5.3.6
+
+### v4.0-M1
+*   Upgrade for Grails 4.1.4
+
 ### v2.2.0
 *   Fix for Console hijacking `System.out` and breaking system logs
 *   Fix for `NullPointerException` when running empty script on server with `grails.databinding.convertEmptyStringsToNull` set to default value `true`
