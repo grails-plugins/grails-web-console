@@ -31,22 +31,22 @@ class ConsoleConfig {
         }
 
         if (config.tabSize instanceof Integer) {
-            tabSize = config.tabSize
+            tabSize = config.tabSize as Integer
         }
 
         if (config.indentUnit instanceof Integer) {
-            indentUnit = config.indentUnit
+            indentUnit = config.indentUnit as Integer
         }
 
-        if (config.fileStore.remote.defaultPath instanceof String) {
+        if (config.fileStore && config.fileStore.remote && config.fileStore.remote.defaultPath instanceof String) {
             remoteFileStoreDefaultPath = config.fileStore.remote.defaultPath
         }
 
-        if (config.fileStore.remote.enabled instanceof Boolean) {
+        if (config.fileStore && config.fileStore.remote && config.fileStore.remote.enabled instanceof Boolean) {
             remoteFileStoreEnabled = config.fileStore.remote.enabled
         }
 
-        if (config.csrfProtection.enabled instanceof Boolean) {
+        if (config.csrfProtection && config.csrfProtection.enabled instanceof Boolean) {
             csrfProtectionEnabled = config.csrfProtection.enabled
         }
 

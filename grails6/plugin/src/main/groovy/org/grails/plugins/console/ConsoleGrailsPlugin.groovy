@@ -34,7 +34,7 @@ class ConsoleGrailsPlugin extends Plugin {
 
 
     Closure doWithSpring() { {->
-        consoleConfig(ConsoleConfig, config.grails.plugin.console)
+        consoleConfig(ConsoleConfig, config.getProperty('grails.plugin.console', Map, [:]))
     }
     }
 
