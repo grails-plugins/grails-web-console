@@ -133,7 +133,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.vsachinv:grails-console:6.0-M1'
+    compile 'com.github.vsachinv:grails-console:6.0-M2'
 }
 ```
 
@@ -152,7 +152,7 @@ repositories {
     }
 
 dependencies {
-    compile 'org.grails.plugins:grails-console:6.0-M1'
+    compile 'org.grails.plugins:grails-console:6.0-M2'
 }
     
 ```   
