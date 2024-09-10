@@ -9,7 +9,11 @@ The [1.X](https://grails.org/plugin/console) version is for Grails 2.
 
 The [2.0.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.0 - 3.2.
 
-The [2.1.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.3+.
+The [2.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.3+.
+
+The [4.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 4+.
+
+The [5.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 5+.
 
 ### Grails 2
 
@@ -36,6 +40,122 @@ Add a dependency in build.gradle
 ```groovy
 runtime 'org.grails.plugins:grails-console:2.1.1'
 ```
+
+For upgraded handler version use below version.
+
+```groovy
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vsachinv:grails-console:2.2.0'
+}
+```
+
+
+### Grails 4+
+
+Add a dependency in build.gradle
+
+```groovy
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vsachinv:grails-console:4.0-M1'
+}
+```
+
+In addition if you don't want to use jitpack.io then use following github package registry:
+
+```groovy
+repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+dependencies {
+    compile 'org.grails.plugins:grails-console:4.0-M1'
+}
+    
+```    
+
+### Grails 5+
+
+Add a dependency in build.gradle
+
+```groovy
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vsachinv:grails-console:5.0-M1'
+}
+```
+
+In addition if you don't want to use jitpack.io then use following github package registry:
+
+```groovy
+repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+dependencies {
+    compile 'org.grails.plugins:grails-console:5.0-M1'
+}
+    
+```   
+
+
+### Grails 6+
+
+Add a dependency in build.gradle
+
+```groovy
+repositories {
+  maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.vsachinv:grails-console:6.0-M2'
+}
+```
+
+In addition if you don't want to use jitpack.io then use following github package registry:
+
+```groovy
+repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+dependencies {
+    compile 'org.grails.plugins:grails-console:6.0-M2'
+}
+    
+```   
 
 ## Usage
 
@@ -117,7 +237,7 @@ Spring Security Core example:
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     [pattern:"/console/**",          access:['ROLE_ADMIN']],
     [pattern:"/plugins/console*/**", access:['ROLE_ADMIN']],  // Grails 2.x
-    [pattern:"/static/console/**",   access:['ROLE_ADMIN']], // Grails 3.x
+    [pattern:"/static/console/**",   access:['ROLE_ADMIN']], // Grails 3+
 ]
 ```
 
@@ -127,7 +247,7 @@ Another example restricting access to localhost IPs:
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     [pattern:"/console/**",          access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]],
     [pattern:"/plugins/console*/**", access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]], // Grails 2.x
-    [pattern:"/static/console/**",   access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]], // Grails 3.x
+    [pattern:"/static/console/**",   access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]], // Grails 3+
 ]
 ```
 
@@ -137,7 +257,12 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 * [Burt Beckwith](https://github.com/burtbeckwith)
 * [Matt Sheehan](https://github.com/sheehan)
 * [Mike Hugo](https://github.com/mjhugo)
+* [Kamil Dybicz](https://github.com/kdybicz)
 
 ## Development
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## Local deployment
+
+Please see [LOCALDEPLOYMENT.md](LOCALDEPLOYMENT.md)
