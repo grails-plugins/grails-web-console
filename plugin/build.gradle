@@ -7,7 +7,7 @@ plugins {
     id "application"
     id "eclipse"
     id "com.gorylenko.gradle-git-properties"
-    id "maven-publish"
+    id "org.grails.internal.grails-plugin-publish"
 }
 
 group "org.grails.plugins"
@@ -58,7 +58,7 @@ application {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion("11")
+    sourceCompatibility = JavaVersion.toVersion(11)
 }
 
 bootRun {
@@ -131,36 +131,13 @@ tasks.withType(Test) {
 // enable if you wish to package this plugin as a standalone application
 bootJar.enabled = false
 
-
-publishing {
-
-    publications {
-        mavenJar(MavenPublication) {
-            from components.java
-            artifact sourceJar
-            artifact packageJavadoc
-            artifact packageGroovydoc
-        }
+grailsPublish {
+    userOrg = "grails"
+    githubSlug = 'gpc/grails-web-console'
+    license {
+        name = 'Apache-2.0'
     }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/gpc/grails-web-console")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-        maven {
-            name = "NexusRepo"
-            credentials {
-                username project.findProperty("nexusUsername") ?: System.getenv("NEXUS_USERNAME")
-                password project.findProperty("nexusPassword") ?: System.getenv("NEXUS_PASSWORD")
-            }
-            url project.findProperty("nexusUrl") ?: System.getenv("NEXUS_URL")
-            allowInsecureProtocol = project.findProperty("isNexusUrlInsecure") ? true : false
-        }
-
-    }
+    title = "Grails Web Console Plugin"
+    desc = "A web-based Groovy console for interactive runtime application management and debugging"
+    developers = [ziegfried: 'Siegfried Puchbauer', mingfai: 'Mingfai Ma', burtbeckwith: 'Burt Beckwith', sheehan: 'Matt Sheehan', mjhugo: 'Mike Hugo', kdybicz: 'Kamil Dybicz', vsachinv: 'vsachinv' ]
 }
