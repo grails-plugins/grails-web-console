@@ -9,7 +9,7 @@
   <g:render template="favicon" />
   <g:render template="css" />
   
-  <meta name="layout" content="${grailsApplication.config.grails.plugin.console.layout ?: 'console-plugin-layout'}"/>
+  <meta name="layout" content="${grailsApplication.config['grails.plugin.console.layout'] ?: 'console-plugin-layout'}"/>
 </head>
 
 <body style="visibility: hidden">
