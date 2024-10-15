@@ -48,7 +48,7 @@ dependencies {
     implementation("org.grails.plugins:scaffolding")
 
     implementation 'commons-io:commons-io:2.16.1'
-    runtimeOnly("org.fusesource.jansi:jansi")
+    runtimeOnly("org.fusesource.jansi:jansi:1.18")
 }
 
 application {
