@@ -19,33 +19,14 @@ Add a dependency in build.gradle
 
 ```groovy
 repositories {
-  maven { url "https://jitpack.io" }
+    maven { url "https://repo.grails.org/grails/core/" }
 }
 
 dependencies {
-    compile 'com.github.gpc:grails-web-console:6.0-M2'
+    compile 'com.github.gpc:grails-web-console:7.0.0-SNAPSHOT'
 }
 ```
 
-In addition if you don't want to use jitpack.io then use following github package registry:
-
-```groovy
-repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/gpc/grails-web-console")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-
-dependencies {
-    compile 'org.grails.plugins:grails-web-console:6.0-M2'
-}
-    
-```   
 
 ## Usage
 

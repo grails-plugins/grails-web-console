@@ -5,7 +5,7 @@ import grails.plugins.*
 class WebConsoleGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "6.2.0  > *"
+    def grailsVersion = "7.0.0 > *"
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -34,9 +34,10 @@ class WebConsoleGrailsPlugin extends Plugin {
     def scm = [url: 'https://github.com/gpc/grails-web-console']
 
 
-    Closure doWithSpring() { {->
-        consoleConfig(ConsoleConfig, config.getProperty('grails.plugin.console', Map, [:]))
-    }
+    Closure doWithSpring() {
+        {->
+            consoleConfig(ConsoleConfig, config, 'grails.plugin.console')
+        }
     }
 
     void doWithDynamicMethods() {
@@ -44,8 +45,7 @@ class WebConsoleGrailsPlugin extends Plugin {
     }
 
     void doWithApplicationContext() {
-        // TODO set property
-//        config.grails.assets.plugin.'console'.excludes = ['**/*']
+        config.merge(['config.grails.assets.plugin.console.excludes': ['**/*']])
 
         ConsoleUtil.initJsonConfig()
     }

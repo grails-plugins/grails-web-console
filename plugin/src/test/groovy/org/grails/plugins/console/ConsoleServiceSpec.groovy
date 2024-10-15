@@ -23,7 +23,6 @@ class ConsoleServiceSpec extends Specification implements ServiceUnitTest<Consol
         result.output.trim() == 'cba'
     }
 
-    @Ignore
     void 'eval with exception'() {
         given:
         String code = '''

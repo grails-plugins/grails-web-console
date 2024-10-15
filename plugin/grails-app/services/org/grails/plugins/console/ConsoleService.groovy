@@ -3,6 +3,9 @@ package org.grails.plugins.console
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ImportCustomizer
 import grails.core.GrailsApplication
+import org.grails.core.artefact.DomainClassArtefactHandler
+
+import java.nio.charset.StandardCharsets
 
 class ConsoleService {
 
@@ -37,7 +40,7 @@ class ConsoleService {
         evaluation.totalTime = System.currentTimeMillis() - startTime
 
         evaluation.console = console
-        evaluation.output = baos.toString('UTF8')
+        evaluation.output = baos.toString(StandardCharsets.UTF_8.name())
         evaluation
     }
 
@@ -57,7 +60,9 @@ class ConsoleService {
         CompilerConfiguration configuration = new CompilerConfiguration()
         if (autoImportDomains) {
             ImportCustomizer importCustomizer = new ImportCustomizer()
-            importCustomizer.addImports(*grailsApplication.domainClasses*.fullName)
+            grailsApplication.getArtefacts(DomainClassArtefactHandler.TYPE).each { domainClass ->
+                importCustomizer.addImport(domainClass.clazz.simpleName, domainClass.clazz.name)
+            }
             configuration.addCompilationCustomizers importCustomizer
         }
         configuration
