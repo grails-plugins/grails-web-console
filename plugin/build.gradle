@@ -94,8 +94,7 @@ generateGitProperties.outputs.upToDateWhen {
 } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
 
 jar {
-    dependsOn repairPublicFiles
-    dependsOn generateGitProperties
+    dependsOn repairPublicFiles, generateGitProperties, bootStartScripts, bootDistTar, bootDistZip
     manifest {
         attributes("Built-By": System.getProperty("user.name"))
         attributes(["Plugin-Version"        : version,
@@ -108,22 +107,19 @@ jar {
     exclude 'git.properties'
 }
 
-compileTestGroovy.dependsOn(repairPublicFiles)
-
+compileTestGroovy.dependsOn repairPublicFiles
+resolveMainClassName.dependsOn repairPublicFiles
 
 task sourceJar(type: Jar) {
-    classifier = 'sources'
     from sourceSets.main.allSource
 }
 
 task packageJavadoc(type: Jar) {
     from javadoc
-    classifier = 'javadoc'
 }
 
 task packageGroovydoc(type: Jar) {
     from groovydoc
-    classifier = 'groovydoc'
 }
 
 tasks.withType(Test) {
