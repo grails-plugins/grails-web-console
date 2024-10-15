@@ -21,8 +21,7 @@ jobs:
         with:
           node-version: '20.5.1'
       - run: npm install
-      - run: npm install --global gulp-cli
-      - run: npm gulp grailsRelease
+      - run: npx gulp grailsRelease
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -44,8 +43,7 @@ jobs:
         with:
           node-version: '20.5.1'
       - run: npm install
-      - run: npm install --global gulp-cli
-      - run: npm gulp grailsRelease
+      - run: npx gulp grailsRelease
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:

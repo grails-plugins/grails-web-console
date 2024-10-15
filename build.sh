@@ -4,7 +4,7 @@ npx gulp grailsRelease
 
 cd plugin
 ./gradlew clean
-./gradlew jar
+./gradlew build
 
 echo
 realpath build/libs/grails-web-console-*.jar
