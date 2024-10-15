@@ -1,6 +1,5 @@
 pluginManagement {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core/" }
         gradlePluginPortal()
     }

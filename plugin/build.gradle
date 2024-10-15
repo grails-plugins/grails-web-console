@@ -13,7 +13,6 @@ plugins {
 group "org.grails.plugins"
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo1.maven.org/maven2/" }
     maven { url "https://repo.grails.org/grails/core" }
@@ -44,6 +43,8 @@ dependencies {
     testImplementation("org.grails:grails-gorm-testing-support")
     testImplementation("org.grails:grails-web-testing-support")
     testImplementation("org.spockframework:spock-core")
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
+    testImplementation "jakarta.servlet:jakarta.servlet-api"
 
     implementation("org.grails.plugins:scaffolding")
 
