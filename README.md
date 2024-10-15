@@ -1,61 +1,19 @@
 ## Summary
 A web-based Groovy console for interactive runtime application management and debugging
 
-![Screenshot](https://raw.github.com/sheehan/grails-console/images/screenshot.png)
+![Screenshot](https://raw.github.com/gpc/grails-web-console/images/screenshot.png)
+
+## Versions
+
+- `1.X` for Grails 2
+- `2.0.X` for Grails 3.0 - 3.2
+- `2.2.X` for Grails 3.3+
+- `4.X.X` for Grails 4+
+- `5.X.X` for Grails 5+
+- `6.X.X` for Grails 6+
 
 ## Installation
 
-The [1.X](https://grails.org/plugin/console) version is for Grails 2.
-
-The [2.0.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.0 - 3.2.
-
-The [2.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 3.3+.
-
-The [4.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 4+.
-
-The [5.X.X](http://plugins.grails.org/plugin/sheehan/console) version is for Grails 5+.
-
-### Grails 2
-
-Add a dependency in BuildConfig.groovy:
-
-```groovy
-grails.project.dependency.resolution = {
-  // ...
-  plugins {
-    runtime ':console:1.5.12'
-    // ...
-  }
-}
-```
-
-### Grails 3+
-
-**Note:** If using Grails 3.0.4, you need to update the asset-pipeline dependency in build.gradle to 3.0.6 or greater. 3.0.5 is used by default and has a bug that prevents the console page from rendering.
-
-**Note:** If using Grails 3.0.12, you will need to add this to your configuration:  `grails.resources.pattern = '/**'`. There is a [bug](https://github.com/grails/grails-core/issues/9584) related to resource paths.
-
-Add a dependency in build.gradle
-
-```groovy
-runtime 'org.grails.plugins:grails-console:2.1.1'
-```
-
-For upgraded handler version use below version.
-
-```groovy
-repositories {
-  maven { url "https://jitpack.io" }
-}
-
-dependencies {
-    compile 'com.github.vsachinv:grails-console:2.2.0'
-}
-```
-
-
-### Grails 4+
-
 Add a dependency in build.gradle
 
 ```groovy
@@ -64,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.vsachinv:grails-console:4.0-M1'
+    compile 'com.github.gpc:grails-web-console:6.0-M2'
 }
 ```
 
@@ -74,7 +32,7 @@ In addition if you don't want to use jitpack.io then use following github packag
 repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
+            url = uri("https://maven.pkg.github.com/gpc/grails-web-console")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
@@ -83,76 +41,7 @@ repositories {
     }
 
 dependencies {
-    compile 'org.grails.plugins:grails-console:4.0-M1'
-}
-    
-```    
-
-### Grails 5+
-
-Add a dependency in build.gradle
-
-```groovy
-repositories {
-  maven { url "https://jitpack.io" }
-}
-
-dependencies {
-    compile 'com.github.vsachinv:grails-console:5.0-M1'
-}
-```
-
-In addition if you don't want to use jitpack.io then use following github package registry:
-
-```groovy
-repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-
-dependencies {
-    compile 'org.grails.plugins:grails-console:5.0-M1'
-}
-    
-```   
-
-
-### Grails 6+
-
-Add a dependency in build.gradle
-
-```groovy
-repositories {
-  maven { url "https://jitpack.io" }
-}
-
-dependencies {
-    compile 'com.github.vsachinv:grails-console:6.0-M2'
-}
-```
-
-In addition if you don't want to use jitpack.io then use following github package registry:
-
-```groovy
-repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/vsachinv/grails-console")
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-
-dependencies {
-    compile 'org.grails.plugins:grails-console:6.0-M2'
+    compile 'org.grails.plugins:grails-web-console:6.0-M2'
 }
     
 ```   
@@ -186,7 +75,7 @@ Calls made to the implicit `console` variable will be executed on the browser's 
 The arguments are serialized as JSON and the calls are queued to run after the script completes.
 
 Example:
-![Screenshot](https://raw.github.com/sheehan/grails-console/images/screenshot2.png)
+![Screenshot](https://raw.github.com/gpc/grails-web-console/images/screenshot2.png)
 
 ## Implicit variables
 
@@ -199,7 +88,7 @@ The following implicit variables are available:
 * `session` - the current [HTTP session](http://java.sun.com/products/servlet/2.3/javadoc/javax/servlet/http/HttpSession.html)
 * `out` - the output [PrintStream](http://docs.oracle.com/javase/7/docs/api/java/io/PrintStream.html)
 
-See [Script Examples](https://github.com/sheehan/grails-console/wiki/Script-Examples) for example usage.
+See [Script Examples](https://github.com/gpc/grails-web-console/wiki/Script-Examples) for example usage.
 
 ## Keyboard Shortcuts
 
@@ -236,8 +125,7 @@ Spring Security Core example:
 ```groovy
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     [pattern:"/console/**",          access:['ROLE_ADMIN']],
-    [pattern:"/plugins/console*/**", access:['ROLE_ADMIN']],  // Grails 2.x
-    [pattern:"/static/console/**",   access:['ROLE_ADMIN']], // Grails 3+
+    [pattern:"/static/console/**",   access:['ROLE_ADMIN']],
 ]
 ```
 
@@ -246,8 +134,7 @@ Another example restricting access to localhost IPs:
 ```groovy
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
     [pattern:"/console/**",          access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]],
-    [pattern:"/plugins/console*/**", access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]], // Grails 2.x
-    [pattern:"/static/console/**",   access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]], // Grails 3+
+    [pattern:"/static/console/**",   access:["hasRole('ROLE_ADMIN') && (hasIpAddress('127.0.0.1') || hasIpAddress('::1'))"]],
 ]
 ```
 
@@ -258,6 +145,7 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 * [Matt Sheehan](https://github.com/sheehan)
 * [Mike Hugo](https://github.com/mjhugo)
 * [Kamil Dybicz](https://github.com/kdybicz)
+* [Sachin Verma](https://github.com/vsachinv)
 
 ## Development
 

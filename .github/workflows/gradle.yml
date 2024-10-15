@@ -1,0 +1,60 @@
+name: Java CI
+on:
+  push:
+    branches:
+      - '[6-9]+.[0-9]+.x'
+  pull_request:
+    branches:
+      - '[6-9]+.[0-9]+.x'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      WORKSPACE: ${{ github.workspace }}
+      GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
+      SIGNING_KEYRING: ${{ secrets.SECRING_FILE }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.5.1'
+      - run: npm install
+      - run: npx gulp grailsRelease
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '11'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - name: Run build with Gradle Wrapper
+        run: ./gradlew build -Dgeb.env=chromeHeadless
+        working-directory: plugin
+  publish:
+    if: github.event_name == 'push'
+    needs: ['build']
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.5.1'
+      - run: npm install
+      - run: npx gulp grailsRelease
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '11'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+      - name: Publish Artifacts (repo.grails.org)
+        id: publish
+        env:
+          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
+        working-directory: plugin
+        run: ./gradlew -Dorg.gradle.internal.publish.checksums.insecure=true publish
