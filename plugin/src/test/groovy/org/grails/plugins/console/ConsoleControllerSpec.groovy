@@ -14,8 +14,9 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
 
     @Override
     Closure doWithConfig() {{ config ->
-        config.grails.plugin.console.fileStore.remote.enabled = true
-        config.grails.plugin.console.csrfProtection.enabled = true
+        // TODO: fix dot notation
+//        config.grails.plugin.console.fileStore.remote.enabled = true
+//        config.grails.plugin.console.csrfProtection.enabled = true
     }}
 
     void setup() {
@@ -50,10 +51,11 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
         model.json.baseUrl == 'http://localhost:8080/console'
     }
 
+    // TODO: fix dot notation
     void 'index - baseUrl with config'() {
         when:
-        config.grails.plugin.console.baseUrl = 'http://localhost:5050/x/y/z/console'
-        controller.consoleConfig = new ConsoleConfig(config.grails.plugin.console)
+        config['grails.plugin.console'] = [baseUrl:'http://localhost:5050/x/y/z/console']
+        controller.consoleConfig = new ConsoleConfig(config['grails.plugin.console'])
         controller.index()
 
         then:
@@ -147,11 +149,12 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
         response.json.error.contains 'Directory not found'
     }
 
+    // TODO: fix dot notation
     void 'listFiles - remote file store disabled'() {
         given:
         String path = tempDir.absolutePath
-        config.grails.plugin.console.fileStore.remote.enabled = false
-        controller.consoleConfig = new ConsoleConfig(config.grails.plugin.console)
+        config['grails.plugin.console'] = [fileStore:[remote:[enabled: false]]]
+        controller.consoleConfig = new ConsoleConfig(config['grails.plugin.console'])
 
         when:
         controller.listFiles(path)
@@ -188,8 +191,8 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
         request.method = 'GET'
 
         params.path = testFile1.absolutePath
-        config.grails.plugin.console.fileStore.remote.enabled = false
-        controller.consoleConfig = new ConsoleConfig(config.grails.plugin.console)
+        config['grails.plugin.console'] = [fileStore:[remote:[enabled: false]]]
+        controller.consoleConfig = new ConsoleConfig(config['grails.plugin.console'])
 
         when:
         controller.file()

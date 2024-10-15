@@ -5,7 +5,7 @@ repositories {
     maven { url "https://repo.grails.org/grails/core" }
 }
 dependencies {
-    implementation("com.bertramlabs.plugins:asset-pipeline-gradle:4.3.0")
-    implementation("org.grails:grails-gradle-plugin:6.1.2")
-    implementation("org.grails.plugins:hibernate5:8.1.0")
+    implementation("com.bertramlabs.plugins:asset-pipeline-gradle:5.0.1")
+    implementation("org.grails:grails-gradle-plugin:7.0.0-SNAPSHOT")
+    implementation("org.grails.plugins:hibernate5:9.0.0-SNAPSHOT")
 }

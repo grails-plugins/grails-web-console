@@ -11,6 +11,7 @@ A web-based Groovy console for interactive runtime application management and de
 - `4.X.X` for Grails 4+
 - `5.X.X` for Grails 5+
 - `6.X.X` for Grails 6+
+- `7.X.X` for Grails 7+
 
 ## Installation
 

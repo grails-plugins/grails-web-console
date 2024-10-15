@@ -38,19 +38,17 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    compileOnly("io.micronaut:micronaut-inject-groovy")
     console("org.grails:grails-console")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
-    testImplementation("io.micronaut:micronaut-inject-groovy")
     testImplementation("org.grails:grails-gorm-testing-support")
     testImplementation("org.grails:grails-web-testing-support")
     testImplementation("org.spockframework:spock-core")
-    testImplementation("io.micronaut:micronaut-http-client")
 
     implementation("org.grails.plugins:scaffolding")
 
     implementation 'commons-io:commons-io:2.16.1'
+    runtimeOnly("org.fusesource.jansi:jansi")
 }
 
 application {
@@ -58,7 +56,7 @@ application {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion(11)
+    sourceCompatibility = JavaVersion.toVersion(17)
 }
 
 bootRun {
@@ -96,6 +94,7 @@ generateGitProperties.outputs.upToDateWhen {
 } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
 
 jar {
+    dependsOn repairPublicFiles
     dependsOn generateGitProperties
     manifest {
         attributes("Built-By": System.getProperty("user.name"))
@@ -108,6 +107,8 @@ jar {
     from sourceSets.main.output
     exclude 'git.properties'
 }
+
+compileTestGroovy.dependsOn(repairPublicFiles)
 
 
 task sourceJar(type: Jar) {
