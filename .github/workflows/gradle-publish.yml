@@ -27,7 +27,7 @@ jobs:
           node-version: '20.5.1'
       - run: npm install
       - run: npm install --global gulp-cli
-      - run: npm gulp grails5Release
+      - run: npm gulp grailsRelease
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
@@ -39,10 +39,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Run build with Gradle Wrapper
         run: ./gradlew build
-        working-directory: grails6/plugin
+        working-directory: plugin
       - name: Publish to GitHub Packages
         run: ./gradlew publishMavenJarPublicationToGitHubPackagesRepository
-        working-directory: grails6/plugin
+        working-directory: plugin
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
