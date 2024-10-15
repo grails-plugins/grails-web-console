@@ -1,57 +1,36 @@
 package org.grails.plugins.console
 
+import grails.config.Config
 import grails.util.Environment
 
 class ConsoleConfig {
 
     boolean enabled
-    String newFileText = null
-    boolean indentWithTabs = false
-    int tabSize = 4
-    int indentUnit = 4
-    String remoteFileStoreDefaultPath = null
-    boolean remoteFileStoreEnabled = true
-    boolean csrfProtectionEnabled = true
+    String newFileText
+    boolean indentWithTabs
+    int tabSize
+    int indentUnit
+    String remoteFileStoreDefaultPath
+    boolean remoteFileStoreEnabled
+    boolean csrfProtectionEnabled
     def baseUrl
 
-    ConsoleConfig(Map config) {
+    ConsoleConfig(Config config, String basePath) {
+        enabled = config.getProperty("${basePath}${basePath ? '.' : ''}enabled", Boolean, Environment.current == Environment.DEVELOPMENT)
+        newFileText = config.getProperty("${basePath}${basePath ? '.' : ''}newFileText") as String
+        indentWithTabs = config.getProperty("${basePath}${basePath ? '.' : ''}indentWithTabs", Boolean, false)
+        tabSize = config.getProperty("${basePath}${basePath ? '.' : ''}tabSize", Integer, 4)
+        indentUnit = config.getProperty("${basePath}${basePath ? '.' : ''}indentUnit", Integer, 4)
+        remoteFileStoreDefaultPath = config.getProperty("${basePath}${basePath ? '.' : ''}fileStore.remote.defaultPath") as String
+        remoteFileStoreEnabled = config.getProperty("${basePath}${basePath ? '.' : ''}fileStore.remote.enabled", Boolean, true)
+        csrfProtectionEnabled = config.getProperty("${basePath}${basePath ? '.' : ''}csrfProtection.enabled", Boolean, true)
 
-        if (config.enabled instanceof Boolean) {
-            enabled = config.enabled
-        } else {
-            enabled = Environment.current == Environment.DEVELOPMENT
+        def configuredBaseUrl = config.getProperty("${basePath}${basePath ? '.' : ''}baseUrl")
+        if(configuredBaseUrl instanceof GString) {
+            configuredBaseUrl = configuredBaseUrl.toString()
         }
-
-        if (config.newFileText instanceof String) {
-            newFileText = config.newFileText
-        }
-
-        if (config.indentWithTabs instanceof Boolean) {
-            indentWithTabs = config.indentWithTabs
-        }
-
-        if (config.tabSize instanceof Integer) {
-            tabSize = config.tabSize as Integer
-        }
-
-        if (config.indentUnit instanceof Integer) {
-            indentUnit = config.indentUnit as Integer
-        }
-
-        if (config.fileStore && config.fileStore.remote && config.fileStore.remote.defaultPath instanceof String) {
-            remoteFileStoreDefaultPath = config.fileStore.remote.defaultPath
-        }
-
-        if (config.fileStore && config.fileStore.remote && config.fileStore.remote.enabled instanceof Boolean) {
-            remoteFileStoreEnabled = config.fileStore.remote.enabled
-        }
-
-        if (config.csrfProtection && config.csrfProtection.enabled instanceof Boolean) {
-            csrfProtectionEnabled = config.csrfProtection.enabled
-        }
-
-        if (config.baseUrl instanceof List || config.baseUrl instanceof String) {
-            baseUrl = config.baseUrl
+        if (configuredBaseUrl instanceof List || configuredBaseUrl instanceof String) {
+            baseUrl = configuredBaseUrl
         }
     }
 }

@@ -13,8 +13,7 @@ plugins {
 group = "grails.app"
 
 repositories {
-    mavenCentral()
-    maven { url "https://repo.grails.org/grails/core/" }
+    maven { url "https://repo.grails.org/grails/core" }
 }
 
 configurations {
