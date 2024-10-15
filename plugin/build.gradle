@@ -76,12 +76,6 @@ tasks.withType(GroovyCompile) {
     }
 }
 
-task repairPublicFiles(type: Copy) { // https://github.com/grails/grails-core/issues/629
-    from 'src/main/resources/static'
-    into 'build/resources/main/static'
-}
-processResources.finalizedBy repairPublicFiles
-
 gitProperties {
     keys = ['git.branch', 'git.commit.id', 'git.commit.time', 'git.commit.id.abbrev']
     failOnNoGitDirectory = true
@@ -93,7 +87,7 @@ generateGitProperties.outputs.upToDateWhen {
 } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
 
 jar {
-    dependsOn repairPublicFiles, generateGitProperties, bootStartScripts, bootDistTar, bootDistZip
+    dependsOn generateGitProperties, bootStartScripts, bootDistTar, bootDistZip
     manifest {
         attributes("Built-By": System.getProperty("user.name"))
         attributes(["Plugin-Version"        : version,
@@ -105,9 +99,6 @@ jar {
     from sourceSets.main.output
     exclude 'git.properties'
 }
-
-compileTestGroovy.dependsOn repairPublicFiles
-resolveMainClassName.dependsOn repairPublicFiles
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allSource
