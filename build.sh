@@ -7,4 +7,4 @@ cd plugin
 ./gradlew jar
 
 echo
-realpath build/libs/grails-console-*.jar
+realpath build/libs/grails-web-console-*.jar

@@ -8,4 +8,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'grails-console'
+rootProject.name = 'grails-web-console'

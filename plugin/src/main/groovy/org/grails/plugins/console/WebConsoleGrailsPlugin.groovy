@@ -2,16 +2,17 @@ package org.grails.plugins.console
 
 import grails.plugins.*
 
-class ConsoleGrailsPlugin extends Plugin {
+class WebConsoleGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "6.2.0  > *"
+
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
             "grails-app/views/error.gsp"
     ]
 
-    String title = 'Console Plugin'
+    String title = 'Web Console Plugin'
     def author = "Your name"
     def authorEmail = ""
     String description = 'A web-based Groovy console for interactive runtime application management and debugging'
@@ -19,7 +20,7 @@ class ConsoleGrailsPlugin extends Plugin {
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    String documentation = 'https://github.com/gpc/grails-console/blob/6.0.x/README.md'
+    String documentation = 'https://github.com/gpc/grails-web-console/blob/6.0.x/README.md'
 
     String license = 'APACHE'
     def developers = [
@@ -29,8 +30,8 @@ class ConsoleGrailsPlugin extends Plugin {
             [name: 'Matt Sheehan', email: 'mr.sheehan@gmail.com'],
             [name: 'Sachin Verma', email: 'v.sachin.v@gmail.com']
     ]
-    def issueManagement = [system: 'github', url: 'https://github.com/gpc/grails-console/issues']
-    def scm = [url: 'https://github.com/gpc/grails-console']
+    def issueManagement = [system: 'github', url: 'https://github.com/gpc/grails-web-console/issues']
+    def scm = [url: 'https://github.com/gpc/grails-web-console']
 
 
     Closure doWithSpring() { {->

@@ -1,5 +1,5 @@
 {
-  "name": "grails-console",
+  "name": "grails-web-console",
   "version": "1.6.0",
   "type": "module",
   "devDependencies": {

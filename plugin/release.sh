@@ -1,9 +1,9 @@
 rm -rf target/release
 mkdir -p target/release
 cd target/release
-git clone git@github.com:gpc/grails-console.git
+git clone git@github.com:gpc/grails-web-console.git
 
-cd grails-console
+cd grails-web-console
 npm install
 gulp grails:release
 

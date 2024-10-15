@@ -1,7 +1,7 @@
 ## Summary
 A web-based Groovy console for interactive runtime application management and debugging
 
-![Screenshot](https://raw.github.com/gpc/grails-console/images/screenshot.png)
+![Screenshot](https://raw.github.com/gpc/grails-web-console/images/screenshot.png)
 
 ## Versions
 
@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.gpc:grails-console:6.0-M2'
+    compile 'com.github.gpc:grails-web-console:6.0-M2'
 }
 ```
 
@@ -32,7 +32,7 @@ In addition if you don't want to use jitpack.io then use following github packag
 repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/gpc/grails-console")
+            url = uri("https://maven.pkg.github.com/gpc/grails-web-console")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USERNAME")
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
@@ -41,7 +41,7 @@ repositories {
     }
 
 dependencies {
-    compile 'org.grails.plugins:grails-console:6.0-M2'
+    compile 'org.grails.plugins:grails-web-console:6.0-M2'
 }
     
 ```   
@@ -75,7 +75,7 @@ Calls made to the implicit `console` variable will be executed on the browser's 
 The arguments are serialized as JSON and the calls are queued to run after the script completes.
 
 Example:
-![Screenshot](https://raw.github.com/gpc/grails-console/images/screenshot2.png)
+![Screenshot](https://raw.github.com/gpc/grails-web-console/images/screenshot2.png)
 
 ## Implicit variables
 
@@ -88,7 +88,7 @@ The following implicit variables are available:
 * `session` - the current [HTTP session](http://java.sun.com/products/servlet/2.3/javadoc/javax/servlet/http/HttpSession.html)
 * `out` - the output [PrintStream](http://docs.oracle.com/javase/7/docs/api/java/io/PrintStream.html)
 
-See [Script Examples](https://github.com/gpc/grails-console/wiki/Script-Examples) for example usage.
+See [Script Examples](https://github.com/gpc/grails-web-console/wiki/Script-Examples) for example usage.
 
 ## Keyboard Shortcuts
 
