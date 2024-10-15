@@ -13,7 +13,6 @@ plugins {
 group "org.grails.plugins"
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url "https://repo1.maven.org/maven2/" }
     maven { url "https://repo.grails.org/grails/core" }
@@ -38,19 +37,19 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    compileOnly("io.micronaut:micronaut-inject-groovy")
     console("org.grails:grails-console")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
-    testImplementation("io.micronaut:micronaut-inject-groovy")
     testImplementation("org.grails:grails-gorm-testing-support")
     testImplementation("org.grails:grails-web-testing-support")
     testImplementation("org.spockframework:spock-core")
-    testImplementation("io.micronaut:micronaut-http-client")
-
+    compileOnly "jakarta.servlet:jakarta.servlet-api"
+    testImplementation "jakarta.servlet:jakarta.servlet-api"
+    implementation("org.grails.plugins:gsp") 
     implementation("org.grails.plugins:scaffolding")
 
     implementation 'commons-io:commons-io:2.16.1'
+    runtimeOnly("org.fusesource.jansi:jansi:1.18")
 }
 
 application {
@@ -58,7 +57,7 @@ application {
 }
 
 java {
-    sourceCompatibility = JavaVersion.toVersion(11)
+    sourceCompatibility = JavaVersion.toVersion(17)
 }
 
 bootRun {
@@ -96,7 +95,7 @@ generateGitProperties.outputs.upToDateWhen {
 } // make sure the generateGitProperties task always executes (even when git.properties is not changed)
 
 jar {
-    dependsOn generateGitProperties
+    dependsOn repairPublicFiles, generateGitProperties, bootStartScripts, bootDistTar, bootDistZip
     manifest {
         attributes("Built-By": System.getProperty("user.name"))
         attributes(["Plugin-Version"        : version,
@@ -109,20 +108,19 @@ jar {
     exclude 'git.properties'
 }
 
+compileTestGroovy.dependsOn repairPublicFiles
+resolveMainClassName.dependsOn repairPublicFiles
 
 task sourceJar(type: Jar) {
-    classifier = 'sources'
     from sourceSets.main.allSource
 }
 
 task packageJavadoc(type: Jar) {
     from javadoc
-    classifier = 'javadoc'
 }
 
 task packageGroovydoc(type: Jar) {
     from groovydoc
-    classifier = 'groovydoc'
 }
 
 tasks.withType(Test) {

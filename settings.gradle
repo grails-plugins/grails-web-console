@@ -1,13 +1,12 @@
 pluginManagement {
     repositories {
-        mavenLocal()
         maven { url "https://repo.grails.org/grails/core/" }
         gradlePluginPortal()
     }
     plugins {
-        id "org.grails.grails-web" version "6.1.2"
-        id "org.grails.grails-gsp" version "6.1.2"
-        id "com.bertramlabs.asset-pipeline" version "4.3.0"
+        id "org.grails.grails-web" version "7.0.0-SNAPSHOT"
+        id "org.grails.grails-gsp" version "7.0.0-SNAPSHOT"
+        id "com.bertramlabs.asset-pipeline" version "5.0.1"
         id "com.github.erdi.webdriver-binaries" version "3.2"
     }
 }

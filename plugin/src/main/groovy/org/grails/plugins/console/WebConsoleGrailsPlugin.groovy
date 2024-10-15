@@ -44,7 +44,8 @@ class WebConsoleGrailsPlugin extends Plugin {
     }
 
     void doWithApplicationContext() {
-        config.grails.assets.plugin.'console'.excludes = ['**/*']
+        // TODO set property
+//        config.grails.assets.plugin.'console'.excludes = ['**/*']
 
         ConsoleUtil.initJsonConfig()
     }
