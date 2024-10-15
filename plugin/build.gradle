@@ -45,7 +45,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core")
     compileOnly "jakarta.servlet:jakarta.servlet-api"
     testImplementation "jakarta.servlet:jakarta.servlet-api"
-
+    implementation("org.grails.plugins:gsp") 
     implementation("org.grails.plugins:scaffolding")
 
     implementation 'commons-io:commons-io:2.16.1'
