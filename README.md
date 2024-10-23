@@ -1,7 +1,11 @@
+[![Java CI](https://github.com/gpc/grails-web-console/actions/workflows/gradle.yml/badge.svg)](https://github.com/gpc/grails-web-console/actions/workflows/gradle.yml)
+
+# Grails Web Console
+
 ## Summary
 A web-based Groovy console for interactive runtime application management and debugging
 
-![Screenshot](https://raw.github.com/gpc/grails-web-console/images/screenshot.png)
+![Screenshot](.github/images/screenshot.png)
 
 ## Versions
 
@@ -23,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.gpc:grails-web-console:7.0.0-SNAPSHOT'
+    runtimeOnly 'com.github.gpc:grails-web-console:7.0.0-SNAPSHOT'
 }
 ```
 
@@ -57,7 +61,7 @@ Calls made to the implicit `console` variable will be executed on the browser's 
 The arguments are serialized as JSON and the calls are queued to run after the script completes.
 
 Example:
-![Screenshot](https://raw.github.com/gpc/grails-web-console/images/screenshot2.png)
+![Screenshot](.github/images/screenshot2.png)
 
 ## Implicit variables
 
@@ -128,6 +132,9 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 * [Mike Hugo](https://github.com/mjhugo)
 * [Kamil Dybicz](https://github.com/kdybicz)
 * [Sachin Verma](https://github.com/vsachinv)
+* [James Daugherty](https://github.com/jdaugherty)
+* [Scott Murphy](https://github.com/codeconsole)
+* [Søren Berg Glasius](https://github.com/sbglasius)
 
 ## Development
 

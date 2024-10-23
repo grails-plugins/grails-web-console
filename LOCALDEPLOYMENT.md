@@ -5,9 +5,9 @@ This page is meant for people not willing to wait for an official plugin release
 ### Build
 
 ```shell
-npm run grails3:release
+npm run grails:release
 
-cd grails3/plugin
+cd plugin
 
 ./gradlew clean
 ./gradlew build
