@@ -22,14 +22,9 @@ This plugin uses [Gulp](http://gulpjs.com/) to build its resources.
 | release-all     | Builds all release resources and copy to graisl2 and grails3.|
 
 ## File structure
-
     .
-    ├── grails2
-    │   ├── app             # grails2 test app 
-    │   └── plugin          # grails2 plugin    
-    ├── grails3
-    │   ├── app             # grails3 test app
-    │   └── plugin          # grails3 plugin
+    │── app             # test app
+    │── plugin          # plugin
     ├── web                 # shared web resources
     │   ├── app             # coffeescript
     │   ├── img
@@ -42,6 +37,6 @@ This plugin uses [Gulp](http://gulpjs.com/) to build its resources.
 
 ## Running
 
-When developing, use `grails2/app` and `grails3/app`.
+When developing, use `app`
 
 
