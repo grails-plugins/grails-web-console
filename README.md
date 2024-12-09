@@ -1,4 +1,4 @@
-[![Java CI](https://github.com/gpc/grails-web-console/actions/workflows/gradle.yml/badge.svg)](https://github.com/gpc/grails-web-console/actions/workflows/gradle.yml)
+[![Java CI](https://github.com/grails-plugins/grails-web-console/actions/workflows/gradle.yml/badge.svg)](https://github.com/grails-plugins/grails-web-console/actions/workflows/gradle.yml)
 
 # Grails Web Console
 
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    runtimeOnly 'com.github.gpc:grails-web-console:7.0.0-SNAPSHOT'
+    runtimeOnly 'com.github.grails-plugins:grails-web-console:7.0.0-SNAPSHOT'
 }
 ```
 
@@ -74,7 +74,7 @@ The following implicit variables are available:
 * `session` - the current [HTTP session](http://java.sun.com/products/servlet/2.3/javadoc/javax/servlet/http/HttpSession.html)
 * `out` - the output [PrintStream](http://docs.oracle.com/javase/7/docs/api/java/io/PrintStream.html)
 
-See [Script Examples](https://github.com/gpc/grails-web-console/wiki/Script-Examples) for example usage.
+See [Script Examples](https://github.com/grails-plugins/grails-web-console/wiki/Script-Examples) for example usage.
 
 ## Keyboard Shortcuts
 

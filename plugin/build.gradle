@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+    }
+}
+
 plugins {
     id "groovy"
     id "idea"
@@ -7,19 +18,11 @@ plugins {
     id "application"
     id "eclipse"
     id "com.gorylenko.gradle-git-properties"
-    id "org.grails.internal.grails-plugin-publish"
+    id "org.grails.grails-publish"
+    id "com.adarshr.test-logger" version "4.0.0"
 }
 
 group "org.grails.plugins"
-
-repositories {
-    maven { url "https://repo.grails.org/grails/core" }
-}
-
-configurations {
-    all {
-    }
-}
 
 dependencies {
     implementation("org.grails:grails-core")
@@ -47,15 +50,11 @@ dependencies {
     implementation("org.grails.plugins:scaffolding")
 
     implementation 'commons-io:commons-io:2.16.1'
-    runtimeOnly("org.fusesource.jansi:jansi:1.18")
+    runtimeOnly("org.fusesource.jansi:jansi")
 }
 
 application {
     mainClass.set("grailsconsole.Application")
-}
-
-java {
-    sourceCompatibility = JavaVersion.toVersion(17)
 }
 
 bootRun {
@@ -114,13 +113,27 @@ task packageGroovydoc(type: Jar) {
 
 tasks.withType(Test) {
     useJUnitPlatform()
+
+    testLogging {
+        exceptionFormat = 'full'
+        events 'passed', 'skipped', 'failed'//, 'standardOut', 'standardError'
+    }
 }
+
+testlogger {
+    theme 'mocha'
+    showFullStackTraces true
+    showStandardStreams true
+    showPassedStandardStreams false
+    showSkippedStandardStreams false
+    showFailedStandardStreams true
+}
+
 // enable if you wish to package this plugin as a standalone application
 bootJar.enabled = false
 
 grailsPublish {
-    userOrg = "grails"
-    githubSlug = 'gpc/grails-web-console'
+    githubSlug = 'grails-plugins/grails-web-console'
     license {
         name = 'Apache-2.0'
     }

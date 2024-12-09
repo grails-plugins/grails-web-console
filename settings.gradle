@@ -4,11 +4,15 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        id "org.grails.grails-web" version "7.0.0-SNAPSHOT"
-        id "org.grails.grails-gsp" version "7.0.0-SNAPSHOT"
-        id "com.bertramlabs.asset-pipeline" version "5.0.1"
-        id "com.github.erdi.webdriver-binaries" version "3.2"
+        id "org.grails.grails-web" version "${grailsVersion}"
+        id "org.grails.grails-gsp" version "${grailsVersion}"
+        id "org.grails.grails-plugin" version "${grailsVersion}"
+        id "org.grails.grails-publish" version "${grailsVersion}"
+        id "com.bertramlabs.asset-pipeline" version "${assetPipelineVersion}"
+        id "com.gorylenko.gradle-git-properties" version "2.4.2"
     }
 }
 
-include 'app', 'plugin'
+rootProject.name = 'grails-web-console-root'
+include 'plugin'
+include 'app'

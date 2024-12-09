@@ -15,46 +15,53 @@ jobs:
       GRADLE_OPTS: -Xmx1500m -Dfile.encoding=UTF-8
       SIGNING_KEYRING: ${{ secrets.SECRING_FILE }}
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup up node
+      - name: "📥 Checkout the repository"
+        uses: actions/checkout@v4
+      - name: "🧱 Setup up node"
         uses: actions/setup-node@v3
         with:
           node-version: '20.5.1'
-      - run: npm install
-      - run: npx gulp grailsRelease
-      - name: Set up JDK
+      - name: "Pull node dependencies"
+        run: npm install
+      - name: "Package node dependencies"
+        run: npx gulp grailsRelease
+      - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
           distribution: 'liberica'
           java-version: '17'
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-      - name: Run build with Gradle Wrapper
-        run: ./gradlew build -Dgeb.env=chromeHeadless
-        working-directory: plugin
+      - name: "🐘 Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
+      - name: "🔨 Run Base Tests"
+        run: ./gradlew check --continue
   publish:
     if: github.event_name == 'push'
-    needs: ['build']
+    needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup up node
+      - name: "📥 Checkout the repository"
+        uses: actions/checkout@v4
+      - name: "🧱 Setup up node"
         uses: actions/setup-node@v3
         with:
           node-version: '20.5.1'
-      - run: npm install
-      - run: npx gulp grailsRelease
-      - name: Set up JDK
+      - name: "Pull node dependencies"
+        run: npm install
+      - name: "Package node dependencies"
+        run: npx gulp grailsRelease
+      - name: "☕️ Setup JDK"
         uses: actions/setup-java@v4
         with:
           distribution: 'liberica'
           java-version: '17'
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
-      - name: Publish Artifacts (repo.grails.org)
-        id: publish
+      - name: "🐘 Setup Gradle"
+        uses: gradle/actions/setup-gradle@v4
+      - name: "📤 Publish to Snapshot (repo.grails.org)"
         env:
-          ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_USERNAME }}
-          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_PASSWORD }}
-        working-directory: plugin
-        run: ./gradlew -Dorg.gradle.internal.publish.checksums.insecure=true publish
+          MAVEN_PUBLISH_USERNAME: ${{ secrets.MAVEN_PUBLISH_USERNAME }}
+          MAVEN_PUBLISH_PASSWORD: ${{ secrets.MAVEN_PUBLISH_PASSWORD }}
+          MAVEN_PUBLISH_URL: ${{ secrets.MAVEN_PUBLISH_SNAPSHOT_URL }}
+        working-directory: ./plugin
+        run: ../gradlew publish

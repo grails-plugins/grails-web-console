@@ -20,7 +20,7 @@ class WebConsoleGrailsPlugin extends Plugin {
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    String documentation = 'https://github.com/gpc/grails-web-console/blob/6.0.x/README.md'
+    String documentation = 'https://github.com/grails-plugins/grails-web-console/blob/6.0.x/README.md'
 
     String license = 'APACHE'
     def developers = [
@@ -30,8 +30,8 @@ class WebConsoleGrailsPlugin extends Plugin {
             [name: 'Matt Sheehan', email: 'mr.sheehan@gmail.com'],
             [name: 'Sachin Verma', email: 'v.sachin.v@gmail.com']
     ]
-    def issueManagement = [system: 'github', url: 'https://github.com/gpc/grails-web-console/issues']
-    def scm = [url: 'https://github.com/gpc/grails-web-console']
+    def issueManagement = [system: 'github', url: 'https://github.com/grails-plugins/grails-web-console/issues']
+    def scm = [url: 'https://github.com/grails-plugins/grails-web-console']
 
 
     Closure doWithSpring() {
