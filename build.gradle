@@ -1,3 +1,13 @@
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+    }
+}
+
 allprojects {
     repositories {
         mavenCentral()
@@ -6,6 +16,7 @@ allprojects {
 }
 
 version project.projectVersion
+group "org.grails.plugins"
 
 subprojects { project ->
     version project.projectVersion
@@ -13,4 +24,19 @@ subprojects { project ->
     apply plugin: "groovy"
 
     project.compileJava.options.release = 17
+
+    if(project.name.endsWith('grails-web-console')) {
+        apply plugin: "org.grails.grails-publish"
+
+        grailsPublish {
+            githubSlug = 'grails-plugins/grails-web-console'
+
+            license {
+                name = 'Apache-2.0'
+            }
+            title = "Grails Web Console Plugin"
+            desc = "A web-based Groovy console for interactive runtime application management and debugging"
+            developers = [ziegfried: 'Siegfried Puchbauer', mingfai: 'Mingfai Ma', burtbeckwith: 'Burt Beckwith', sheehan: 'Matt Sheehan', mjhugo: 'Mike Hugo', kdybicz: 'Kamil Dybicz', vsachinv: 'vsachinv' ]
+        }
+    }
 }

@@ -1,17 +1,31 @@
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+        classpath "org.grails.plugins:hibernate5:$grailsHibernateGradlePluginVersion"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
+    }
+}
+
 plugins {
     id "groovy"
-    id "org.grails.grails-web"
-    id "org.grails.grails-gsp"
     id "war"
     id "idea"
-    id "com.bertramlabs.asset-pipeline"
-    id "application"
+    id "com.bertramlabs.asset-pipeline" version "$assetPipelineVersion"
     id "eclipse"
 }
+
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.grails-gsp"
 
 group = "grails.app"
 
 dependencies {
+    implementation platform("org.grails:grails-bom:$grailsVersion")
+
     implementation("org.grails:grails-core")
     implementation("org.grails:grails-logging")
     implementation("org.grails:grails-plugin-databinding")
@@ -31,22 +45,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     console("org.grails:grails-console")
-    runtimeOnly("com.bertramlabs.plugins:asset-pipeline-grails:${assetPipelineVersion}")
+    runtimeOnly("com.bertramlabs.plugins:asset-pipeline-grails")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
-    runtimeOnly("org.fusesource.jansi:jansi:1.18")
+    runtimeOnly("org.fusesource.jansi:jansi")
     testImplementation("org.grails:grails-gorm-testing-support")
     testImplementation("org.grails:grails-web-testing-support")
 
-    integrationTestImplementation testFixtures("org.grails.plugins:geb:${gebVersion}")
+    integrationTestImplementation testFixtures("org.grails.plugins:geb")
     testImplementation("org.spockframework:spock-core")
 
-    implementation project(':plugin')
+    implementation project(':grails-web-console')
 
-}
-
-application {
-    mainClass.set("grails.app.Application")
 }
 
 tasks.withType(Test) {

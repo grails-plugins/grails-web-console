@@ -4,15 +4,18 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        id "org.grails.grails-web" version "${grailsVersion}"
-        id "org.grails.grails-gsp" version "${grailsVersion}"
-        id "org.grails.grails-plugin" version "${grailsVersion}"
-        id "org.grails.grails-publish" version "${grailsVersion}"
+        id "org.grails.grails-web" version "${grailsGradlePluginVersion}"
+        id "org.grails.grails-gsp" version "${grailsGradlePluginVersion}"
+        id "org.grails.grails-plugin" version "${grailsGradlePluginVersion}"
+        id "org.grails.grails-publish" version "${grailsGradlePluginVersion}"
         id "com.bertramlabs.asset-pipeline" version "${assetPipelineVersion}"
         id "com.gorylenko.gradle-git-properties" version "2.4.2"
     }
 }
 
 rootProject.name = 'grails-web-console-root'
+
 include 'plugin'
+findProject(":plugin").name = "grails-web-console"
+
 include 'app'

@@ -1,30 +1,34 @@
 buildscript {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
+        maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://repo.grails.org/grails/core" }
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
+        classpath "org.grails.plugins:hibernate5:$grailsHibernateGradlePluginVersion"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
     }
 }
 
 plugins {
     id "groovy"
+    id "war"
     id "idea"
-    id "org.grails.grails-web"
-    id "org.grails.grails-gsp"
-    id "org.grails.grails-plugin"
-    id "application"
     id "eclipse"
+    id "application"
     id "com.gorylenko.gradle-git-properties"
-    id "org.grails.grails-publish"
     id "com.adarshr.test-logger" version "4.0.0"
 }
+
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.grails-gsp"
+apply plugin: "org.grails.grails-plugin"
 
 group "org.grails.plugins"
 
 dependencies {
+    implementation platform("org.grails:grails-bom:$grailsVersion")
+
     implementation("org.grails:grails-core")
     implementation("org.grails:grails-logging")
     implementation("org.grails:grails-plugin-databinding")
@@ -131,13 +135,3 @@ testlogger {
 
 // enable if you wish to package this plugin as a standalone application
 bootJar.enabled = false
-
-grailsPublish {
-    githubSlug = 'grails-plugins/grails-web-console'
-    license {
-        name = 'Apache-2.0'
-    }
-    title = "Grails Web Console Plugin"
-    desc = "A web-based Groovy console for interactive runtime application management and debugging"
-    developers = [ziegfried: 'Siegfried Puchbauer', mingfai: 'Mingfai Ma', burtbeckwith: 'Burt Beckwith', sheehan: 'Matt Sheehan', mjhugo: 'Mike Hugo', kdybicz: 'Kamil Dybicz', vsachinv: 'vsachinv' ]
-}

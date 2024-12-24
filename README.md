@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    runtimeOnly 'com.github.grails-plugins:grails-web-console:7.0.0-SNAPSHOT'
+    runtimeOnly 'com.github.grails-plugins:grails-web-console:7.0.0-M1'
 }
 ```
 

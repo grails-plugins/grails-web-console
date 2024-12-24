@@ -5,12 +5,12 @@ This page is meant for people not willing to wait for an official plugin release
 ### Build
 
 ```shell
-npm run grails:release
+npm install
+npx gulp grailsRelease
 
 cd plugin
 
-./gradlew clean
-./gradlew build
+./gradlew clean build
 ```
 
 ### Public local
