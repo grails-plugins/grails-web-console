@@ -1,66 +1,53 @@
-buildscript {
-    repositories {
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "https://repo.grails.org/grails/core" }
-    }
-    dependencies {
-        classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
-        classpath "org.grails.plugins:hibernate5:$grailsHibernateGradlePluginVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:$assetPipelineVersion"
-    }
-}
-
 plugins {
     id "groovy"
-    id "war"
-    id "idea"
-    id "com.bertramlabs.asset-pipeline" version "$assetPipelineVersion"
-    id "eclipse"
+    id "cloud.wondrify.asset-pipeline"
 }
 
-apply plugin: "org.grails.grails-web"
-apply plugin: "org.grails.grails-gsp"
+apply plugin: "org.apache.grails.gradle.grails-web"
+apply plugin: "org.apache.grails.gradle.grails-gsp"
 
+
+version = project.projectVersion
 group = "grails.app"
 
 dependencies {
-    implementation platform("org.grails:grails-bom:$grailsVersion")
+    implementation platform("org.apache.grails:grails-bom:$grailsVersion")
 
-    implementation("org.grails:grails-core")
-    implementation("org.grails:grails-logging")
-    implementation("org.grails:grails-plugin-databinding")
-    implementation("org.grails:grails-plugin-i18n")
-    implementation("org.grails:grails-plugin-interceptors")
-    implementation("org.grails:grails-plugin-rest")
-    implementation("org.grails:grails-plugin-services")
-    implementation("org.grails:grails-plugin-url-mappings")
-    implementation("org.grails:grails-web-boot")
-    implementation("org.grails.plugins:gsp")
-    implementation("org.grails.plugins:hibernate5")
-    implementation("org.grails.plugins:scaffolding")
+    implementation("org.apache.grails:grails-core")
+    implementation("org.apache.grails:grails-logging")
+    implementation("org.apache.grails:grails-databinding")
+    implementation("org.apache.grails:grails-i18n")
+    implementation("org.apache.grails:grails-interceptors")
+    implementation("org.apache.grails:grails-rest-transforms")
+    implementation("org.apache.grails:grails-services")
+    implementation("org.apache.grails:grails-url-mappings")
+    implementation("org.apache.grails:grails-web-boot")
+    implementation("org.apache.grails:grails-gsp")
+    implementation("org.apache.grails:grails-data-hibernate5")
+    implementation("org.apache.grails:grails-scaffolding")
     implementation("org.springframework.boot:spring-boot-autoconfigure")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    console("org.grails:grails-console")
-    runtimeOnly("com.bertramlabs.plugins:asset-pipeline-grails")
+    console("org.apache.grails:grails-console")
+    runtimeOnly("cloud.wondrify:asset-pipeline-grails")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
     runtimeOnly("org.fusesource.jansi:jansi")
-    testImplementation("org.grails:grails-gorm-testing-support")
-    testImplementation("org.grails:grails-web-testing-support")
+    testImplementation("org.apache.grails:grails-testing-support-datamapping")
+    testImplementation("org.apache.grails:grails-testing-support-web")
 
-    integrationTestImplementation testFixtures("org.grails.plugins:geb")
+    integrationTestImplementation testFixtures("org.apache.grails:grails-geb")
     testImplementation("org.spockframework:spock-core")
 
     implementation project(':grails-web-console')
-
 }
 
-tasks.withType(Test) {
-    useJUnitPlatform()
+apply {
+    from project.rootProject.layout.projectDirectory.file('gradle/java-config.gradle')
+    from project.rootProject.layout.projectDirectory.file('gradle/test-config.gradle')
 }
 
 assets {

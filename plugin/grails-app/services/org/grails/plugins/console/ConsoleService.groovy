@@ -1,5 +1,6 @@
 package org.grails.plugins.console
 
+import groovy.util.logging.Slf4j
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.codehaus.groovy.control.customizers.ImportCustomizer
 import grails.core.GrailsApplication
@@ -7,6 +8,7 @@ import org.grails.core.artefact.DomainClassArtefactHandler
 
 import java.nio.charset.StandardCharsets
 
+@Slf4j
 class ConsoleService {
 
     GrailsApplication grailsApplication
@@ -46,13 +48,13 @@ class ConsoleService {
 
     private Binding createBinding(request, PrintStream out, Console console) {
         new Binding([
-            session          : request.session,
-            request          : request,
-            ctx              : grailsApplication.mainContext,
-            grailsApplication: grailsApplication,
-            config           : grailsApplication.config,
-            out              : out,
-            console          : console
+                session          : request.session,
+                request          : request,
+                ctx              : grailsApplication.mainContext,
+                grailsApplication: grailsApplication,
+                config           : grailsApplication.config,
+                out              : out,
+                console          : console
         ])
     }
 

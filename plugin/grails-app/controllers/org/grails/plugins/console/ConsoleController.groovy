@@ -1,30 +1,32 @@
 package org.grails.plugins.console
 
+import grails.artefact.Controller
 import grails.converters.JSON
-import org.apache.commons.io.FilenameUtils
 
-class ConsoleController {
+import java.nio.file.Paths
+
+class ConsoleController implements Controller {
 
     def consoleService
     def consoleConfig
 
     def index() {
         Map model = [
-            json: [
-                implicitVars: [
-                    config:             'the Grails configuration',
-                    console:            'the browser console',
-                    ctx:                'the Spring application context',
-                    grailsApplication:  'the Grails application',
-                    out:                'the output PrintStream',
-                    request:            'the HTTP request',
-                    session:            'the HTTP session',
-                ],
-                baseUrl: getBaseUrl(),
-                remoteFileStoreEnabled: consoleConfig.remoteFileStoreEnabled,
-                groovyVersion: GroovySystem.version,
-                grailsVersion: grailsApplication.metadata['app.grails.version']
-            ]
+                json: [
+                        implicitVars          : [
+                                config           : 'the Grails configuration',
+                                console          : 'the browser console',
+                                ctx              : 'the Spring application context',
+                                grailsApplication: 'the Grails application',
+                                out              : 'the output PrintStream',
+                                request          : 'the HTTP request',
+                                session          : 'the HTTP session',
+                        ],
+                        baseUrl               : getBaseUrl(),
+                        remoteFileStoreEnabled: consoleConfig.remoteFileStoreEnabled,
+                        groovyVersion         : GroovySystem.version,
+                        grailsVersion         : grailsApplication.metadata['app.grails.version']
+                ]
         ]
 
         if (consoleConfig.newFileText != null) {
@@ -68,10 +70,14 @@ class ConsoleController {
             return renderError("Directory not found or cannot be read: $path", 400)
         }
         Map result = [
-            path: FilenameUtils.normalize(baseDir.absolutePath, true),
-            files: baseDir.listFiles().sort { it.name }.collect { fileToJson it, false }
+                path : normalizePath(baseDir),
+                files: baseDir.listFiles().sort { it.name }.collect { fileToJson it, false }
         ]
         render result as JSON
+    }
+
+    private static String normalizePath(File file) {
+        Paths.get(file.absolutePath).normalize().toString().replace(File.separator, '/')
     }
 
     def file() {
@@ -187,10 +193,10 @@ class ConsoleController {
 
     private static Map fileToJson(File file, boolean includeText = true) {
         Map json = [
-            id: FilenameUtils.normalize(file.absolutePath, true),
-            name: file.name,
-            type: file.isDirectory() ? 'dir' : 'file',
-            lastModified: file.lastModified()
+                id          : normalizePath(file),
+                name        : file.name,
+                type        : file.isDirectory() ? 'dir' : 'file',
+                lastModified: file.lastModified()
         ]
         if (includeText && file.isFile()) {
             json.text = file.text

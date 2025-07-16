@@ -1,8 +1,9 @@
 package org.grails.plugins.console
 
+import grails.artefact.Interceptor
 import grails.util.Environment
 
-class EnabledInterceptor {
+class EnabledInterceptor implements Interceptor {
 
     def consoleConfig
 

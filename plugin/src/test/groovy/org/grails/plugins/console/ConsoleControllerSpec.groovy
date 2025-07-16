@@ -2,7 +2,6 @@ package org.grails.plugins.console
 
 import grails.converters.JSON
 import grails.testing.web.controllers.ControllerUnitTest
-import org.apache.commons.io.FileUtils
 import spock.lang.Specification
 
 import java.nio.file.Files
@@ -32,7 +31,7 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
     }
 
     void cleanup() {
-        FileUtils.deleteDirectory tempDir
+        tempDir.deleteDir()
         config.clear()
         config.merge([
                 ("config.grails.plugin.console.fileStore.remote.enabled"): true,
