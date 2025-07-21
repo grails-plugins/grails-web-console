@@ -72,7 +72,7 @@ jobs:
           NEXUS_PUBLISH_URL: 'https://ossrh-staging-api.central.sonatype.com/service/local/'
           NEXUS_PUBLISH_DESCRIPTION: '${{ steps.extract_repository_name.outputs.repository_name }}:${{ steps.release_version.outputs.value }}'
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          SIGNING_PASSPHRASE: ${{ secrets.SECRING_PASSPHRASE }}
+          SIGNING_PASSPHRASE: ${{ secrets.SIGNING_PASSPHRASE }}
         run: >
           ./gradlew
           -Psigning.secretKeyRingFile=${{ github.workspace }}/secring.gpg
