@@ -89,6 +89,7 @@ jobs:
   release:
     needs: publish
     runs-on: ubuntu-latest
+    env: release
     permissions:
       contents: write
       issues: write
