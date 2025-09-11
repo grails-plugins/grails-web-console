@@ -39,5 +39,6 @@ dependencies {
     implementation platform("org.apache.grails:grails-gradle-bom:${gradleProperties.grailsVersion}")
     implementation 'cloud.wondrify:asset-pipeline-gradle'
     implementation 'org.apache.grails:grails-gradle-plugins'
+    implementation 'org.apache.grails.gradle:grails-publish'
     implementation "com.adarshr.test-logger:com.adarshr.test-logger.gradle.plugin:${gradleProperties.testLoggerVersion}"
 }
