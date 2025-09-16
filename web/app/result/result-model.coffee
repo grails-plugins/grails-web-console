@@ -7,9 +7,15 @@ App.module 'Result', (Result, App, Backbone, Marionette, $, _) ->
     execute: ->
       @set 'loading', true
 
-      jqxhr = $.post App.createLink('execute'),
+      postData =
         autoImportDomains: App.settings.get('editor.autoImportDomains')
         code: @get('input')
+
+      # Include Spring Security CSRF token as parameter if available
+      if App.data.springSecurityCsrfToken and App.data.springSecurityCsrfParameter
+        postData[App.data.springSecurityCsrfParameter] = App.data.springSecurityCsrfToken
+
+      jqxhr = $.post App.createLink('execute'), postData
 
       console.info 'Executing script...'
 
