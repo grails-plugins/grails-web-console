@@ -13,8 +13,12 @@ class TokenInterceptor implements Interceptor {
     }
 
     boolean before() {
+        // Skip console's CSRF validation if Spring Security CSRF is handling it
+        def springCsrfToken = request.getAttribute('org.springframework.security.web.csrf.CsrfToken')
+
         if (actionName
                 && csrfProtectionEnabled
+                && !springCsrfToken  // Only validate console token if Spring Security CSRF is not present
                 && (!session['CONSOLE_CSRF_TOKEN'] || request.getHeader('X-CSRFToken') != session['CONSOLE_CSRF_TOKEN'])) {
             response.status = 403
             response.writer.println "CSRF token doesn't match. Please refresh the page."

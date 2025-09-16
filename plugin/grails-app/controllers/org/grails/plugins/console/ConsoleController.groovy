@@ -48,6 +48,18 @@ class ConsoleController implements Controller {
             model.json.csrfToken = session['CONSOLE_CSRF_TOKEN']
         }
 
+        // Check for exsitence of Spring Security CSRF token
+        def springCsrfToken = request.getAttribute('org.springframework.security.web.csrf.CsrfToken')
+        if (springCsrfToken) {
+            try {
+                model.json.springSecurityCsrfToken = springCsrfToken.token
+                model.json.springSecurityCsrfHeader = springCsrfToken.headerName
+                model.json.springSecurityCsrfParameter = springCsrfToken.parameterName
+            } catch (Exception e) {
+                log.error("Could not access Spring Security CSRF token: ${e.message}")
+            }
+        }
+
         render view: 'index', model: model
     }
 

@@ -3,8 +3,13 @@ Marionette.Renderer.render = (template, data) ->
 
 $.ajaxSetup(
   beforeSend: (xhr, settings) ->
-    if not this.crossDomain and App.data.csrfToken
-      xhr.setRequestHeader 'X-CSRFToken', App.data.csrfToken
+    if not this.crossDomain
+      # Send Spring Security CSRF token if available
+      if App.data.springSecurityCsrfToken and App.data.springSecurityCsrfHeader
+        xhr.setRequestHeader App.data.springSecurityCsrfHeader, App.data.springSecurityCsrfToken
+      # Also send console's own CSRF token if enabled
+      else if App.data.csrfToken
+        xhr.setRequestHeader 'X-CSRFToken', App.data.csrfToken
 )
 
 Application = Backbone.Marionette.Application.extend
