@@ -2,7 +2,6 @@ plugins {
     id "groovy"
 }
 
-apply plugin: "org.apache.grails.gradle.grails-web"
 apply plugin: "org.apache.grails.gradle.grails-gsp"
 apply plugin: "org.apache.grails.gradle.grails-plugin"
 
@@ -11,16 +10,7 @@ group = "org.grails.plugins"
 
 dependencies {
     compileOnly platform("org.apache.grails:grails-bom:$grailsVersion")
-
-    compileOnly("org.apache.grails:grails-core")
-    compileOnly("org.apache.grails:grails-logging")
-    compileOnly("org.apache.grails:grails-databinding")
-    compileOnly("org.apache.grails:grails-interceptors")
-    compileOnly("org.apache.grails:grails-rest-transforms")
-    compileOnly("org.apache.grails:grails-services")
-    compileOnly("org.apache.grails:grails-url-mappings")
-    compileOnly("org.apache.grails:grails-web-boot")
-    compileOnly("org.apache.grails:grails-gsp")
+    compileOnly('org.apache.grails:grails-dependencies-starter-web')
 
     console("org.apache.grails:grails-console")
 
