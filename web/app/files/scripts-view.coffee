@@ -1,88 +1,88 @@
-App.module 'Files', (Files, App, Backbone, Marionette, $, _) ->
+App.Files = App.Files || {}
 
-  Files.ScriptsView = Marionette.ItemView.extend
+App.Files.ScriptsView = Marionette.View.extend
 
     template: 'files/scripts'
 
     attributes:
-      class: 'scripts'
+        class: 'scripts'
 
     events:
-      'click li .name a': 'onNameClick'
-      'click li a.delete': 'onDeleteClick'
-      'click ul.store a': 'onStoreClick'
-      'click .up': 'onUpClick'
-      'click .close-it': 'onCloseClick'
+        'click li .name a': 'onNameClick'
+        'click li a.delete': 'onDeleteClick'
+        'click ul.store a': 'onStoreClick'
+        'click .up': 'onUpClick'
+        'click .close-it': 'onCloseClick'
 
     initialize: (options) ->
-      @lastPaths = {}
+        @lastPaths = {}
 
-      @showDelete = options.showDelete ? true
-      @showCollapse = options.showCollapse ? true
+        @showDelete = options.showDelete ? true
+        @showCollapse = options.showCollapse ? true
 
-      @listenTo @collection, 'fetching', =>
-        @loading = true
-        @error = false
-        @render()
+        @listenTo @collection, 'fetching', =>
+            @loading = true
+            @error = false
+            @render()
 
-      @listenTo @collection, 'add remove reset', =>
-        @loading = false
-        @render()
+        @listenTo @collection, 'add remove reset', =>
+            @loading = false
+            @render()
 
-      @listenTo @collection, 'error', =>
-        @loading = false
-        @error = true
-        @render()
+        @listenTo @collection, 'error', =>
+            @loading = false
+            @error = true
+            @render()
 
     onNameClick: (event) ->
-      event.preventDefault()
-      fileId = $(event.currentTarget).closest('li').data('fileId')
-      file = @collection.findWhere(id: fileId)
+        event.preventDefault()
+        fileId = $(event.currentTarget).closest('li').data('fileId')
+        file = @collection.findWhere(id: fileId)
 
-      if file.isDirectory()
-        @collection.fetchByStoreAndPath file.store, file.getAbsolutePath()
-      else
-        App.execute 'showFile', file
+        if file.isDirectory()
+            @collection.fetchByStoreAndPath file.store, file.getAbsolutePath()
+        else
+            App.execute 'showFile', file
 
     onStoreClick: (event) ->
-      event.preventDefault()
-      @lastPaths[@collection.store] = @collection.path
+        event.preventDefault()
+        @lastPaths[@collection.store] = @collection.path
 
-      store = $(event.currentTarget).data('store')
-      path = @lastPaths[store]
-      path = App.data.remoteFileStoreDefaultPath ? '/' unless path
+        store = $(event.currentTarget).data('store')
+        path = @lastPaths[store]
+        path = App.data.remoteFileStoreDefaultPath ? '/' unless path
 
-      @collection.fetchByStoreAndPath store, path
+        @collection.fetchByStoreAndPath store, path
 
     onUpClick: (event) ->
-      event.preventDefault()
-      @collection.up()
+        event.preventDefault()
+        @collection.up()
 
     onDeleteClick: (event) ->
-      event.preventDefault()
-      fileId = $(event.currentTarget).closest('li').data('fileId')
-      file = @collection.findWhere(id: fileId)
-      if confirm 'Are you sure you want to delete this file?'
-        file.destroy().done =>
-          App.trigger 'file:deleted', file
+        event.preventDefault()
+        fileId = $(event.currentTarget).closest('li').data('fileId')
+        file = @collection.findWhere(id: fileId)
+        if confirm 'Are you sure you want to delete this file?'
+            file.destroy().done =>
+                App.trigger 'file:deleted', file
 
     onCloseClick: (event) ->
-      event.preventDefault()
-      App.execute 'toggleScripts'
+        event.preventDefault()
+        App.execute 'toggleScripts'
 
     serializeData: ->
-      files: @collection.toJSON()
-      path: @collection.path
-      currentDir: @collection.getCurrentDir()
-      hasParent: @collection.hasParent()
-      currentStore: App.getFileStoreByName(@collection.store).displayName
-      fileStores: App.getAllFileStores()
-      showDelete: @showDelete
-      showCollapse: @showCollapse
-      loading: @loading
-      error: @error
+        files: @collection.toJSON()
+        path: @collection.path
+        currentDir: @collection.getCurrentDir()
+        hasParent: @collection.hasParent()
+        currentStore: App.getFileStoreByName(@collection.store).displayName
+        fileStores: App.getAllFileStores()
+        showDelete: @showDelete
+        showCollapse: @showCollapse
+        loading: @loading
+        error: @error
 
-  Handlebars.registerHelper 'scriptsFileItem', (file, options) ->
+Handlebars.registerHelper 'scriptsFileItem', (file, options) ->
     showDelete = options.hash.showDelete
     iconClass = if @type is 'dir' then 'fa fa-folder-o' else 'fa fa-file-o'
     html = "<div class='name'><i class='#{iconClass}'></i><a class='name' href='#'>#{file.name}</a></div>"

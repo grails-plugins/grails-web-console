@@ -1,46 +1,45 @@
-App.module 'Util', (Util, App, Backbone, Marionette, $, _) ->
+App.Util = App.Util || {}
 
-  Util.Modal =
+App.Util.Modal =
 
-    ###
-    options.draggable
-    options.resizable
-    ###
-    showInModal: (view, options = {}) ->
-      $el = $('<div class="modal" data-backdrop="false"></div>').appendTo('body').html view.render().el
-      $el.modal
-        show: false
-        keyboard: false
+  ###
+  options.draggable
+  options.resizable
+  ###
+  showInModal: (view, options = {}) ->
+    $el = $('<div class="modal" data-backdrop="false"></div>').appendTo('body').html view.render().el
+    $el.modal
+      show: false
+      keyboard: false
 
-      $el.on 'shown.bs.modal', -> view.resize?()
+    $el.on 'shown.bs.modal', -> view.resize?()
 
-      if options.draggable
-        $el.find('.modal-content').draggable
-          handle: '.modal-header'
-          addClasses: false
+    if options.draggable
+      $el.find('.modal-content').draggable
+        handle: '.modal-header'
+        addClasses: false
 
-        $el.find('.modal-header').css 'cursor', 'move'
+      $el.find('.modal-header').css 'cursor', 'move'
 
-      if options.resizable
-        $el.find('.modal-content').resizable
-          addClasses: false
-          resize: (event, ui) -> view.resize?()
+    if options.resizable
+      $el.find('.modal-content').resizable
+        addClasses: false
+        resize: (event, ui) -> view.resize?()
 
-      $el.find('.modal-header .close').on 'click', (event) ->
-        event.preventDefault()
-        view.close()
+    $el.find('.modal-header .close').on 'click', (event) ->
+      event.preventDefault()
+      view.destroy()
 
-      $el.find('.modal-footer .cancel').on 'click', (event) ->
-        event.preventDefault()
-        view.close()
+    $el.find('.modal-footer .cancel').on 'click', (event) ->
+      event.preventDefault()
+      view.destroy()
 
-      view.on 'close', ->
+    view.on 'destroy', ->
+      $el.modal 'hide'
 
-        $el.modal 'hide'
+    $el.on 'hidden.bs.modal', ->
+      $el.remove()
 
-      $el.on 'hidden.bs.modal', ->
-        $el.remove()
+    $el.modal 'show'
 
-      $el.modal 'show'
-
-      $el
+    $el

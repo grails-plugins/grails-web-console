@@ -1,26 +1,26 @@
-App.module 'Main', (Main, App, Backbone, Marionette, $, _) ->
+App.Main = App.Main || {}
 
-  Main.HeaderView = Backbone.Marionette.ItemView.extend
+App.Main.HeaderView = Marionette.View.extend
 
     template: 'main/header'
 
     attributes:
-      class: 'navbar navbar-fixed-top'
+        class: 'navbar navbar-fixed-top'
 
     initialize: ->
-      @listenTo App, 'file:show', @onFileShow
+        @listenTo App, 'file:show', @onFileShow
 
     onFileShow: (file) ->
-      name = file.get('name')
-      if name
-        @$('.title span').html(name).show()
-      else
-        @$('.title span').hide()
+        name = file.get('name')
+        if name
+            @$('.title span').html(name).show()
+        else
+            @$('.title span').hide()
 
     onRender: ->
-      @settingsView = new Main.SettingsView(model: App.settings)
-      @$('.settings-btn-group').append @settingsView.render().$el
-      @settingsView.render()
+        @settingsView = new App.Main.SettingsView(model: App.settings)
+        @$('.settings-btn-group').append @settingsView.render().$el
+        @settingsView.render()
 
-    onClose: ->
-      @settingsView.close()
+    onDestroy: ->
+        @settingsView.destroy()

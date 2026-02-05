@@ -1,29 +1,29 @@
-App.module 'Entities', (Entities, App, Backbone, Marionette, $, _) ->
+App.Entities = App.Entities || {}
 
-  Entities.File = Backbone.Model.extend
+App.Entities.File = Backbone.Model.extend
 
     defaults: ->
-      text: App.data.newFileText ? ''
+        text: App.data.newFileText ? ''
 
     getAbsolutePath: -> @id
 
     getParent: ->
-      App.Util.Path.getParent @id
+        App.Util.Path.getParent @id
 
     isDirectory: ->
-      @get('type') is 'dir'
+        @get('type') is 'dir'
 
     isFile: ->
-      @get('type') is 'file'
+        @get('type') is 'file'
 
     sync: (method, file, options) ->
-      fileStore = App.getFileStoreByName(@store)
-      if fileStore
-        App.getFileStoreByName(@store).syncFile method, file, options
-      else
-        alert "Invalid store: #{@store}"
+        fileStore = App.getFileStoreByName(@store)
+        if fileStore
+            App.getFileStoreByName(@store).syncFile method, file, options
+        else
+            alert "Invalid store: #{@store}"
 
-  App.reqres.setHandler 'file:entity', (store, path) ->
-    file = new Entities.File id: path
+App.Entities.getFile = (store, path) ->
+    file = new App.Entities.File id: path
     file.store = store
-    file.fetch().pipe -> file
+    file.fetch().then -> file

@@ -9,7 +9,7 @@ describe 'App.Editor.EditorView', ->
     @$el.append @view.render().$el
 
   afterEach ->
-    @view.close()
+    @view.destroy()
     @$el.remove()
 
   it 'should setValue and getValue', ->

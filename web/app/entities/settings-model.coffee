@@ -1,36 +1,37 @@
-App.module 'Entities', (Entities, App, Backbone, Marionette, $, _) ->
+App.Entities = App.Entities || {}
 
-  localStorageKey = 'gconsole.settings'
+localStorageKey = 'gconsole.settings'
 
-  Entities.Settings = Backbone.Model.extend
+App.Entities.Settings = Backbone.Model.extend
 
     defaults:
-      'orientation': 'vertical'
-      'layout.west.isClosed': true
-      'layout.west.size': 250
-      'layout.east.size': '50%'
-      'layout.south.size': '50%'
-      'results.showPane': true
-      'results.wrapText': true
-      'results.showInput': false
-      'editor.autoImportDomains': true
-      'editor.warnBeforeExit': true
-      'theme': 'default'
+        'orientation': 'vertical'
+        'layout.west.isClosed': true
+        'layout.west.size': 250
+        'layout.east.size': '50%'
+        'layout.south.size': '50%'
+        'results.showPane': true
+        'results.wrapText': true
+        'results.showInput': false
+        'editor.autoImportDomains': true
+        'editor.warnBeforeExit': true
+        'theme': 'default'
 
     toggle: (attribute) ->
-      @set attribute, not @get(attribute)
+        @set attribute, not @get(attribute)
 
     save: ->
-      localStorage.setItem localStorageKey, JSON.stringify(this)
+        localStorage.setItem localStorageKey, JSON.stringify(this)
 
     load: ->
-      json = JSON.parse(localStorage.getItem(localStorageKey)) or {}
-      @set json
+        json = JSON.parse(localStorage.getItem(localStorageKey)) or {}
+        @set json
 
-  instance = undefined
+# Singleton instance
+App.Entities._settingsInstance = undefined
 
-  App.reqres.setHandler 'settings:entity', ->
-    unless instance
-      instance = new Entities.Settings
-      instance.load()
-    instance
+App.Entities.getSettings = ->
+    unless App.Entities._settingsInstance
+        App.Entities._settingsInstance = new App.Entities.Settings
+        App.Entities._settingsInstance.load()
+    App.Entities._settingsInstance

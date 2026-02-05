@@ -1,58 +1,59 @@
-App.module 'Result', (Result, App, Backbone, Marionette, $, _) ->
-  Result.Result = Backbone.Model.extend
+App.Result = App.Result || {}
 
-    isSuccess: ->
-      not @get("exception") and not @get("error")
+App.Result.Result = Backbone.Model.extend
 
-    execute: ->
-      @set 'loading', true
+  isSuccess: ->
+    not @get("exception") and not @get("error")
 
-      postData =
-        autoImportDomains: App.settings.get('editor.autoImportDomains')
-        code: @get('input')
+  execute: ->
+    @set 'loading', true
 
-      # Include Spring Security CSRF token as parameter if available
-      if App.data.springSecurityCsrfToken and App.data.springSecurityCsrfParameter
-        postData[App.data.springSecurityCsrfParameter] = App.data.springSecurityCsrfToken
+    postData =
+      autoImportDomains: App.settings.get('editor.autoImportDomains')
+      code: @get('input')
 
-      jqxhr = $.post App.createLink('execute'), postData
+    # Include Spring Security CSRF token as parameter if available
+    if App.data.springSecurityCsrfToken and App.data.springSecurityCsrfParameter
+      postData[App.data.springSecurityCsrfParameter] = App.data.springSecurityCsrfToken
 
-      console.info 'Executing script...'
+    jqxhr = $.post App.createLink('execute'), postData
 
-      jqxhr.done (response) =>
-        @set
-          loading: false
-          totalTime: response.totalTime
-          exception: response.exception
-          result: response.result
-          output: response.output
-          console: response.console
+    console.info 'Executing script...'
 
-        response.console?.forEach (it) =>
-          entry = JSON.parse it
+    jqxhr.done (response) =>
+      @set
+        loading: false
+        totalTime: response.totalTime
+        exception: response.exception
+        result: response.result
+        output: response.output
+        console: response.console
 
-          if entry
-            console[entry.method].apply console, entry.args
-          else
-            console.warn 'Failed to marshall object'
+      response.console?.forEach (it) =>
+        entry = JSON.parse it
 
-        if response.exception
-          console.log "%cScript threw an exception", 'color:#ff5555'
-          console.groupCollapsed response.exception.message
-          console.log item for item in response.exception.stackTrace
-          console.groupEnd()
+        if entry
+          console[entry.method].apply console, entry.args
         else
-          console.log "≫ #{response.result}"
+          console.warn 'Failed to marshall object'
 
-        console.info "Script finished in #{response.totalTime} ms."
+      if response.exception
+        console.log "%cScript threw an exception", 'color:#ff5555'
+        console.groupCollapsed response.exception.message
+        console.log item for item in response.exception.stackTrace
+        console.groupEnd()
+      else
+        console.log "≫ #{response.result}"
+
+      console.info "Script finished in #{response.totalTime} ms."
 
 
-      jqxhr.fail =>
-        if jqxhr.status
-          message = "Server returned #{jqxhr.status}: #{jqxhr.responseText}"
-        else
-          message = "Server not found."
-        console.log "%c#{message}", 'color:#ff5555'
-        @set
-          loading: false
-          error: message
+    jqxhr.fail =>
+      if jqxhr.status
+        message = "Server returned #{jqxhr.status}: #{jqxhr.responseText}"
+      else
+        message = "Server not found."
+      console.log "%c#{message}", 'color:#ff5555'
+      @set
+        loading: false
+        error: message
