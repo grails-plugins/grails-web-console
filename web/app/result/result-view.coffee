@@ -1,50 +1,50 @@
-App.module 'Result', (Result, App, Backbone, Marionette, $, _) ->
+App.Result = App.Result || {}
 
-  Result.ResultView = Marionette.ItemView.extend
-  
+App.Result.ResultView = Marionette.View.extend
+
     template: 'result/result'
 
     attributes:
-      class: 'script-result'
+        class: 'script-result'
 
     modelEvents:
-      change: 'render'
+        change: 'render'
 
     events:
-      'click .result .toggle': 'onToggleClick'
+        'click .result .toggle': 'onToggleClick'
 
     onRender: ->
-      unless @model.get('loading')
-        @$el.addClass 'stacktrace' unless @model.isSuccess()
-        @trigger 'complete'
+        unless @model.get('loading')
+            @$el.addClass 'stacktrace' unless @model.isSuccess()
+            @trigger 'complete'
 
     onToggleClick: (event) ->
-      event.preventDefault()
-      $el = $(event.currentTarget)
-      $el.closest('.tree-item').toggleClass 'open'
+        event.preventDefault()
+        $el = $(event.currentTarget)
+        $el.closest('.tree-item').toggleClass 'open'
 
     serializeData: ->
-      json = @model.toJSON()
-      json.result = @model.get('error') or @model.get('result')
-      json.inputGutter = '<'
-      json.inputLines = @model.get('input').match /[^\r\n]+/g
+        json = @model.toJSON()
+        json.result = @model.get('error') or @model.get('result')
+        json.inputGutter = '<'
+        json.inputLines = @model.get('input').match /[^\r\n]+/g
 
-      exception = @model.get('exception')
-      if exception
-        json.resultTree = {name: exception.message, children: @convertTreeNode(exception.stackTrace)}
+        exception = @model.get('exception')
+        if exception
+            json.resultTree = {name: exception.message, children: @convertTreeNode(exception.stackTrace)}
 
-      json
+        json
 
     convertTreeNode: (node) ->
-      # TODO fix for nested nodes
-      if _.isArray node
-        result = (@convertTreeNode it for it in node)
-      else if _.isObject node
-        result = for k,v of node
-          {name: k, value: v}
-      else
-        result = {name: node}
+# TODO fix for nested nodes
+        if _.isArray node
+            result = (@convertTreeNode it for it in node)
+        else if _.isObject node
+            result = for k,v of node
+                {name: k, value: v}
+        else
+            result = {name: node}
 
-      result
+        result
 
-  Handlebars.registerPartial 'tree', JST['result/tree']
+Handlebars.registerPartial 'tree', JST['result/tree']

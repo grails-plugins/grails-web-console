@@ -54,3 +54,7 @@ assets {
     minifyJs = true
     minifyCss = true
 }
+
+bootRun {
+    // jvmArgs("-Xdebug", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
+}

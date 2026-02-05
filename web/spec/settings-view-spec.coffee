@@ -13,7 +13,7 @@ describe 'App.Main.SettingsView', ->
     @$el.append @view.render().$el
 
   afterEach ->
-    @view.close()
+    @view.destroy()
     @$el.remove()
 
   it 'should preselect the correct settings', ->

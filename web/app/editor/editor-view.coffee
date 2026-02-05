@@ -1,77 +1,77 @@
-App.module 'Editor', (Editor, App, Backbone, Marionette, $, _) ->
+App.Editor = App.Editor || {}
 
-  Editor.EditorView = Marionette.ItemView.extend
+App.Editor.EditorView = Marionette.View.extend
 
     template: 'editor/editor'
 
     events:
-      'click button.open':          'onOpenClick'
-      'click button.execute':       'onExecuteClick'
-      'click button.new':           'onNewClick'
-      'click button.save':          'onSaveClick'
-      'click a.save-as':            'onSaveAsClick'
+        'click button.open': 'onOpenClick'
+        'click button.execute': 'onExecuteClick'
+        'click button.new': 'onNewClick'
+        'click button.save': 'onSaveClick'
+        'click a.save-as': 'onSaveAsClick'
 
     initialize: ->
-      @listenTo App.settings, 'change:theme', @setTheme
+        @listenTo App.settings, 'change:theme', @setTheme
 
     attributes:
-      id: 'editor'
+        id: 'editor'
 
     onRender: ->
-      @initEditor()
+        @initEditor()
 
     initEditor: ->
-      @editor = CodeMirror.fromTextArea(@$('textarea[name=code]')[0],
-        matchBrackets: true
-        mode: 'groovy'
-        lineNumbers: true
-        tabSize:        App.data.tabSize        ? 4,
-        indentUnit:     App.data.indentUnit     ? 4
-        indentWithTabs: App.data.indentWithTabs ? false
-        extraKeys:
-          'Ctrl-Enter': ->  App.execute 'execute'
-          'Cmd-Enter': ->   App.execute 'execute'
-          'Ctrl-S': ->      App.execute 'save'
-          'Cmd-S': ->       App.execute 'save'
-          'Esc': ->         App.execute 'clear'
-      )
-      @editor.focus()
-      @editor.setValue ''
-      @setTheme()
+        @editor = CodeMirror.fromTextArea(@$('textarea[name=code]')[0],
+            matchBrackets: true
+            mode: 'groovy'
+            lineNumbers: true
+            tabSize: App.data.tabSize        ? 4,
+            indentUnit: App.data.indentUnit     ? 4
+            indentWithTabs: App.data.indentWithTabs ? false
+            extraKeys:
+                'Ctrl-Enter': ->  App.execute 'execute'
+                'Cmd-Enter': ->   App.execute 'execute'
+                'Ctrl-S': ->      App.execute 'save'
+                'Cmd-S': ->       App.execute 'save'
+                'Esc': ->         App.execute 'clear'
+        )
+        @editor.focus()
+        @editor.setValue ''
+        @setTheme()
 
     setTheme: ->
-      @editor.setOption 'theme', App.settings.get('theme')
+        @editor.setOption 'theme', App.settings.get('theme')
 
     getValue: ->
-      @editor.getValue()
+        @editor.getValue()
 
     refresh: ->
-      @editor.refresh()
+        @editor.refresh()
 
     setValue: (text) ->
-      @editor.setValue text
-      @editor.refresh()
-      @editor.focus()
+        @editor.setValue text
+        @editor.refresh()
+        @editor.focus()
 
     onOpenClick: (event) ->
-      event.preventDefault()
-      App.execute 'toggleScripts'
+        event.preventDefault()
+        App.execute 'toggleScripts'
 
     onNewClick: (event) ->
-      event.preventDefault()
-      App.execute 'new'
+        event.preventDefault()
+        App.execute 'new'
 
     onSaveClick: (event) ->
-      event.preventDefault()
-      App.execute 'save'
+        event.preventDefault()
+        App.execute 'save'
 
     onSaveAsClick: (event) ->
-      event.preventDefault()
-      App.execute 'saveAs'
+        event.preventDefault()
+        App.execute 'saveAs'
 
     onExecuteClick: (event) ->
-      event.preventDefault()
-      App.execute 'execute'
+        event.preventDefault()
+        App.execute 'execute'
 
     onShow: ->
-      @editor.focus()
+        @editor.focus()

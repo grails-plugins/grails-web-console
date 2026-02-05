@@ -13,7 +13,7 @@ describe 'App.Files.FilesSectionView', ->
   afterEach ->
     App.removeFileStore @store
 
-    @view.close()
+    @view.destroy()
     @$el.remove()
 
   it 'should render', ->

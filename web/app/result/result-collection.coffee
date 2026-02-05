@@ -1,5 +1,5 @@
-App.module 'Result', (Result, App, Backbone, Marionette, $, _) ->
+App.Result = App.Result || {}
 
-  Result.ResultCollection = Backbone.Collection.extend
+App.Result.ResultCollection = Backbone.Collection.extend
 
-    model: (attrs, options) -> new Result.Result attrs, options
+  model: (attrs, options) -> new App.Result.Result attrs, options

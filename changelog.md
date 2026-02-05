@@ -1,3 +1,11 @@
+### v7.0.1
+
+* Updating libaries
+
+### v7.0.0
+
+* Upgrade to Grails 7.0.0
+
 ### v6.0-M1
 *   Upgrade to Grails 6.2
 

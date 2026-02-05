@@ -3,7 +3,7 @@ Marionette.Renderer.render = (template, data) ->
 
 $.ajaxSetup(
   beforeSend: (xhr, settings) ->
-    if not this.crossDomain
+    if not this.crossDomain and App.data
       # Send Spring Security CSRF token if available
       if App.data.springSecurityCsrfToken and App.data.springSecurityCsrfHeader
         xhr.setRequestHeader App.data.springSecurityCsrfHeader, App.data.springSecurityCsrfToken
@@ -12,13 +12,20 @@ $.ajaxSetup(
         xhr.setRequestHeader 'X-CSRFToken', App.data.csrfToken
 )
 
-Application = Backbone.Marionette.Application.extend
+Application = Marionette.Application.extend
 
   fileStores: {}
 
-  onInitializeBefore: (options = {}) ->
-    @data = options
+# Marionette 3.x: onBeforeStart receives (app, options)
+  onBeforeStart: (app, options = {}) ->
+# In Marionette 3.x, first arg is the app instance, second is options
+    @data = options || {}
+
     @data[App.Util.snakeToCamel(k)] = v for k, v of @data
+
+    # Initialize file stores
+    App.Entities.initLocalFileStore()
+    App.Entities.initRemoteFileStore(@data)
 
     # mixed content check for #36
     if window.location.protocol is 'https:' and @data.baseUrl.indexOf('http:') is 0
@@ -30,12 +37,12 @@ Application = Backbone.Marionette.Application.extend
     @data.shortcuts["#{modifier}-s"] =     'Save'
     @data.shortcuts["Esc"] =               'Clear output'
 
-    @addRegions
-      headerRegion: '#header'
-      mainRegion: '#main-content'
-      healthRegion: '#health-region'
+    # Marionette 3.x: Create regions directly
+    @headerRegion = new Marionette.Region(el: '#header')
+    @mainRegion = new Marionette.Region(el: '#main-content')
+    @healthRegion = new Marionette.Region(el: '#health-region')
 
-    @settings = @request 'settings:entity'
+    @settings = App.Entities.getSettings()
     @editorController = new App.Editor.Controller
     @filesController = new App.Files.Controller
     @resultController = new App.Result.Controller
@@ -50,21 +57,24 @@ Application = Backbone.Marionette.Application.extend
     @contentView.refresh()
 
     @helpView = new App.Main.HelpView
-    @helpView.on 'close', => @handleHelp()
+    @helpView.on 'toggle:help', => @handleHelp()
     @healthRegion.show @helpView
 
     @on 'file:deleted', @onFileDeleted
 
-    @commands.setHandler 'save', @handleSave, @
-    @commands.setHandler 'saveAs', @handleSaveAs, @
-    @commands.setHandler 'new', @handleNew, @
-    @commands.setHandler 'execute', @handleExecute, @
-    @commands.setHandler 'clear', @handleClear, @
-    @commands.setHandler 'help', @handleHelp, @
-    @commands.setHandler 'openFile', @handleOpenFile, @
-    @commands.setHandler 'showFile', @handleShowFile, @
-    @commands.setHandler 'toggleScripts', @handleToggleScripts, @
-    @commands.setHandler 'toggleResults', @handleToggleResults, @
+# Marionette 3.x: Replace commands.setHandler with direct execute method
+  execute: (command, args...) ->
+    switch command
+      when 'save' then @handleSave()
+      when 'saveAs' then @handleSaveAs()
+      when 'new' then @handleNew()
+      when 'execute' then @handleExecute()
+      when 'clear' then @handleClear()
+      when 'help' then @handleHelp()
+      when 'openFile' then @handleOpenFile(args...)
+      when 'showFile' then @handleShowFile(args...)
+      when 'toggleScripts' then @handleToggleScripts()
+      when 'toggleResults' then @handleToggleResults()
 
   handleExecute: ->
     input = @editorController.getValue()
@@ -115,7 +125,7 @@ Application = Backbone.Marionette.Application.extend
     @healthRegion.$el.toggleClass 'hide'
 
   handleOpenFile: (store, name) ->
-    dfd = App.request 'file:entity', store, name
+    dfd = App.Entities.getFile(store, name)
     dfd.done (file) =>
       if file.isDirectory()
         @filesController.fetchScripts file.store, file.getAbsolutePath()
@@ -157,12 +167,12 @@ Application = Backbone.Marionette.Application.extend
     $('body').css 'visibility', 'visible'
 
   _initKeybindings: ->
-    $(document).bind 'keydown', 'Ctrl+return Meta+return', => @execute 'execute'
-    $(document).bind 'keydown', 'Ctrl+s Meta+s', (event) =>
+    $(document).on 'keydown', null, 'Ctrl+return Meta+return', => @execute 'execute'
+    $(document).on 'keydown', null, 'Ctrl+s Meta+s', (event) =>
       event.preventDefault()
       event.stopPropagation()
       @execute 'save'
-    $(document).bind 'keydown', 'esc', => @execute 'clear'
+    $(document).on 'keydown', null, 'esc', => @execute 'clear'
 
   createLink: (action, params) ->
     link = "#{@data.baseUrl}/#{action}"

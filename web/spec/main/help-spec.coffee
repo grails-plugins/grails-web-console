@@ -6,7 +6,7 @@ describe 'App.Main.Help', ->
     @$el.append @view.render().$el
 
   afterEach ->
-    @view.close()
+    @view.destroy()
     @$el.remove()
 
   it 'should have right className', ->

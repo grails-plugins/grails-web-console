@@ -1,14 +1,14 @@
-App.module 'Main', (Main, App, Backbone, Marionette, $, _) ->
+App.Main = App.Main || {}
 
-  Main.HelpView = Backbone.Marionette.ItemView.extend
+App.Main.HelpView = Marionette.View.extend
 
     template: 'main/help'
 
     triggers:
-      'click .close-it': 'close'
+        'click .close-it': 'toggle:help'
 
     className: 'full-height help-view'
 
     serializeData: ->
-      implicitVars: App.data.implicitVars
-      shortcuts: App.data.shortcuts
+        implicitVars: App.data.implicitVars
+        shortcuts: App.data.shortcuts

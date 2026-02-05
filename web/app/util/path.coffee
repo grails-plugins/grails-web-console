@@ -1,26 +1,26 @@
-App.module 'Util', (Util, App, Backbone, Marionette, $, _) ->
+App.Util = App.Util || {}
 
-  Util.Path =
+App.Util.Path =
 
-    getTokens: (path) ->
-      @getNormalized(path).split('/')
+  getTokens: (path) ->
+    @getNormalized(path).split('/')
 
-    getNormalized: (path) ->
-      path = path.replace /^\s+|\s+$/gm, '' # trim
-      path = path[0...-1] if path[-1..] is '/'
-      path
+  getNormalized: (path) ->
+    path = path.replace /^\s+|\s+$/gm, '' # trim
+    path = path[0...-1] if path[-1..] is '/'
+    path
 
-    getParent: (path) ->
-      tokens = @getTokens path
-      parent = null
-      if tokens.length > 1
-        parent = tokens[0...tokens.length - 1].join('/') + '/'
+  getParent: (path) ->
+    tokens = @getTokens path
+    parent = null
+    if tokens.length > 1
+      parent = tokens[0...tokens.length - 1].join('/') + '/'
 
-      parent
+    parent
 
-    hasParent: (path) ->
-      !!(@getParent path)
+  hasParent: (path) ->
+    !!(@getParent path)
 
-    getCurrentDir: (path) ->
-      tokens = @getTokens path
-      tokens[tokens.length - 1]
+  getCurrentDir: (path) ->
+    tokens = @getTokens path
+    tokens[tokens.length - 1]
