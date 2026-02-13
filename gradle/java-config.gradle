@@ -20,14 +20,6 @@ tasks.withType(GroovyCompile).configureEach {
     options.forkOptions.jvmArgs = ['-Xms128M', '-Xmx2G']
 }
 
-tasks.withType(Jar).configureEach {
-    manifest.attributes(
-            'Implementation-Title': 'Apache Grails',
-            'Implementation-Version': grailsVersion,
-            'Implementation-Vendor': 'grails.apache.org'
-    )
-}
-
 tasks.withType(AbstractArchiveTask).configureEach {
     preserveFileTimestamps = false // to prevent timestamp mismatches
     reproducibleFileOrder = true // to keep the same ordering
