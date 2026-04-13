@@ -17,7 +17,7 @@
 <div id="header"></div>
 <div id="main-content-wrapper" class="full-height">
   <div id="main-content"></div>
-  <div id="health-region" class="full-height hide"></div>
+  <div id="health-region" class="full-height d-none"></div>
 </div>
 <g:render template="js" />
 

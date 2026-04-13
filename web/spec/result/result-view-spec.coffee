@@ -9,11 +9,12 @@ describe 'App.Result.ResultView', ->
 
   it 'should convertTreeNode', ->
     @model.set
-      result: 'test-name'
-      resultTree:
-        a: 'a'
-        b: 'b'
       input: 'test'
+      exception:
+        message: 'test-name'
+        stackTrace:
+          a: 'a'
+          b: 'b'
 
     result = @view.serializeData()
 
@@ -25,9 +26,10 @@ describe 'App.Result.ResultView', ->
       ]
 
     @model.set
-      result: 'test-name'
-      resultTree: ['aaa', 'bbb', 'ccc']
       input: 'test'
+      exception:
+        message: 'test-name'
+        stackTrace: ['aaa', 'bbb', 'ccc']
 
     result = @view.serializeData()
 

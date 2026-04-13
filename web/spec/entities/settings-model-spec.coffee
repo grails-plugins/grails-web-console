@@ -2,6 +2,10 @@ describe 'App.Entities.Settings', ->
 
   beforeEach ->
     @settings = new App.Entities.Settings
+    localStorage.clear()
+
+  afterEach ->
+    localStorage.clear()
 
   it 'should toggle booleans', ->
     expect(@settings.get('results.wrapText')).toBe(true)
@@ -15,22 +19,16 @@ describe 'App.Entities.Settings', ->
   it 'should load from localStorage', ->
     expect(@settings.get('orientation')).toBe('vertical')
 
-    spyOn(localStorage, 'getItem').and.callFake ->
-      JSON.stringify
-        orientation:'horizontal'
-
+    localStorage.setItem 'gconsole.settings', JSON.stringify(orientation: 'horizontal')
     @settings.load()
-    expect(localStorage.getItem).toHaveBeenCalled()
     expect(@settings.get('orientation')).toBe('horizontal')
 
   it 'should save to localStorage', ->
     @settings.set
       orientation: 'horizontal'
 
-    spyOn(localStorage, 'setItem').and.callFake ->
-
     @settings.save()
-    expect(localStorage.setItem).toHaveBeenCalled()
+    expect(JSON.parse(localStorage.getItem('gconsole.settings')).orientation).toBe 'horizontal'
 
   it 'should be able to save and load multiple times', ->
     @settings.set

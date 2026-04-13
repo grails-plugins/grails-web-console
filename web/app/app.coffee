@@ -122,7 +122,7 @@ Application = Marionette.Application.extend
   getActiveCollection: -> @filesController.collection
 
   handleHelp:->
-    @healthRegion.$el.toggleClass 'hide'
+    @healthRegion.$el.toggleClass 'd-none'
 
   handleOpenFile: (store, name) ->
     dfd = App.Entities.getFile(store, name)

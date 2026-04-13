@@ -4,6 +4,7 @@ import gulp from 'gulp';
 import concat from 'gulp-concat';
 import merge from 'merge-stream';
 import mkdirp from 'mkdirp';
+import path from 'node:path';
 
 import wrapPath from './wrap-path.js'
 
@@ -19,10 +20,23 @@ export const build = (isDebug, options) => {
         cssSrc = options.paths.vendor.css.concat(options.paths.app.css.release).map(path => options.webDir + path);
     }
 
+    const externalAssetStreams = [
+        ...(options.paths.vendor.cssAssets || []),
+        ...(options.paths.vendor.jsAssets || []),
+    ].filter(asset => asset.src.startsWith('./node_modules/')).map(asset => {
+        const destination = path.join(options.webDir, path.posix.dirname(asset.publicPath));
+        return gulp.src(asset.src, { base: path.dirname(asset.src) })
+            .pipe(gulp.dest(destination));
+    });
+
     return merge([
         gulp.src(appSrc),
         gulp.src('./web/img/**/*', { base: './web/' }),
-        gulp.src('./web/vendor/**/*', { base: './web/' }),
+        gulp.src([
+            './web/vendor/**/*',
+            '!./web/vendor/bootstrap{,/**}',
+        ], { base: './web/' }),
+        ...externalAssetStreams,
     ])
         .pipe(gulp.dest(options.webDir))
         .on('end', async () => {

@@ -11,8 +11,7 @@ App.Main.SettingsView = Marionette.View.extend
     tagName: 'ul'
 
     attributes:
-        'class': 'dropdown-menu pull-right settings'
-        'role': 'menu'
+        'class': 'dropdown-menu dropdown-menu-end settings'
 
     initialize: ->
         @listenTo @model, 'change', @render
@@ -48,4 +47,5 @@ App.Main.SettingsView = Marionette.View.extend
 
     onHelpClick: (event) ->
         event.preventDefault()
+        event.stopPropagation()
         App.execute 'help'

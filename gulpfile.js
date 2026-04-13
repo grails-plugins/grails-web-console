@@ -1,16 +1,15 @@
 'use strict';
 
 import { deleteSync } from 'del';
+import { execFile } from 'node:child_process';
 import gulp from 'gulp';
 import coffee from 'gulp-coffee';
 import concat from 'gulp-concat';
 import declare from 'gulp-declare';
 import gulpHandlebars from 'gulp-handlebars';
-import jasmine from 'gulp-jasmine-phantom';
 import gulpLess from 'gulp-less';
 import Handlebars from 'handlebars';
 import cleanCss from 'gulp-clean-css';
-import gutil from 'gulp-util';
 import wrap from 'gulp-wrap';
 
 import { grailsCleanTask, grailsDebugTask, grailsReleaseTask } from './gulp-tasks/grails.js';
@@ -37,13 +36,13 @@ export const templates = () => {
 
 const coffeeApp = () => {
     return gulp.src('./web/app/**/*.coffee')
-        .pipe(coffee({bare: false, join: false}).on('error', gutil.log))
+        .pipe(coffee({bare: false, join: false}).on('error', error => console.error(error)))
         .pipe(gulp.dest('./build/debug/js/app/'));
 };
 
 const coffeeSpec = () => {
     return gulp.src('./web/spec/**/*.coffee')
-        .pipe(coffee({bare: false, join: false}).on('error', gutil.log))
+        .pipe(coffee({bare: false, join: false}).on('error', error => console.error(error)))
         .pipe(gulp.dest('./build/spec/'));
 };
 
@@ -54,7 +53,7 @@ export const less = () => {
 };
 
 export const concatJsTask = () => {
-    return gulp.src(paths.vendor.js.map(path => paths.vendor.base + path)
+    return gulp.src(paths.vendor.jsAssets.map(asset => asset.src)
         .concat(paths.app.js.debug.map(path => './build/debug' + path))
     )
         .pipe(concat(`app.${timestamp}.js`))
@@ -69,18 +68,24 @@ const concatCssTask = () => {
 };
 
 const testTask = () => {
-    var vendorPaths = paths.vendor.js
-        .concat(['/vendor/js/plugins/jasmine-jquery.js'])
-        .map(path => paths.vendor.base + path)
-        .concat(paths.app.js.debug.map(path => './build/debug' + path));
+    return new Promise((resolve, reject) => {
+        execFile(process.execPath, ['./run-jasmine-jsdom.cjs'], { cwd: process.cwd() }, (error, stdout, stderr) => {
+            if (stdout) {
+                process.stdout.write(stdout);
+            }
 
-    // doesn't work due to a bug related to 'fs' module in 'gulp-jasmine-phantom'
-    return gulp.src('./build/spec/**/*spec.*')
-        .pipe(jasmine({
-            helpers: './build/spec/**/*helper.*',
-            integration: true,
-            vendor: vendorPaths
-        }));
+            if (stderr) {
+                process.stderr.write(stderr);
+            }
+
+            if (error) {
+                reject(error);
+                return;
+            }
+
+            resolve();
+        });
+    });
 };
 
 export const test = gulp.series(clean, templates, coffeeApp, coffeeSpec, testTask);

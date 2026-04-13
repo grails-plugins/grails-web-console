@@ -7,10 +7,11 @@ App.Util.Modal =
   options.resizable
   ###
   showInModal: (view, options = {}) ->
-    $el = $('<div class="modal" data-backdrop="false"></div>').appendTo('body').html view.render().el
-    $el.modal
-      show: false
+    $el = $('<div class="modal" tabindex="-1" data-bs-backdrop="false"></div>').appendTo('body').html view.render().el
+    modal = new bootstrap.Modal($el[0],
+      backdrop: false
       keyboard: false
+    )
 
     $el.on 'shown.bs.modal', -> view.resize?()
 
@@ -26,7 +27,7 @@ App.Util.Modal =
         addClasses: false
         resize: (event, ui) -> view.resize?()
 
-    $el.find('.modal-header .close').on 'click', (event) ->
+    $el.find('.modal-header .btn-close').on 'click', (event) ->
       event.preventDefault()
       view.destroy()
 
@@ -35,11 +36,11 @@ App.Util.Modal =
       view.destroy()
 
     view.on 'destroy', ->
-      $el.modal 'hide'
+      modal.hide()
 
     $el.on 'hidden.bs.modal', ->
       $el.remove()
 
-    $el.modal 'show'
+    modal.show()
 
     $el

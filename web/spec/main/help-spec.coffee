@@ -10,7 +10,7 @@ describe 'App.Main.Help', ->
     @$el.remove()
 
   it 'should have right className', ->
-    expect(@view.$el).toHaveClass 'modal-dialog'
+    expect(@view.$el).toHaveClass 'help-view'
 
   it 'should serializeData', ->
     App.data.implicitVars = {test: 'test'}
