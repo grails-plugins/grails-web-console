@@ -25,7 +25,7 @@ class ConsoleController implements Controller {
                         baseUrl               : getBaseUrl(),
                         remoteFileStoreEnabled: consoleConfig.remoteFileStoreEnabled,
                         groovyVersion         : GroovySystem.version,
-                        grailsVersion         : grailsApplication.metadata['app.grails.version']
+                        grailsVersion         : grailsApplication.metadata.getGrailsVersion()
                 ]
         ]
 
