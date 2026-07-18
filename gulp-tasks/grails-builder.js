@@ -2,13 +2,21 @@
 
 import gulp from 'gulp';
 import concat from 'gulp-concat';
-import merge from 'merge-stream';
-import mkdirp from 'mkdirp';
+import { mkdirp } from 'mkdirp';
 import path from 'node:path';
+import { finished } from 'node:stream/promises';
 
 import wrapPath from './wrap-path.js'
 
-export const build = (isDebug, options) => {
+// Resolve once the stream has finished writing all of its output to disk.
+// gulp.dest only emits 'end' after each file has been flushed, so we drain the
+// readable side (to avoid backpressure stalling it) and wait for it to end.
+const written = (stream) => {
+    stream.resume();
+    return finished(stream);
+};
+
+export const build = async (isDebug, options) => {
     let appSrc, jsSrc, cssSrc;
     if (isDebug) {
         appSrc = './build/debug/**/*';
@@ -29,32 +37,36 @@ export const build = (isDebug, options) => {
             .pipe(gulp.dest(destination));
     });
 
-    return merge([
-        gulp.src(appSrc),
-        gulp.src('./web/img/**/*', { base: './web/' }),
-        gulp.src([
+    // Copy all web assets first and wait until they are fully written, since
+    // the GSP fragments below read the copied files back from disk. Each source
+    // is copied as its own pipeline (rather than a single merged stream) so we
+    // can reliably await completion of every write.
+    await Promise.all([
+        written(gulp.src(appSrc).pipe(gulp.dest(options.webDir))),
+        written(gulp.src('./web/img/**/*', { base: './web/' }).pipe(gulp.dest(options.webDir))),
+        written(gulp.src([
             './web/vendor/**/*',
             '!./web/vendor/bootstrap{,/**}',
-        ], { base: './web/' }),
-        ...externalAssetStreams,
-    ])
-        .pipe(gulp.dest(options.webDir))
-        .on('end', async () => {
-            await mkdirp(options.outputDir);
+        ], { base: './web/' }).pipe(gulp.dest(options.webDir))),
+        ...externalAssetStreams.map(written),
+    ]);
 
-            gulp.src([options.paths.favicon].map(path => options.webDir + path))
-                .pipe(wrapPath(options.relativeDir, options.faviconWrap))
-                .pipe(concat('_favicon.gsp'))
-                .pipe(gulp.dest(options.outputDir));
+    await mkdirp(options.outputDir);
 
-            gulp.src(jsSrc)
-                .pipe(wrapPath(options.relativeDir, options.jsWrap))
-                .pipe(concat('_js.gsp'))
-                .pipe(gulp.dest(options.outputDir));
+    await Promise.all([
+        written(gulp.src([options.paths.favicon].map(path => options.webDir + path))
+            .pipe(wrapPath(options.relativeDir, options.faviconWrap))
+            .pipe(concat('_favicon.gsp'))
+            .pipe(gulp.dest(options.outputDir))),
 
-            gulp.src(cssSrc)
-                .pipe(wrapPath(options.relativeDir, options.cssWrap))
-                .pipe(concat('_css.gsp'))
-                .pipe(gulp.dest(options.outputDir));
-        });
+        written(gulp.src(jsSrc)
+            .pipe(wrapPath(options.relativeDir, options.jsWrap))
+            .pipe(concat('_js.gsp'))
+            .pipe(gulp.dest(options.outputDir))),
+
+        written(gulp.src(cssSrc)
+            .pipe(wrapPath(options.relativeDir, options.cssWrap))
+            .pipe(concat('_css.gsp'))
+            .pipe(gulp.dest(options.outputDir))),
+    ]);
 };
