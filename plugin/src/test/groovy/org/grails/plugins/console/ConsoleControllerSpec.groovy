@@ -69,6 +69,32 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
         model.json.baseUrl == 'http://localhost:5050/x/y/z/console'
     }
 
+    void 'index - console csrf token generated when Spring Security csrf not present'() {
+        when:
+        controller.index()
+
+        then:
+        model.json.csrfToken
+        model.json.csrfToken == session['CONSOLE_CSRF_TOKEN']
+        model.json.springSecurityCsrfToken == null
+    }
+
+    void 'index - Spring Security csrf token used instead of console token'() {
+        given:
+        request.setAttribute('org.springframework.security.web.csrf.CsrfToken',
+                [token: 'ss-token', headerName: 'X-CSRF-TOKEN', parameterName: '_csrf'])
+
+        when:
+        controller.index()
+
+        then:
+        model.json.springSecurityCsrfToken == 'ss-token'
+        model.json.springSecurityCsrfHeader == 'X-CSRF-TOKEN'
+        model.json.springSecurityCsrfParameter == '_csrf'
+        model.json.csrfToken == null
+        session['CONSOLE_CSRF_TOKEN'] == null
+    }
+
     void 'execute'() {
         given:
         String code = '"s"'

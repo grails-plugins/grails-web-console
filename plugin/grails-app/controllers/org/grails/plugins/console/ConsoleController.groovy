@@ -41,23 +41,26 @@ class ConsoleController implements Controller {
             model.json.remoteFileStoreDefaultPath = consoleConfig.remoteFileStoreDefaultPath
         }
 
-        if (consoleConfig.csrfProtectionEnabled) {
-            if (!session['CONSOLE_CSRF_TOKEN']) {
-                session['CONSOLE_CSRF_TOKEN'] = UUID.randomUUID().toString()
-            }
-            model.json.csrfToken = session['CONSOLE_CSRF_TOKEN']
-        }
-
-        // Check for exsitence of Spring Security CSRF token
+        // Prefer the Spring Security CSRF token when its filter processed this request;
+        // the request attribute is set by CsrfFilter and cannot be forged by a client
+        boolean springCsrfTokenApplied = false
         def springCsrfToken = request.getAttribute('org.springframework.security.web.csrf.CsrfToken')
         if (springCsrfToken) {
             try {
                 model.json.springSecurityCsrfToken = springCsrfToken.token
                 model.json.springSecurityCsrfHeader = springCsrfToken.headerName
                 model.json.springSecurityCsrfParameter = springCsrfToken.parameterName
+                springCsrfTokenApplied = true
             } catch (Exception e) {
                 log.error("Could not access Spring Security CSRF token: ${e.message}")
             }
+        }
+
+        if (consoleConfig.csrfProtectionEnabled && !springCsrfTokenApplied) {
+            if (!session['CONSOLE_CSRF_TOKEN']) {
+                session['CONSOLE_CSRF_TOKEN'] = UUID.randomUUID().toString()
+            }
+            model.json.csrfToken = session['CONSOLE_CSRF_TOKEN']
         }
 
         render view: 'index', model: model
