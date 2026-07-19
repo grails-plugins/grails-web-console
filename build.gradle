@@ -2,11 +2,17 @@ buildscript {
     repositories {
         maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://repo.grails.org/grails/restricted' }
+        mavenCentral()
         maven { url 'https://repository.apache.org/content/repositories/snapshots' }
     }
     dependencies {
         classpath platform("org.apache.grails:grails-bom:${grailsVersion}")
         classpath 'org.apache.grails:grails-gradle-plugins'
+        // The 8.0.0-SNAPSHOT BOM pins grails-publish 1.0.0-M2, which is not published
+        // to any public repository yet; strictly must be used to win over the BOM constraint
+        classpath('org.apache.grails.gradle:grails-publish') {
+            version { strictly '1.0.0-M1' }
+        }
     }
 }
 

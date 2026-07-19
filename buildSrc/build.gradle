@@ -40,6 +40,10 @@ dependencies {
     implementation platform("org.apache.grails:grails-gradle-bom:${gradleProperties.grailsVersion}")
     implementation 'cloud.wondrify:asset-pipeline-gradle'
     implementation 'org.apache.grails:grails-gradle-plugins'
-    implementation 'org.apache.grails.gradle:grails-publish'
+    // The 8.0.0-SNAPSHOT BOM pins grails-publish 1.0.0-M2, which is not published
+    // to any public repository yet; strictly must be used to win over the BOM constraint
+    implementation('org.apache.grails.gradle:grails-publish') {
+        version { strictly '1.0.0-M1' }
+    }
     implementation "com.adarshr.test-logger:com.adarshr.test-logger.gradle.plugin:${gradleProperties.testLoggerVersion}"
 }
