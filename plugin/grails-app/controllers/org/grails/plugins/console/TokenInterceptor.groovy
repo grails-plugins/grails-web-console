@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value
 
 class TokenInterceptor implements Interceptor {
 
-    @Value('${grails.plugin.console.csrfProtectionEnabled:true}')
+    @Value('${grails.plugin.console.csrfProtection.enabled:true}')
     boolean csrfProtectionEnabled
 
     TokenInterceptor() {

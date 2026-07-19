@@ -46,6 +46,9 @@ class ConsoleControllerSpec extends Specification implements ControllerUnitTest<
         then:
         model.json.implicitVars.ctx == 'the Spring application context'
         model.json.remoteFileStoreEnabled
+
+        and: 'the grails version is resolved through the supported Metadata accessor (no deprecated map access)'
+        model.json.containsKey('grailsVersion')
     }
 
     void 'index - baseUrl with no config'() {
