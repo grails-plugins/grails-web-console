@@ -16,6 +16,22 @@ A web-based Groovy console for interactive runtime application management and de
 - `5.X.X` for Grails 5+
 - `6.X.X` for Grails 6+
 - `7.X.X` for Grails 7+
+- `8.X.X` for Grails 8+
+
+### Webjars (8.x)
+
+As of 8.x the plugin no longer bundles Bootstrap and Bootstrap Icons in its own
+resources. It declares `org.webjars.npm:bootstrap` and
+`org.webjars.npm:bootstrap-icons` as transitive runtime dependencies, served
+through Spring Boot's standard `/webjars/**` classpath mapping. Two things
+follow from this:
+
+- If your security configuration restricts URLs, `/webjars/**` must remain
+  reachable for the console page to be styled.
+- The console links whatever webjar version your application actually resolves
+  (your dependency management — typically the `grails-bom` platform — wins over
+  the plugin's requested version), so overriding the Bootstrap version in your
+  app is safe.
 
 ## Installation
 
