@@ -200,9 +200,12 @@ const run = async () => {
 
   const result = await new Promise(resolve => {
     let failed = false;
+    const counts = { total: 0, passed: 0, failed: 0, pending: 0 };
 
     env.addReporter({
       specDone(specResult) {
+        counts.total++;
+        counts[specResult.status] = (counts[specResult.status] || 0) + 1;
         if (specResult.status === 'failed') {
           failed = true;
           console.error(`FAILED: ${specResult.fullName}`);
@@ -218,6 +221,7 @@ const run = async () => {
         resolve({
           failed: failed || suiteResult.failedExpectations.length > 0,
           overallStatus: suiteResult.overallStatus,
+          counts,
         });
       },
     });
@@ -227,7 +231,14 @@ const run = async () => {
 
   dom.window.close();
 
-  if (result.failed || result.overallStatus === 'failed') {
+  const { counts } = result;
+  console.log(`${counts.total} specs: ${counts.passed} passed, ${counts.failed} failed${counts.pending ? `, ${counts.pending} pending` : ''} (${result.overallStatus})`);
+
+  // Zero specs means the compiled spec files were missing, not that everything passed
+  if (result.failed || result.overallStatus === 'failed' || counts.total === 0) {
+    if (counts.total === 0) {
+      console.error('No specs were run — check that build/spec contains compiled spec files.');
+    }
     process.exitCode = 1;
   }
 };
