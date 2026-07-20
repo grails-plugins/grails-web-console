@@ -10,6 +10,8 @@ const options = {
     faviconWrap: path => `<link rel="icon" type="image/png" href="\${resource(file: '${path}')}" />`,
     jsWrap:      path => `<script type="text/javascript" src="\${resource(file: '${path}')}" ></script>`,
     cssWrap:     path => `<link rel="stylesheet" media="screen" href="\${resource(file: '${path}')}" />`,
+    webjarJsWrap:  path => `<script type="text/javascript" src="\${request.contextPath}${path}" ></script>`,
+    webjarCssWrap: path => `<link rel="stylesheet" media="screen" href="\${request.contextPath}${path}" />`,
     paths:       paths
 };
 

@@ -149,13 +149,13 @@ const buildDom = () => {
 
 const loadBrowserLibraries = context => {
   [
-    'web/vendor/js/libs/jquery.min.js',
-    'web/vendor/js/libs/jquery-migrate.min.js',
-    'web/vendor/js/libs/underscore-min.js',
-    'web/vendor/js/libs/backbone-min.js',
-    'web/vendor/js/libs/backbone.radio.min.js',
-    'web/vendor/js/libs/backbone.marionette.min.js',
-    'web/vendor/js/libs/handlebars.runtime.min.js',
+    'node_modules/jquery/dist/jquery.min.js',
+    'node_modules/jquery-migrate/dist/jquery-migrate.min.js',
+    'node_modules/underscore/underscore-min.js',
+    'node_modules/backbone/backbone-min.js',
+    'node_modules/backbone.radio/build/backbone.radio.min.js',
+    'node_modules/backbone.marionette/lib/backbone.marionette.min.js',
+    'node_modules/handlebars/dist/handlebars.runtime.min.js',
     'web/vendor/js/plugins/jquery.hotkeys.js',
   ].forEach(file => loadScript(resolveFromRoot(file), context));
 };
