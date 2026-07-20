@@ -16,14 +16,16 @@ const bootstrapVersion = gradleProperties.bootstrapVersion;
 const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
 
 // Assets served from the consuming app's webjar classpath rather than copied
-// into the plugin's public resources.
+// into the plugin's public resources. The generated GSP resolves the version
+// present on the runtime classpath (the app's dependency management may pick a
+// different one than this plugin requested); defaultVersion is only a fallback.
 const webjars = {
     css: [
-        `/webjars/bootstrap/${bootstrapVersion}/dist/css/bootstrap.min.css`,
-        `/webjars/bootstrap-icons/${bootstrapIconsVersion}/font/bootstrap-icons.min.css`,
+        { name: 'bootstrap', file: 'dist/css/bootstrap.min.css', defaultVersion: bootstrapVersion },
+        { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css', defaultVersion: bootstrapIconsVersion },
     ],
     js: [
-        `/webjars/bootstrap/${bootstrapVersion}/dist/js/bootstrap.bundle.min.js`,
+        { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
     ],
 };
 
