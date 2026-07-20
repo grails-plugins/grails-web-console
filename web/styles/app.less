@@ -147,7 +147,7 @@ body {
         cursor: pointer;
       }
       & > div {
-        .fa-caret-down {
+        .bi-caret-down-fill {
           display: none;
         }
       }
@@ -156,10 +156,10 @@ body {
       }
       &.open {
         & > div {
-          .fa-caret-right {
+          .bi-caret-right-fill {
             display: none;
           }
-          .fa-caret-down {
+          .bi-caret-down-fill {
             display: inline-block;
           }
         }
@@ -171,7 +171,7 @@ body {
     .result-text {
       margin-left: 16px;
     }
-    .fa {
+    .bi {
       line-height: 16px;
     }
     ul {
@@ -246,13 +246,30 @@ body {
   overflow: auto;
 }
 
-.dropdown-menu.settings a i.fa-check {
+// Replacements for font-awesome's fa-lg and fa-spin utilities
+.bi-lg {
+  font-size: 1.3333em;
+  line-height: 0.75em;
+  vertical-align: -15%;
+}
+
+.bi-spin {
+  display: inline-block;
+  animation: bi-spin 2s infinite linear;
+}
+
+@keyframes bi-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(359deg); }
+}
+
+.dropdown-menu.settings a i.bi-check-lg {
   visibility: hidden;
   width: 14px;
   margin-right: 6px;
 }
 
-.dropdown-menu.settings a.selected i.fa-check {
+.dropdown-menu.settings a.selected i.bi-check-lg {
   visibility: visible;
 }
 

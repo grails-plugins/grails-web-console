@@ -84,7 +84,7 @@ App.Files.ScriptsView = Marionette.View.extend
 
 Handlebars.registerHelper 'scriptsFileItem', (file, options) ->
     showDelete = options.hash.showDelete
-    iconClass = if @type is 'dir' then 'fa fa-folder-o' else 'fa fa-file-o'
+    iconClass = if @type is 'dir' then 'bi bi-folder' else 'bi bi-file-earmark'
     html = "<div class='name'><i class='#{iconClass}'></i><a class='name' href='#'>#{file.name}</a></div>"
     html += '<a class="delete" href="#">×</a>' if showDelete and @type is 'file'
     new Handlebars.SafeString html

@@ -10,7 +10,7 @@
         </ul>
     </div>
     {{#if showCollapse}}
-        <button class="btn btn-sm btn-outline-secondary close-it ms-auto" title="Close"><i class="fa fa-times"></i></button>
+        <button class="btn btn-sm btn-outline-secondary close-it ms-auto" title="Close"><i class="bi bi-x-lg"></i></button>
     {{/if}}
 </div>
 <div class="folder ">
@@ -18,9 +18,9 @@
 </div>
 <div class="files-wrapper">
   {{#if loading}}
-      <div class="loading"><i class="fa fa-refresh fa-spin"></i></div>
+      <div class="loading"><i class="bi bi-arrow-clockwise bi-spin"></i></div>
   {{else if error}}
-      <div class="loading"><i class="fa fa-exclamation-triangle" title="Load failed."></i></div>
+      <div class="loading"><i class="bi bi-exclamation-triangle" title="Load failed."></i></div>
   {{else}}
     {{#if files}}
         <ul class="files">

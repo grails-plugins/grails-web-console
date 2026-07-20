@@ -6,8 +6,8 @@ const vendorCssAssets = [
         publicPath: '/vendor/bootstrap/css/bootstrap.min.css',
     },
     {
-        src: './web/vendor/font-awesome-4.7.0/css/font-awesome.css',
-        publicPath: '/vendor/font-awesome-4.7.0/css/font-awesome.css',
+        src: './node_modules/bootstrap-icons/font/bootstrap-icons.min.css',
+        publicPath: '/vendor/bootstrap-icons/bootstrap-icons.min.css',
     },
     {
         src: './web/vendor/codemirror-5.65.18/lib/codemirror.css',
@@ -24,6 +24,15 @@ const vendorCssAssets = [
     {
         src: './web/vendor/jquery-ui-1.14.1/jquery-ui.min.css',
         publicPath: '/vendor/jquery-ui-1.14.1/jquery-ui.min.css',
+    },
+];
+
+// Copied alongside the vendor css/js but never linked from the GSP fragments
+// (the icon font files are referenced relatively from bootstrap-icons.min.css)
+const vendorStaticAssets = [
+    {
+        src: './node_modules/bootstrap-icons/font/fonts/*',
+        publicPath: '/vendor/bootstrap-icons/fonts/*',
     },
 ];
 
@@ -112,6 +121,7 @@ export const paths = {
         js: vendorJsAssets.map(asset => asset.publicPath),
         cssAssets: vendorCssAssets,
         jsAssets: vendorJsAssets,
+        staticAssets: vendorStaticAssets,
     },
     test: [
         './js/tests/**.js'

@@ -31,23 +31,25 @@ export const build = async (isDebug, options) => {
     const externalAssetStreams = [
         ...(options.paths.vendor.cssAssets || []),
         ...(options.paths.vendor.jsAssets || []),
+        ...(options.paths.vendor.staticAssets || []),
     ].filter(asset => asset.src.startsWith('./node_modules/')).map(asset => {
         const destination = path.join(options.webDir, path.posix.dirname(asset.publicPath));
-        return gulp.src(asset.src, { base: path.dirname(asset.src) })
+        return gulp.src(asset.src, { base: path.dirname(asset.src), encoding: false })
             .pipe(gulp.dest(destination));
     });
 
     // Copy all web assets first and wait until they are fully written, since
     // the GSP fragments below read the copied files back from disk. Each source
     // is copied as its own pipeline (rather than a single merged stream) so we
-    // can reliably await completion of every write.
+    // can reliably await completion of every write. encoding: false keeps gulp 5
+    // from re-encoding binary assets (fonts, images) as UTF-8, which corrupts them.
     await Promise.all([
-        written(gulp.src(appSrc).pipe(gulp.dest(options.webDir))),
-        written(gulp.src('./web/img/**/*', { base: './web/' }).pipe(gulp.dest(options.webDir))),
+        written(gulp.src(appSrc, { encoding: false }).pipe(gulp.dest(options.webDir))),
+        written(gulp.src('./web/img/**/*', { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         written(gulp.src([
             './web/vendor/**/*',
             '!./web/vendor/bootstrap{,/**}',
-        ], { base: './web/' }).pipe(gulp.dest(options.webDir))),
+        ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
 
