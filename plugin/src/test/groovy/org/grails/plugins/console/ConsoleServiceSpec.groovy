@@ -72,7 +72,7 @@ class ConsoleServiceSpec extends Specification implements ServiceUnitTest<Consol
         imports.aliases['SqlDate'] == 'java.sql.Date'
 
         and: 'the bare name is reported so the caller can explain itself'
-        imports.unimported['Date'] == [UtilDate: 'java.util.Date', SqlDate: 'java.sql.Date']
+        imports.unimported['Date'] == ['java.util.Date': 'UtilDate', 'java.sql.Date': 'SqlDate']
 
         and: 'unambiguous classes are unaffected'
         imports.aliases['List'] == 'java.util.List'
@@ -107,13 +107,32 @@ class ConsoleServiceSpec extends Specification implements ServiceUnitTest<Consol
         List<Class> classes = [cls(null, 'Gadget'), cls('com.plugin', 'Gadget')]
 
         when:
-        Map<String, String> aliases = ConsoleService.resolveImports(classes).aliases
+        ConsoleService.DomainImports imports = ConsoleService.resolveImports(classes)
 
         then: 'the class that can be qualified still gets its alias'
-        aliases['PluginGadget'] == 'com.plugin.Gadget'
+        imports.aliases['PluginGadget'] == 'com.plugin.Gadget'
 
         and: 'the one that cannot is simply absent -- previously the whole group was dropped'
-        aliases.values().every { it != 'Gadget' }
+        imports.aliases.values().every { it != 'Gadget' }
+
+        and: 'but it is still named as a candidate, since the message has to account for it'
+        imports.unimported['Gadget'] == ['Gadget': null, 'com.plugin.Gadget': 'PluginGadget']
+    }
+
+    void 'the ambiguity message names candidates that could not be aliased'() {
+        given: 'two User classes whose only possible aliases are both taken by real domain classes'
+        service.grailsApplication = stubApplication(
+                cls('a', 'User'), cls('b', 'User'), cls('com.app', 'AUser'), cls('com.app', 'BUser'))
+
+        when: 'a script uses the ambiguous bare name'
+        Evaluation result = service.eval('User.count()', true, request)
+
+        then: 'it still reports the ambiguity'
+        result.exception.message.contains 'User is ambiguous'
+
+        and: 'and names both candidates -- neither has an alias, so the message was previously empty'
+        result.exception.message.contains 'a.User'
+        result.exception.message.contains 'b.User'
     }
 
     void 'eval compiles with auto-import when domain classes share a simple name'() {

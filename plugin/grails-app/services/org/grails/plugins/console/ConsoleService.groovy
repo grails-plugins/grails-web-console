@@ -142,7 +142,7 @@ class ConsoleService {
                 log.debug 'auto-import: {} is ambiguous ({}); the application class {} keeps the bare name, others imported as {}',
                         simpleName, classes*.name, fromApplication[0].name, qualified.keySet()
             } else {
-                imports.unimported[simpleName] = qualified
+                imports.unimported[simpleName] = candidatesOf(classes, qualified)
                 log.debug 'auto-import: {} is ambiguous ({}) with no application class to prefer; imported as {}',
                         simpleName, classes*.name, qualified.keySet()
             }
@@ -208,6 +208,19 @@ class ConsoleService {
         best
     }
 
+    /**
+     * Every candidate for an ambiguous name, mapped to the alias it was imported under -- or to null
+     * where {@link #qualifiedAliases} could not generate one. The unaliased candidates have to be
+     * carried too: the ambiguity message is the only place a script is told they exist, and telling
+     * someone to fall back to the fully qualified name while withholding that name is no help.
+     */
+    private static Map<String, String> candidatesOf(List<Class> classes, Map<String, String> qualified) {
+        Map<String, String> aliasByClassName = qualified.collectEntries { String alias, String className ->
+            [(className): alias]
+        }
+        classes.collectEntries { Class clazz -> [(clazz.name): aliasByClassName[clazz.name]] }
+    }
+
     private static String qualifier(List<String> segments, int depth) {
         segments.takeRight(Math.min(depth, segments.size()))*.capitalize().join()
     }
@@ -225,7 +238,8 @@ class ConsoleService {
 
         /**
          * Simple names that stayed unimported because several domain classes claim them, mapped to
-         * the aliases their candidates did get.
+         * every candidate for the name: fully qualified class name -> the alias it was imported
+         * under, or null where none could be generated.
          */
         Map<String, Map<String, String>> unimported = [:]
     }
