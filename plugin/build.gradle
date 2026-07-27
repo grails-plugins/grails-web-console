@@ -14,6 +14,12 @@ dependencies {
 
     console("org.apache.grails:grails-console")
 
+    // Served by Spring Boot's /webjars/** classpath mapping in the consuming app;
+    // versions must stay in sync with the /webjars links the gulp build writes
+    // into the GSP fragments (both read gradle.properties)
+    runtimeOnly "org.webjars.npm:bootstrap:${project.bootstrapVersion}"
+    runtimeOnly "org.webjars.npm:bootstrap-icons:${project.bootstrapIconsVersion}"
+
     testImplementation platform("org.apache.grails:grails-bom:$grailsVersion")
     testImplementation("org.apache.grails:grails-testing-support-web")
     testImplementation("org.spockframework:spock-core")

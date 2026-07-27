@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '20.5.1'
       - name: "Pull node dependencies"
-        run: npm install
+        run: npm ci
       - name: "Package node dependencies"
         run: npx gulp grailsRelease
       - name: "☕️ Setup JDK"
@@ -48,7 +48,7 @@ jobs:
         with:
           node-version: '20.5.1'
       - name: "Pull node dependencies"
-        run: npm install
+        run: npm ci
       - name: "Package node dependencies"
         run: npx gulp grailsRelease
       - name: "☕️ Setup JDK"

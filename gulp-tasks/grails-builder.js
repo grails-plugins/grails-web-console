@@ -3,6 +3,7 @@
 import gulp from 'gulp';
 import concat from 'gulp-concat';
 import { mkdirp } from 'mkdirp';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import { finished } from 'node:stream/promises';
 
@@ -48,7 +49,8 @@ export const build = async (isDebug, options) => {
         written(gulp.src('./web/img/**/*', { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         written(gulp.src([
             './web/vendor/**/*',
-            '!./web/vendor/bootstrap{,/**}',
+            // test-only, loaded from web/ by run-jasmine-jsdom.cjs — never shipped
+            '!./web/vendor/js/plugins/jasmine-jquery.js',
         ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
@@ -70,5 +72,22 @@ export const build = async (isDebug, options) => {
             .pipe(wrapPath(options.relativeDir, options.cssWrap))
             .pipe(concat('_css.gsp'))
             .pipe(gulp.dest(options.outputDir))),
+    ]);
+
+    // Webjar assets have no file under webDir to wrap, so their tags are
+    // prepended to the generated fragments. They resolve against the consuming
+    // app's /webjars/** classpath mapping at runtime.
+    const webjars = options.paths.vendor.webjars || { css: [], js: [] };
+    const prepend = async (fragment, tags) => {
+        if (!tags.length) {
+            return;
+        }
+        const file = path.join(options.outputDir, fragment);
+        const existing = await fs.readFile(file, 'utf8');
+        await fs.writeFile(file, tags.join('\n') + '\n' + existing);
+    };
+    await Promise.all([
+        prepend('_css.gsp', webjars.css.map(options.webjarCssWrap)),
+        prepend('_js.gsp', webjars.js.map(options.webjarJsWrap)),
     ]);
 };

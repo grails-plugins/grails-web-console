@@ -1,76 +1,93 @@
+import fs from 'node:fs';
+
 export const timestamp = new Date().getTime();
+
+// Webjar versions are defined once in gradle.properties: the plugin declares the
+// matching org.webjars.npm dependencies, and the build below writes /webjars/...
+// links for them into the GSP fragments.
+const gradleProperties = Object.fromEntries(
+    fs.readFileSync('./gradle.properties', 'utf8')
+        .split('\n')
+        .filter(line => line.includes('=') && !line.trim().startsWith('#'))
+        .map(line => line.split('=', 2).map(part => part.trim()))
+);
+
+const bootstrapVersion = gradleProperties.bootstrapVersion;
+const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
+
+// Assets served from the consuming app's webjar classpath rather than copied
+// into the plugin's public resources. The generated GSP resolves the version
+// present on the runtime classpath (the app's dependency management may pick a
+// different one than this plugin requested); defaultVersion is only a fallback.
+const webjars = {
+    css: [
+        { name: 'bootstrap', file: 'dist/css/bootstrap.min.css', defaultVersion: bootstrapVersion },
+        { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css', defaultVersion: bootstrapIconsVersion },
+    ],
+    js: [
+        { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
+    ],
+};
 
 const vendorCssAssets = [
     {
-        src: './node_modules/bootstrap/dist/css/bootstrap.min.css',
-        publicPath: '/vendor/bootstrap/css/bootstrap.min.css',
+        src: './node_modules/codemirror/lib/codemirror.css',
+        publicPath: '/vendor/codemirror/lib/codemirror.css',
     },
     {
-        src: './node_modules/bootstrap-icons/font/bootstrap-icons.min.css',
-        publicPath: '/vendor/bootstrap-icons/bootstrap-icons.min.css',
-    },
-    {
-        src: './web/vendor/codemirror-5.65.18/lib/codemirror.css',
-        publicPath: '/vendor/codemirror-5.65.18/lib/codemirror.css',
-    },
-    {
-        src: './web/vendor/codemirror-5.65.18/theme/lesser-dark.css',
-        publicPath: '/vendor/codemirror-5.65.18/theme/lesser-dark.css',
+        src: './node_modules/codemirror/theme/lesser-dark.css',
+        publicPath: '/vendor/codemirror/theme/lesser-dark.css',
     },
     {
         src: './web/vendor/jquery-layout/css/jquery.layout.css',
         publicPath: '/vendor/jquery-layout/css/jquery.layout.css',
     },
     {
-        src: './web/vendor/jquery-ui-1.14.1/jquery-ui.min.css',
-        publicPath: '/vendor/jquery-ui-1.14.1/jquery-ui.min.css',
+        src: './node_modules/jquery-ui/dist/themes/base/jquery-ui.min.css',
+        publicPath: '/vendor/jquery-ui/jquery-ui.min.css',
     },
 ];
 
 // Copied alongside the vendor css/js but never linked from the GSP fragments
-// (the icon font files are referenced relatively from bootstrap-icons.min.css)
+// (referenced relatively from the css they belong to)
 const vendorStaticAssets = [
     {
-        src: './node_modules/bootstrap-icons/font/fonts/*',
-        publicPath: '/vendor/bootstrap-icons/fonts/*',
+        src: './node_modules/jquery-ui/dist/themes/base/images/*',
+        publicPath: '/vendor/jquery-ui/images/*',
     },
 ];
 
 const vendorJsAssets = [
     {
-        src: './web/vendor/js/libs/jquery.min.js',
+        src: './node_modules/jquery/dist/jquery.min.js',
         publicPath: '/vendor/js/libs/jquery.min.js',
     },
     {
-        src: './web/vendor/js/libs/jquery-migrate.min.js',
+        src: './node_modules/jquery-migrate/dist/jquery-migrate.min.js',
         publicPath: '/vendor/js/libs/jquery-migrate.min.js',
     },
     {
-        src: './web/vendor/jquery-ui-1.14.1/jquery-ui.min.js',
-        publicPath: '/vendor/jquery-ui-1.14.1/jquery-ui.min.js',
+        src: './node_modules/jquery-ui/dist/jquery-ui.min.js',
+        publicPath: '/vendor/jquery-ui/jquery-ui.min.js',
     },
     {
-        src: './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js',
-        publicPath: '/vendor/bootstrap/js/bootstrap.bundle.min.js',
-    },
-    {
-        src: './web/vendor/js/libs/underscore-min.js',
+        src: './node_modules/underscore/underscore-min.js',
         publicPath: '/vendor/js/libs/underscore-min.js',
     },
     {
-        src: './web/vendor/js/libs/backbone-min.js',
+        src: './node_modules/backbone/backbone-min.js',
         publicPath: '/vendor/js/libs/backbone-min.js',
     },
     {
-        src: './web/vendor/js/libs/backbone.radio.min.js',
+        src: './node_modules/backbone.radio/build/backbone.radio.min.js',
         publicPath: '/vendor/js/libs/backbone.radio.min.js',
     },
     {
-        src: './web/vendor/js/libs/backbone.marionette.min.js',
+        src: './node_modules/backbone.marionette/lib/backbone.marionette.min.js',
         publicPath: '/vendor/js/libs/backbone.marionette.min.js',
     },
     {
-        src: './web/vendor/js/libs/handlebars.runtime.min.js',
+        src: './node_modules/handlebars/dist/handlebars.runtime.min.js',
         publicPath: '/vendor/js/libs/handlebars.runtime.min.js',
     },
     {
@@ -86,12 +103,12 @@ const vendorJsAssets = [
         publicPath: '/vendor/js/plugins/jquery.hotkeys.js',
     },
     {
-        src: './web/vendor/codemirror-5.65.18/lib/codemirror.js',
-        publicPath: '/vendor/codemirror-5.65.18/lib/codemirror.js',
+        src: './node_modules/codemirror/lib/codemirror.js',
+        publicPath: '/vendor/codemirror/lib/codemirror.js',
     },
     {
-        src: './web/vendor/codemirror-5.65.18/mode/groovy/groovy.js',
-        publicPath: '/vendor/codemirror-5.65.18/mode/groovy/groovy.js',
+        src: './node_modules/codemirror/mode/groovy/groovy.js',
+        publicPath: '/vendor/codemirror/mode/groovy/groovy.js',
     },
 ];
 
@@ -122,6 +139,7 @@ export const paths = {
         cssAssets: vendorCssAssets,
         jsAssets: vendorJsAssets,
         staticAssets: vendorStaticAssets,
+        webjars,
     },
     test: [
         './js/tests/**.js'

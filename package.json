@@ -3,8 +3,10 @@
   "version": "1.6.0",
   "type": "module",
   "devDependencies": {
-    "bootstrap": "^5.3.8",
-    "bootstrap-icons": "^1.13.1",
+    "backbone": "^1.6.1",
+    "backbone.marionette": "^3.5.1",
+    "backbone.radio": "^2.0.0",
+    "codemirror": "^5.65.21",
     "del": "^8.0.1",
     "glob": "^13.0.6",
     "gulp": "^5.0.1",
@@ -17,9 +19,13 @@
     "gulp-wrap": "^0.15.0",
     "handlebars": "^4.7.9",
     "jasmine": "^5.13.0",
+    "jquery": "^3.7.1",
+    "jquery-migrate": "^3.6.0",
+    "jquery-ui": "^1.14.2",
     "jsdom": "^29.1.1",
     "mkdirp": "^3.0.1",
-    "through2": "^5.0.5"
+    "through2": "^5.0.5",
+    "underscore": "^1.13.8"
   },
   "scripts": {
     "debug-all": "gulp debugAll",
