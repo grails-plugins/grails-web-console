@@ -49,7 +49,8 @@ export const build = async (isDebug, options) => {
         written(gulp.src('./web/img/**/*', { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         written(gulp.src([
             './web/vendor/**/*',
-            '!./web/vendor/bootstrap{,/**}',
+            // test-only, loaded from web/ by run-jasmine-jsdom.cjs — never shipped
+            '!./web/vendor/js/plugins/jasmine-jquery.js',
         ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
