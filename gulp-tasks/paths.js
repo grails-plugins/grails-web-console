@@ -63,10 +63,6 @@ const vendorJsAssets = [
         publicPath: '/vendor/js/libs/jquery.min.js',
     },
     {
-        src: './node_modules/jquery-migrate/dist/jquery-migrate.min.js',
-        publicPath: '/vendor/js/libs/jquery-migrate.min.js',
-    },
-    {
         src: './node_modules/jquery-ui/dist/jquery-ui.min.js',
         publicPath: '/vendor/jquery-ui/jquery-ui.min.js',
     },
