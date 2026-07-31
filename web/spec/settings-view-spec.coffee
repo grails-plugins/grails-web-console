@@ -4,7 +4,7 @@ describe 'App.Main.SettingsView', ->
     @settings = new App.Entities.Settings
       'orientation': 'vertical'
       'results.wrapText': true
-      'theme': 'lesser-dark'
+      'theme': 'one-dark'
 
     @view = new App.Main.SettingsView model: @settings
 
@@ -21,7 +21,7 @@ describe 'App.Main.SettingsView', ->
     expect(@view.$('.orientation-vertical')).toHaveClass 'selected'
     expect(@view.$('.results-wrap')).toHaveClass 'selected'
     expect(@view.$('.theme[data-theme="default"]')).not.toHaveClass 'selected'
-    expect(@view.$('.theme[data-theme="lesser-dark"]')).toHaveClass 'selected'
+    expect(@view.$('.theme[data-theme="one-dark"]')).toHaveClass 'selected'
 
   it 'should handle click events', ->
     @view.$('.orientation-horizontal').click()
@@ -36,7 +36,7 @@ describe 'App.Main.SettingsView', ->
     @view.$('.theme[data-theme="default"]').click()
     expect(@settings.get('theme')).toBe 'default'
     expect(@view.$('.theme[data-theme="default"]')).toHaveClass 'selected'
-    expect(@view.$('.theme[data-theme="lesser-dark"]')).not.toHaveClass 'selected'
+    expect(@view.$('.theme[data-theme="one-dark"]')).not.toHaveClass 'selected'
 
 
 

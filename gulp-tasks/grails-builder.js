@@ -92,8 +92,12 @@ export const build = async (isDebug, options) => {
         path.join(options.outputDir, fragment),
         tags.length ? tags.join('\n') + '\n' : ''
     );
+    const moduleWebjars = options.paths.vendor.moduleWebjars || [];
     await Promise.all([
         writeFragment('_webjarsCss.gsp', webjars.css.map(options.webjarCssWrap)),
         writeFragment('_webjarsJs.gsp', webjars.js.map(options.webjarJsWrap)),
+        // the import map has to precede every module script on the page, so this
+        // fragment is rendered in <head>
+        writeFragment('_webjarsModules.gsp', moduleWebjars.length ? [options.moduleShim(moduleWebjars)] : []),
     ]);
 };

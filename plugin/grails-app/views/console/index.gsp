@@ -9,6 +9,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <g:render template="favicon" />
   <g:if test="${webjarsEnabled}"><g:render template="webjarsCss" /></g:if>
+  <g:if test="${webjarsEnabled}"><g:render template="webjarsModules" /></g:if>
   <g:render template="css" />
   
   <meta name="layout" content="${grailsApplication.config['grails.plugin.console.layout'] ?: 'console-plugin-layout'}"/>
