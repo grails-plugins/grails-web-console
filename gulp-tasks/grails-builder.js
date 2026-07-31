@@ -29,9 +29,15 @@ export const build = async (isDebug, options) => {
         cssSrc = options.paths.vendor.css.concat(options.paths.app.css.release).map(path => options.webDir + path);
     }
 
+    // A release links one concatenated app.<timestamp>.js that already contains
+    // every vendor library (see concatJsTask), so copying them in individually
+    // would ship roughly a megabyte the page never requests. Debug links each
+    // library separately and still needs them on disk. Stylesheets are linked
+    // individually in both modes, and the jQuery UI images are referenced
+    // relatively from its stylesheet, so both are always copied.
     const externalAssetStreams = [
         ...(options.paths.vendor.cssAssets || []),
-        ...(options.paths.vendor.jsAssets || []),
+        ...(isDebug ? options.paths.vendor.jsAssets || [] : []),
         ...(options.paths.vendor.staticAssets || []),
     ].filter(asset => asset.src.startsWith('./node_modules/')).map(asset => {
         const destination = path.join(options.webDir, path.posix.dirname(asset.publicPath));
@@ -51,6 +57,8 @@ export const build = async (isDebug, options) => {
             './web/vendor/**/*',
             // test-only, loaded from web/ by run-jasmine-jsdom.cjs — never shipped
             '!./web/vendor/js/plugins/jasmine-jquery.js',
+            // vendored scripts are concatenated into the release bundle too
+            ...(isDebug ? [] : ['!./web/vendor/**/*.js']),
         ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
