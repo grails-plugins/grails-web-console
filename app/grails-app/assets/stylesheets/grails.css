@@ -31,7 +31,9 @@ pre {
     margin-bottom: 0px;
 }
 
-.navbar-dark a {
+/* :not(.dropdown-item) so this does not repaint dropdown menu entries white on
+   their white background — the !important beats Bootstrap's own .dropdown-item */
+.navbar-dark a:not(.dropdown-item) {
     color: #ffffff !important;
     font-size: 18px !important;
     text-decoration: none;

@@ -33,6 +33,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     console("org.apache.grails:grails-console")
     runtimeOnly("cloud.wondrify:asset-pipeline-grails")
+    // jQuery and Bootstrap come from webjars rather than checked-in copies. Versions are
+    // managed by grails-bom, and testAndDevelopmentOnly keeps the jars out of the packaged
+    // app — asset-pipeline compiles the allow-listed files below into build/assets instead.
+    testAndDevelopmentOnly("org.webjars.npm:jquery")
+    testAndDevelopmentOnly("org.webjars.npm:bootstrap")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
     runtimeOnly("org.fusesource.jansi:jansi")
@@ -53,6 +58,14 @@ apply {
 assets {
     minifyJs = true
     minifyCss = true
+    // Only the webjar paths listed here are compiled. Without this every webjar on the
+    // classpath would be, including the three the console plugin brings in transitively.
+    excludeWebjarsByDefault = true
+    includes = [
+            'webjars/jquery/*/dist/jquery.js',
+            'webjars/bootstrap/*/dist/js/bootstrap.bundle.js',
+            'webjars/bootstrap/*/dist/css/bootstrap.css',
+    ]
 }
 
 bootRun {
