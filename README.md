@@ -20,19 +20,22 @@ A web-based Groovy console for interactive runtime application management and de
 
 ### Webjars (8.x)
 
-As of 8.x the plugin no longer bundles jQuery, Bootstrap or Bootstrap Icons in
-its own resources. It declares `org.webjars.npm:jquery`,
-`org.webjars.npm:bootstrap` and `org.webjars.npm:bootstrap-icons` as transitive
-runtime dependencies, served through Spring Boot's standard `/webjars/**`
-classpath mapping. Two things follow from this:
+As of 8.x the plugin no longer bundles its third-party libraries in its own
+resources. It declares `org.webjars.npm:jquery`, `org.webjars.npm:jquery-ui`,
+`org.webjars.npm:bootstrap`, `org.webjars.npm:bootstrap-icons` and
+`org.webjars.npm:codemirror` as transitive runtime dependencies, served through
+Spring Boot's standard `/webjars/**` classpath mapping. Two things follow from
+this:
 
 - If your security configuration restricts URLs, `/webjars/**` must remain
-  reachable. Bootstrap only affects styling, but the console does not work at
-  all without jQuery.
+  reachable. Bootstrap and the jQuery UI theme only affect styling, but the
+  console does not work at all without jQuery, jQuery UI or CodeMirror.
 - The console links whatever webjar version your application actually resolves
   (your dependency management — typically the `grails-bom` platform — wins over
   the plugin's requested version), so overriding any of these versions in your
   app is safe. jQuery has no version pinned here at all; the BOM supplies it.
+  The BOM does not manage jQuery UI or CodeMirror, so those carry versions from
+  the plugin's `gradle.properties`.
 
 #### Supplying your own copies
 
@@ -53,8 +56,10 @@ page. Drop the runtime dependencies too, so the jars stop shipping:
 ```groovy
 implementation('org.grails.plugins:grails-web-console:8.0.0') {
     exclude group: 'org.webjars.npm', module: 'jquery'
+    exclude group: 'org.webjars.npm', module: 'jquery-ui'
     exclude group: 'org.webjars.npm', module: 'bootstrap'
     exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
+    exclude group: 'org.webjars.npm', module: 'codemirror'
 }
 ```
 
@@ -67,11 +72,22 @@ win the cascade and jQuery is defined before its bundle runs:
 <head>
   <asset:stylesheet href="webjars/bootstrap/%/dist/css/bootstrap.css"/>
   <asset:stylesheet href="webjars/bootstrap-icons/%/font/bootstrap-icons.css"/>
+  <asset:stylesheet href="webjars/jquery-ui/%/dist/themes/base/jquery-ui.css"/>
+  <asset:stylesheet href="webjars/codemirror/%/lib/codemirror.css"/>
+  <asset:stylesheet href="webjars/codemirror/%/theme/lesser-dark.css"/>
   <asset:javascript src="webjars/jquery/%/dist/jquery.js"/>
+  <asset:javascript src="webjars/jquery-ui/%/dist/jquery-ui.js"/>
   <asset:javascript src="webjars/bootstrap/%/dist/js/bootstrap.bundle.js"/>
+  <asset:javascript src="webjars/codemirror/%/lib/codemirror.js"/>
+  <asset:javascript src="webjars/codemirror/%/mode/groovy/groovy.js"/>
   <g:layoutHead/>
 </head>
 ```
+
+Order matters: jQuery UI extends jQuery, and the groovy mode registers itself
+against the CodeMirror core. Serving five libraries yourself is a fair amount of
+work — unless your application already ships all of them, leaving the flag at its
+default is usually the better trade.
 
 `%` (or `*`) stands in for the version, so the layout survives a Bootstrap
 upgrade — asset-pipeline matches it against the compiled manifest in production
@@ -79,9 +95,8 @@ and against its classpath resolvers in development. Keep exactly one version of
 each webjar on the classpath: the wildcard takes the first manifest key that
 matches, and iteration order is unspecified.
 
-The console needs jQuery, Bootstrap 5 CSS, the Bootstrap Icons font CSS and the
-Bootstrap JS bundle. Missing stylesheets leave it unstyled; missing jQuery
-leaves it blank.
+Missing stylesheets leave the console unstyled; missing jQuery, jQuery UI or
+CodeMirror leave it blank.
 
 ## Installation
 
