@@ -167,12 +167,22 @@ Application = Marionette.Application.extend
     $('body').css 'visibility', 'visible'
 
   _initKeybindings: ->
-    $(document).on 'keydown', null, 'Ctrl+return Meta+return', => @execute 'execute'
+    # These document-level bindings exist so the shortcuts work with focus
+    # anywhere — the results prompt, the scripts panel, nothing at all. The
+    # editor binds the same three itself, and CodeMirror 6 only calls
+    # preventDefault on a handled key, not stopPropagation as CodeMirror 5 did,
+    # so without this guard a keystroke in the editor would run the command
+    # twice.
+    fromEditor = (event) -> $(event.target).closest('.cm-editor').length > 0
+
+    $(document).on 'keydown', null, 'Ctrl+return Meta+return', (event) =>
+      @execute 'execute' unless fromEditor event
     $(document).on 'keydown', null, 'Ctrl+s Meta+s', (event) =>
       event.preventDefault()
       event.stopPropagation()
-      @execute 'save'
-    $(document).on 'keydown', null, 'esc', => @execute 'clear'
+      @execute 'save' unless fromEditor event
+    $(document).on 'keydown', null, 'esc', (event) =>
+      @execute 'clear' unless fromEditor event
 
   createLink: (action, params) ->
     link = "#{@data.baseUrl}/#{action}"
