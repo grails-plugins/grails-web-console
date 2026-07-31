@@ -42,7 +42,10 @@ class Splitter
         @fixed.addClass 'splitter-pane splitter-pane-fixed'
         @flexible.addClass 'splitter-pane splitter-pane-flexible'
 
-        @$bar = $('<div class="splitter-bar"></div>')
+        # title restores jquery.layout's tooltip; the ARIA bits make the bar
+        # something a screen reader can name, which it never was before
+        @$bar = $('<div class="splitter-bar" title="Resize" role="separator"></div>')
+        @$bar.attr 'aria-orientation', if @horizontal then 'vertical' else 'horizontal'
         if @before then @$bar.insertAfter(@fixed) else @$bar.insertBefore(@fixed)
 
         @$bar.on 'pointerdown', @onPointerDown

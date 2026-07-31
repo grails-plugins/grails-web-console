@@ -271,6 +271,16 @@ body {
   cursor: ew-resize;
   touch-action: none;
 
+  // The bar carries its own resting and hover colours rather than depending on a
+  // chrome-scoped rule: jquery.layout highlighted its resizer on hover, and that
+  // highlight is the only cue that the bar is draggable at all.
+  background-color: #ccc;
+  transition: background-color 100ms ease-in-out;
+
+  &:hover {
+    background-color: #9bb7e8;
+  }
+
   &.dragging {
     background-color: #6c8cd5;
   }
@@ -495,6 +505,10 @@ body[data-chrome="light"] {
 
   .splitter-bar {
     background-color: #ccc;
+
+    &:hover {
+      background-color: #9bb7e8;
+    }
   }
 
   .btn-toolbar {
@@ -596,6 +610,10 @@ body[data-chrome="dark"] {
   }
   .splitter-bar {
     background-color: #444;
+
+    &:hover {
+      background-color: #5a72a8;
+    }
   }
   .modal-content {
     background-color: #202020;
