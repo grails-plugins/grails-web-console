@@ -33,12 +33,10 @@ export const build = async (isDebug, options) => {
     // every vendor library (see concatJsTask), so copying them in individually
     // would ship roughly a megabyte the page never requests. Debug links each
     // library separately and still needs them on disk. Stylesheets are linked
-    // individually in both modes, and the jQuery UI images are referenced
-    // relatively from its stylesheet, so both are always copied.
+    // individually in both modes, so they are always copied.
     const externalAssetStreams = [
         ...(options.paths.vendor.cssAssets || []),
         ...(isDebug ? options.paths.vendor.jsAssets || [] : []),
-        ...(options.paths.vendor.staticAssets || []),
     ].filter(asset => asset.src.startsWith('./node_modules/')).map(asset => {
         const destination = path.join(options.webDir, path.posix.dirname(asset.publicPath));
         return gulp.src(asset.src, { base: path.dirname(asset.src), encoding: false })
@@ -86,7 +84,7 @@ export const build = async (isDebug, options) => {
     // fragments rather than being folded into _css.gsp/_js.gsp: index.gsp
     // renders them ahead of those fragments (preserving cascade and load order)
     // and only when the consuming app has not set
-    // grails.plugin.console.bootstrap.enabled = false. They resolve against the
+    // grails.plugin.console.webjars.enabled = false. They resolve against the
     // app's /webjars/** classpath mapping at runtime. Written unconditionally,
     // empty if there are no tags, so the render never hits a missing template.
     const webjars = options.paths.vendor.webjars || { css: [], js: [] };

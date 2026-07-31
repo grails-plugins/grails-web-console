@@ -14,6 +14,8 @@ const gradleProperties = Object.fromEntries(
 
 const bootstrapVersion = gradleProperties.bootstrapVersion;
 const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
+const jqueryUiVersion = gradleProperties.jqueryUiVersion;
+const codeMirrorVersion = gradleProperties.codeMirrorVersion;
 
 // Assets served from the consuming app's webjar classpath rather than copied
 // into the plugin's public resources. The generated GSP resolves the version
@@ -23,49 +25,33 @@ const webjars = {
     css: [
         { name: 'bootstrap', file: 'dist/css/bootstrap.min.css', defaultVersion: bootstrapVersion },
         { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css', defaultVersion: bootstrapIconsVersion },
+        // the theme's images/ sit beside this file inside the jar, so its relative
+        // url() references resolve without copying anything into the plugin
+        { name: 'jquery-ui', file: 'dist/themes/base/jquery-ui.min.css', defaultVersion: jqueryUiVersion },
+        { name: 'codemirror', file: 'lib/codemirror.css', defaultVersion: codeMirrorVersion },
+        { name: 'codemirror', file: 'theme/lesser-dark.css', defaultVersion: codeMirrorVersion },
     ],
     js: [
         // jQuery first: the console's bundle expects it as a global. No
         // defaultVersion — the Grails BOM manages this one, so there is no
         // build-time version here to fall back to.
         { name: 'jquery', file: 'dist/jquery.min.js' },
+        { name: 'jquery-ui', file: 'dist/jquery-ui.min.js', defaultVersion: jqueryUiVersion },
         { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
+        // the groovy mode registers itself against the core, so it follows it
+        { name: 'codemirror', file: 'lib/codemirror.js', defaultVersion: codeMirrorVersion },
+        { name: 'codemirror', file: 'mode/groovy/groovy.js', defaultVersion: codeMirrorVersion },
     ],
 };
 
 const vendorCssAssets = [
     {
-        src: './node_modules/codemirror/lib/codemirror.css',
-        publicPath: '/vendor/codemirror/lib/codemirror.css',
-    },
-    {
-        src: './node_modules/codemirror/theme/lesser-dark.css',
-        publicPath: '/vendor/codemirror/theme/lesser-dark.css',
-    },
-    {
         src: './web/vendor/jquery-layout/css/jquery.layout.css',
         publicPath: '/vendor/jquery-layout/css/jquery.layout.css',
-    },
-    {
-        src: './node_modules/jquery-ui/dist/themes/base/jquery-ui.min.css',
-        publicPath: '/vendor/jquery-ui/jquery-ui.min.css',
-    },
-];
-
-// Copied alongside the vendor css/js but never linked from the GSP fragments
-// (referenced relatively from the css they belong to)
-const vendorStaticAssets = [
-    {
-        src: './node_modules/jquery-ui/dist/themes/base/images/*',
-        publicPath: '/vendor/jquery-ui/images/*',
     },
 ];
 
 const vendorJsAssets = [
-    {
-        src: './node_modules/jquery-ui/dist/jquery-ui.min.js',
-        publicPath: '/vendor/jquery-ui/jquery-ui.min.js',
-    },
     {
         src: './node_modules/underscore/underscore-min.js',
         publicPath: '/vendor/js/libs/underscore-min.js',
@@ -98,14 +84,6 @@ const vendorJsAssets = [
         src: './web/vendor/js/plugins/jquery.hotkeys.js',
         publicPath: '/vendor/js/plugins/jquery.hotkeys.js',
     },
-    {
-        src: './node_modules/codemirror/lib/codemirror.js',
-        publicPath: '/vendor/codemirror/lib/codemirror.js',
-    },
-    {
-        src: './node_modules/codemirror/mode/groovy/groovy.js',
-        publicPath: '/vendor/codemirror/mode/groovy/groovy.js',
-    },
 ];
 
 export const paths = {
@@ -134,7 +112,6 @@ export const paths = {
         js: vendorJsAssets.map(asset => asset.publicPath),
         cssAssets: vendorCssAssets,
         jsAssets: vendorJsAssets,
-        staticAssets: vendorStaticAssets,
         webjars,
     },
     test: [
