@@ -84,10 +84,6 @@ const vendorJsAssets = [
         src: './node_modules/handlebars/dist/handlebars.runtime.min.js',
         publicPath: '/vendor/js/libs/handlebars.runtime.min.js',
     },
-    {
-        src: './web/vendor/js/plugins/jquery.hotkeys.js',
-        publicPath: '/vendor/js/plugins/jquery.hotkeys.js',
-    },
 ];
 
 export const paths = {

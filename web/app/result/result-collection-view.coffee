@@ -40,9 +40,15 @@ App.Result.ResultCollectionView = Marionette.CompositeView.extend
     @setWrap()
     @setShowInput()
 
-    @$('.prompt').on 'keydown', null, 'Shift+return return', (event) => @onExecute(event)
-    @$('.prompt').on 'keyup', null, 'up', (event) => @onUpKeyPress(event)
-    @$('.prompt').on 'keyup', null, 'down', (event) => @onDownKeyPress(event)
+    # Bound directly to the field, so the guards in App.Util.Keys do not apply —
+    # the same exemption jquery.hotkeys made for direct bindings. Enter with a
+    # command modifier is left alone, as 'Shift+return return' also was.
+    @$('.prompt').on 'keydown', (event) =>
+      @onExecute(event) if event.key is 'Enter' and not App.Util.Keys.mod(event)
+    @$('.prompt').on 'keyup', (event) =>
+      @onUpKeyPress(event) if event.key is 'ArrowUp'
+    @$('.prompt').on 'keyup', (event) =>
+      @onDownKeyPress(event) if event.key is 'ArrowDown'
 
   onClearClick: (event) ->
     event.preventDefault()

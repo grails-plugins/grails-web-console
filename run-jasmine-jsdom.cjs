@@ -159,7 +159,6 @@ const loadBrowserLibraries = context => {
     'node_modules/backbone.radio/build/backbone.radio.min.js',
     'node_modules/backbone.marionette/lib/backbone.marionette.min.js',
     'node_modules/handlebars/dist/handlebars.runtime.min.js',
-    'web/vendor/js/plugins/jquery.hotkeys.js',
   ].forEach(file => loadScript(resolveFromRoot(file), context));
 };
 

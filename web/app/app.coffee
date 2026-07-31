@@ -167,22 +167,22 @@ Application = Marionette.Application.extend
     $('body').css 'visibility', 'visible'
 
   _initKeybindings: ->
-    # These document-level bindings exist so the shortcuts work with focus
-    # anywhere — the results prompt, the scripts panel, nothing at all. The
-    # editor binds the same three itself, and CodeMirror 6 only calls
-    # preventDefault on a handled key, not stopPropagation as CodeMirror 5 did,
-    # so without this guard a keystroke in the editor would run the command
-    # twice.
-    fromEditor = (event) -> $(event.target).closest('.cm-editor').length > 0
+    # Document-wide so the shortcuts work with focus anywhere — the scripts
+    # panel, nothing at all. App.Util.Keys applies the two guards: not while
+    # typing in a field, and not for keys the editor's own keymap already
+    # handled.
+    keys = App.Util.Keys
 
-    $(document).on 'keydown', null, 'Ctrl+return Meta+return', (event) =>
-      @execute 'execute' unless fromEditor event
-    $(document).on 'keydown', null, 'Ctrl+s Meta+s', (event) =>
+    keys.global ((event) -> event.key is 'Enter' and keys.mod event), =>
+      @execute 'execute'
+
+    keys.global ((event) -> event.key?.toLowerCase() is 's' and keys.mod event), (event) =>
       event.preventDefault()
       event.stopPropagation()
-      @execute 'save' unless fromEditor event
-    $(document).on 'keydown', null, 'esc', (event) =>
-      @execute 'clear' unless fromEditor event
+      @execute 'save'
+
+    keys.global ((event) -> event.key is 'Escape'), =>
+      @execute 'clear'
 
   createLink: (action, params) ->
     link = "#{@data.baseUrl}/#{action}"
