@@ -85,10 +85,6 @@ const vendorJsAssets = [
         publicPath: '/vendor/js/libs/handlebars.runtime.min.js',
     },
     {
-        src: './web/vendor/js/plugins/jquery.selector-polyfill.js',
-        publicPath: '/vendor/js/plugins/jquery.selector-polyfill.js',
-    },
-    {
         src: './web/vendor/js/plugins/jquery.hotkeys.js',
         publicPath: '/vendor/js/plugins/jquery.hotkeys.js',
     },
