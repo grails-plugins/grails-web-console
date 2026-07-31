@@ -5,7 +5,8 @@
 // You're free to add application-wide JavaScript to this file, but it's generally better
 // to create separate JavaScript files as needed.
 //
-//= require jquery-3.5.1.min
-//= require popper.min
-//= require bootstrap
+// bootstrap.bundle already contains Popper. % resolves to whichever version is on
+// the classpath, so these survive a dependency bump.
+//= require webjars/jquery/%/dist/jquery.js
+//= require webjars/bootstrap/%/dist/js/bootstrap.bundle
 //= require_self

@@ -4,9 +4,13 @@ import { build } from './grails-builder.js';
 import { paths } from './paths.js';
 
 // Emits a GSP expression resolving the webjar version actually on the runtime
-// classpath, with the plugin's build-time version as the fallback
-const webjarVersionExpression = webjar =>
-    `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}') ?: '${webjar.defaultVersion}'}`;
+// classpath. Webjars carrying a build-time version fall back to it; the ones the
+// Grails BOM manages have none, and resolution can only fail when the app has
+// excluded the dependency outright — in which case the link would 404 whatever
+// version it named.
+const webjarVersionExpression = webjar => webjar.defaultVersion
+    ? `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}') ?: '${webjar.defaultVersion}'}`
+    : `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}')}`;
 
 const options = {
     outputDir:   './plugin/grails-app/views/console/',

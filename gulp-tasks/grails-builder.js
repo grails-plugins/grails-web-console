@@ -29,9 +29,15 @@ export const build = async (isDebug, options) => {
         cssSrc = options.paths.vendor.css.concat(options.paths.app.css.release).map(path => options.webDir + path);
     }
 
+    // A release links one concatenated app.<timestamp>.js that already contains
+    // every vendor library (see concatJsTask), so copying them in individually
+    // would ship roughly a megabyte the page never requests. Debug links each
+    // library separately and still needs them on disk. Stylesheets are linked
+    // individually in both modes, and the jQuery UI images are referenced
+    // relatively from its stylesheet, so both are always copied.
     const externalAssetStreams = [
         ...(options.paths.vendor.cssAssets || []),
-        ...(options.paths.vendor.jsAssets || []),
+        ...(isDebug ? options.paths.vendor.jsAssets || [] : []),
         ...(options.paths.vendor.staticAssets || []),
     ].filter(asset => asset.src.startsWith('./node_modules/')).map(asset => {
         const destination = path.join(options.webDir, path.posix.dirname(asset.publicPath));
@@ -51,6 +57,8 @@ export const build = async (isDebug, options) => {
             './web/vendor/**/*',
             // test-only, loaded from web/ by run-jasmine-jsdom.cjs — never shipped
             '!./web/vendor/js/plugins/jasmine-jquery.js',
+            // vendored scripts are concatenated into the release bundle too
+            ...(isDebug ? [] : ['!./web/vendor/**/*.js']),
         ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
@@ -74,20 +82,20 @@ export const build = async (isDebug, options) => {
             .pipe(gulp.dest(options.outputDir))),
     ]);
 
-    // Webjar assets have no file under webDir to wrap, so their tags are
-    // prepended to the generated fragments. They resolve against the consuming
-    // app's /webjars/** classpath mapping at runtime.
+    // Webjar assets have no file under webDir to wrap, so they get their own
+    // fragments rather than being folded into _css.gsp/_js.gsp: index.gsp
+    // renders them ahead of those fragments (preserving cascade and load order)
+    // and only when the consuming app has not set
+    // grails.plugin.console.bootstrap.enabled = false. They resolve against the
+    // app's /webjars/** classpath mapping at runtime. Written unconditionally,
+    // empty if there are no tags, so the render never hits a missing template.
     const webjars = options.paths.vendor.webjars || { css: [], js: [] };
-    const prepend = async (fragment, tags) => {
-        if (!tags.length) {
-            return;
-        }
-        const file = path.join(options.outputDir, fragment);
-        const existing = await fs.readFile(file, 'utf8');
-        await fs.writeFile(file, tags.join('\n') + '\n' + existing);
-    };
+    const writeFragment = (fragment, tags) => fs.writeFile(
+        path.join(options.outputDir, fragment),
+        tags.length ? tags.join('\n') + '\n' : ''
+    );
     await Promise.all([
-        prepend('_css.gsp', webjars.css.map(options.webjarCssWrap)),
-        prepend('_js.gsp', webjars.js.map(options.webjarJsWrap)),
+        writeFragment('_webjarsCss.gsp', webjars.css.map(options.webjarCssWrap)),
+        writeFragment('_webjarsJs.gsp', webjars.js.map(options.webjarJsWrap)),
     ]);
 };

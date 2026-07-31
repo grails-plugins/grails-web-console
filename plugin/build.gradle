@@ -14,9 +14,14 @@ dependencies {
 
     console("org.apache.grails:grails-console")
 
-    // Served by Spring Boot's /webjars/** classpath mapping in the consuming app;
-    // versions must stay in sync with the /webjars links the gulp build writes
-    // into the GSP fragments (both read gradle.properties)
+    // Served by Spring Boot's /webjars/** classpath mapping in the consuming app.
+    // The platform manages jQuery, so its version lives in the Grails BOM rather
+    // than here; the generated GSP resolves whatever the app's own dependency
+    // management settles on regardless (see WebjarVersions). Bootstrap is not in
+    // the BOM, so its versions stay in gradle.properties, read by both this build
+    // and gulp so the /webjars links it writes cannot drift.
+    runtimeOnly platform("org.apache.grails:grails-bom:$grailsVersion")
+    runtimeOnly "org.webjars.npm:jquery"
     runtimeOnly "org.webjars.npm:bootstrap:${project.bootstrapVersion}"
     runtimeOnly "org.webjars.npm:bootstrap-icons:${project.bootstrapIconsVersion}"
 
