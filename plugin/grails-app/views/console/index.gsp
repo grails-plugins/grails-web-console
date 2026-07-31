@@ -4,11 +4,11 @@
 <html>
 
 <head>
-  <g:set var="bootstrapEnabled" value="${grailsApplication.config.getProperty('grails.plugin.console.bootstrap.enabled', Boolean, true)}" />
+  <g:set var="webjarsEnabled" value="${grailsApplication.config.getProperty('grails.plugin.console.webjars.enabled', Boolean, true)}" />
   <title>Grails Debug Console</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <g:render template="favicon" />
-  <g:if test="${bootstrapEnabled}"><g:render template="webjarsCss" /></g:if>
+  <g:if test="${webjarsEnabled}"><g:render template="webjarsCss" /></g:if>
   <g:render template="css" />
   
   <meta name="layout" content="${grailsApplication.config['grails.plugin.console.layout'] ?: 'console-plugin-layout'}"/>
@@ -21,7 +21,7 @@
   <div id="main-content"></div>
   <div id="health-region" class="full-height d-none"></div>
 </div>
-<g:if test="${bootstrapEnabled}"><g:render template="webjarsJs" /></g:if>
+<g:if test="${webjarsEnabled}"><g:render template="webjarsJs" /></g:if>
 <g:render template="js" />
 
 <script type="text/javascript" charset="utf-8">

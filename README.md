@@ -20,29 +20,30 @@ A web-based Groovy console for interactive runtime application management and de
 
 ### Webjars (8.x)
 
-As of 8.x the plugin no longer bundles Bootstrap and Bootstrap Icons in its own
-resources. It declares `org.webjars.npm:bootstrap` and
-`org.webjars.npm:bootstrap-icons` as transitive runtime dependencies, served
-through Spring Boot's standard `/webjars/**` classpath mapping. Two things
-follow from this:
+As of 8.x the plugin no longer bundles jQuery, Bootstrap or Bootstrap Icons in
+its own resources. It declares `org.webjars.npm:jquery`,
+`org.webjars.npm:bootstrap` and `org.webjars.npm:bootstrap-icons` as transitive
+runtime dependencies, served through Spring Boot's standard `/webjars/**`
+classpath mapping. Two things follow from this:
 
 - If your security configuration restricts URLs, `/webjars/**` must remain
-  reachable for the console page to be styled.
+  reachable. Bootstrap only affects styling, but the console does not work at
+  all without jQuery.
 - The console links whatever webjar version your application actually resolves
   (your dependency management — typically the `grails-bom` platform — wins over
-  the plugin's requested version), so overriding the Bootstrap version in your
-  app is safe.
+  the plugin's requested version), so overriding any of these versions in your
+  app is safe. jQuery has no version pinned here at all; the BOM supplies it.
 
-#### Supplying your own Bootstrap
+#### Supplying your own copies
 
-An application that already ships Bootstrap — through asset-pipeline, its own
-webjar dependency, or a CDN — can opt out of the plugin's copy:
+An application that already ships these — through asset-pipeline, its own webjar
+dependencies, or a CDN — can opt out of the plugin's:
 
 ```yaml
 grails:
     plugin:
         console:
-            bootstrap:
+            webjars:
                 enabled: false
 ```
 
@@ -51,19 +52,22 @@ page. Drop the runtime dependencies too, so the jars stop shipping:
 
 ```groovy
 implementation('org.grails.plugins:grails-web-console:8.0.0') {
+    exclude group: 'org.webjars.npm', module: 'jquery'
     exclude group: 'org.webjars.npm', module: 'bootstrap'
     exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
 }
 ```
 
-Bootstrap then becomes yours to supply. Point `grails.plugin.console.layout` at
-a layout of your own that emits the tags ahead of `<g:layoutHead/>`, so the
-console's own stylesheets still win the cascade:
+Supplying them then becomes your job — all of them, since the flag is
+all-or-nothing. Point `grails.plugin.console.layout` at a layout of your own that
+emits the tags ahead of `<g:layoutHead/>`, so the console's own stylesheets still
+win the cascade and jQuery is defined before its bundle runs:
 
 ```gsp
 <head>
   <asset:stylesheet href="webjars/bootstrap/%/dist/css/bootstrap.css"/>
   <asset:stylesheet href="webjars/bootstrap-icons/%/font/bootstrap-icons.css"/>
+  <asset:javascript src="webjars/jquery/%/dist/jquery.js"/>
   <asset:javascript src="webjars/bootstrap/%/dist/js/bootstrap.bundle.js"/>
   <g:layoutHead/>
 </head>
@@ -75,8 +79,9 @@ and against its classpath resolvers in development. Keep exactly one version of
 each webjar on the classpath: the wildcard takes the first manifest key that
 matches, and iteration order is unspecified.
 
-The console still needs Bootstrap 5 CSS, the Bootstrap Icons font CSS, and the
-Bootstrap JS bundle — it renders unstyled without them.
+The console needs jQuery, Bootstrap 5 CSS, the Bootstrap Icons font CSS and the
+Bootstrap JS bundle. Missing stylesheets leave it unstyled; missing jQuery
+leaves it blank.
 
 ## Installation
 

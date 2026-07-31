@@ -25,6 +25,10 @@ const webjars = {
         { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css', defaultVersion: bootstrapIconsVersion },
     ],
     js: [
+        // jQuery first: the console's bundle expects it as a global. No
+        // defaultVersion — the Grails BOM manages this one, so there is no
+        // build-time version here to fall back to.
+        { name: 'jquery', file: 'dist/jquery.min.js' },
         { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
     ],
 };
@@ -58,10 +62,6 @@ const vendorStaticAssets = [
 ];
 
 const vendorJsAssets = [
-    {
-        src: './node_modules/jquery/dist/jquery.min.js',
-        publicPath: '/vendor/js/libs/jquery.min.js',
-    },
     {
         src: './node_modules/jquery-ui/dist/jquery-ui.min.js',
         publicPath: '/vendor/jquery-ui/jquery-ui.min.js',
