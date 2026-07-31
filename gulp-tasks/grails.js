@@ -31,7 +31,8 @@ const moduleShim = modules => [
     '  import { EditorState, Compartment } from "@codemirror/state"',
     '  import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from "@codemirror/view"',
     '  import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"',
-    '  import { StreamLanguage, bracketMatching, indentUnit, syntaxHighlighting, defaultHighlightStyle } from "@codemirror/language"',
+    '  import { StreamLanguage, bracketMatching, indentUnit, syntaxHighlighting, defaultHighlightStyle, HighlightStyle } from "@codemirror/language"',
+    '  import { tags } from "@lezer/highlight"',
     '  import { groovy } from "@codemirror/legacy-modes/mode/groovy"',
     '  import { oneDark } from "@codemirror/theme-one-dark"',
     '  // the classic console bundle reads this on jQuery ready, which is after',
@@ -39,7 +40,7 @@ const moduleShim = modules => [
     '  window.CM6 = { EditorState, EditorView, Compartment, keymap, lineNumbers,',
     '      highlightActiveLine, highlightActiveLineGutter, defaultKeymap, history,',
     '      historyKeymap, indentWithTab, StreamLanguage, bracketMatching, indentUnit,',
-    '      syntaxHighlighting, defaultHighlightStyle, groovy, oneDark }',
+    '      syntaxHighlighting, defaultHighlightStyle, HighlightStyle, tags, groovy, oneDark }',
     '</script>',
 ].join('\n');
 

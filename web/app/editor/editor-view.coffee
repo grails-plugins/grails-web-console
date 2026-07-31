@@ -54,7 +54,7 @@ App.Editor.EditorView = Marionette.View.extend
         @editor.focus()
 
     themeExtension: ->
-        if App.settings.get('theme') is 'default' then [] else window.CM6.oneDark
+        App.Editor.themeFor(App.settings.get('theme')).extension()
 
     setTheme: ->
         @editor.dispatch effects: @themeCompartment.reconfigure(@themeExtension())

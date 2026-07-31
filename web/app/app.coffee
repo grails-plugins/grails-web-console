@@ -181,7 +181,10 @@ Application = Marionette.Application.extend
 
   showTheme: ->
     theme = @settings.get('theme')
+    # The surrounding chrome only has a light and a dark variant; editor themes
+    # are independent of it, so adding one costs no stylesheet work.
     $('body').attr 'data-theme', theme
+    $('body').attr 'data-chrome', App.Editor.chromeFor(theme)
 
   savingOn: ->
     $('.navbar .saving').fadeIn 100
