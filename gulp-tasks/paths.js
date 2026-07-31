@@ -1,35 +1,18 @@
-import fs from 'node:fs';
-
 export const timestamp = new Date().getTime();
 
-// Webjar versions are defined once in gradle.properties: the plugin declares the
-// matching org.webjars.npm dependencies, and the build below writes /webjars/...
-// links for them into the GSP fragments.
-const gradleProperties = Object.fromEntries(
-    fs.readFileSync('./gradle.properties', 'utf8')
-        .split('\n')
-        .filter(line => line.includes('=') && !line.trim().startsWith('#'))
-        .map(line => line.split('=', 2).map(part => part.trim()))
-);
-
-const bootstrapVersion = gradleProperties.bootstrapVersion;
-const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
-
 // Assets served from the consuming app's webjar classpath rather than copied
-// into the plugin's public resources. The generated GSP resolves the version
-// present on the runtime classpath (the app's dependency management may pick a
-// different one than this plugin requested); defaultVersion is only a fallback.
+// into the plugin's public resources. Every version is resolved from the runtime
+// classpath at render time, since the consuming app's dependency management —
+// the grails-bom platform manages all three — decides which one actually wins.
 const webjars = {
     css: [
-        { name: 'bootstrap', file: 'dist/css/bootstrap.min.css', defaultVersion: bootstrapVersion },
-        { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css', defaultVersion: bootstrapIconsVersion },
+        { name: 'bootstrap', file: 'dist/css/bootstrap.min.css' },
+        { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css' },
     ],
     js: [
-        // jQuery first: the console's bundle expects it as a global. No
-        // defaultVersion — the Grails BOM manages this one, so there is no
-        // build-time version here to fall back to.
+        // jQuery first: the console's bundle expects it as a global
         { name: 'jquery', file: 'dist/jquery.min.js' },
-        { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
+        { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js' },
     ],
 };
 
