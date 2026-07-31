@@ -12,6 +12,38 @@ const webjarVersionExpression = webjar => webjar.defaultVersion
     ? `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}') ?: '${webjar.defaultVersion}'}`
     : `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}')}`;
 
+// The import map must carry a concrete version per specifier, so each is resolved
+// from the runtime classpath. A module missing from the classpath yields an empty
+// version and a broken URL, which only happens when the app has excluded the
+// dependency — the same situation in which it would 404 whatever we wrote.
+const importMapEntry = m =>
+    `    "${m.specifier}": "\${request.contextPath}/webjars/${m.webjar}/\${org.grails.plugins.console.WebjarVersions.version('${m.webjar}')}/${m.file}"`;
+
+const moduleShim = modules => [
+    '<script type="importmap">',
+    '{',
+    '  "imports": {',
+    modules.map(importMapEntry).join(',\n'),
+    '  }',
+    '}',
+    '</script>',
+    '<script type="module">',
+    '  import { EditorState, Compartment } from "@codemirror/state"',
+    '  import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from "@codemirror/view"',
+    '  import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"',
+    '  import { StreamLanguage, bracketMatching, indentUnit, syntaxHighlighting, defaultHighlightStyle, HighlightStyle } from "@codemirror/language"',
+    '  import { tags } from "@lezer/highlight"',
+    '  import { groovy } from "@codemirror/legacy-modes/mode/groovy"',
+    '  import { oneDark } from "@codemirror/theme-one-dark"',
+    '  // the classic console bundle reads this on jQuery ready, which is after',
+    '  // deferred module scripts have run',
+    '  window.CM6 = { EditorState, EditorView, Compartment, keymap, lineNumbers,',
+    '      highlightActiveLine, highlightActiveLineGutter, defaultKeymap, history,',
+    '      historyKeymap, indentWithTab, StreamLanguage, bracketMatching, indentUnit,',
+    '      syntaxHighlighting, defaultHighlightStyle, HighlightStyle, tags, groovy, oneDark }',
+    '</script>',
+].join('\n');
+
 const options = {
     outputDir:   './plugin/grails-app/views/console/',
     relativeDir: './plugin/src/main/resources/public',
@@ -21,6 +53,7 @@ const options = {
     cssWrap:     path => `<link rel="stylesheet" media="screen" href="\${resource(file: '${path}')}" />`,
     webjarJsWrap:  webjar => `<script type="text/javascript" src="\${request.contextPath}/webjars/${webjar.name}/${webjarVersionExpression(webjar)}/${webjar.file}" ></script>`,
     webjarCssWrap: webjar => `<link rel="stylesheet" media="screen" href="\${request.contextPath}/webjars/${webjar.name}/${webjarVersionExpression(webjar)}/${webjar.file}" />`,
+    moduleShim,
     paths:       paths
 };
 

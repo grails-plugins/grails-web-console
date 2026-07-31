@@ -15,7 +15,6 @@ const gradleProperties = Object.fromEntries(
 const bootstrapVersion = gradleProperties.bootstrapVersion;
 const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
 const jqueryUiVersion = gradleProperties.jqueryUiVersion;
-const codeMirrorVersion = gradleProperties.codeMirrorVersion;
 
 // Assets served from the consuming app's webjar classpath rather than copied
 // into the plugin's public resources. The generated GSP resolves the version
@@ -28,8 +27,6 @@ const webjars = {
         // the theme's images/ sit beside this file inside the jar, so its relative
         // url() references resolve without copying anything into the plugin
         { name: 'jquery-ui', file: 'dist/themes/base/jquery-ui.min.css', defaultVersion: jqueryUiVersion },
-        { name: 'codemirror', file: 'lib/codemirror.css', defaultVersion: codeMirrorVersion },
-        { name: 'codemirror', file: 'theme/lesser-dark.css', defaultVersion: codeMirrorVersion },
     ],
     js: [
         // jQuery first: the console's bundle expects it as a global. No
@@ -38,11 +35,35 @@ const webjars = {
         { name: 'jquery', file: 'dist/jquery.min.js' },
         { name: 'jquery-ui', file: 'dist/jquery-ui.min.js', defaultVersion: jqueryUiVersion },
         { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
-        // the groovy mode registers itself against the core, so it follows it
-        { name: 'codemirror', file: 'lib/codemirror.js', defaultVersion: codeMirrorVersion },
-        { name: 'codemirror', file: 'mode/groovy/groovy.js', defaultVersion: codeMirrorVersion },
     ],
 };
+
+// CodeMirror 6 ships ES modules with bare import specifiers and no browser
+// global, so it cannot be loaded with a plain script tag. index.gsp emits an
+// import map pinning each specifier to its /webjars/ URL, then a module shim
+// that imports what the editor needs and hangs it on window.CM6 for the classic
+// bundle. Module scripts are deferred but run before DOMContentLoaded, so CM6 is
+// defined by the time App.start() fires on jQuery ready.
+//
+// Versions are resolved from the classpath at render time, so none are pinned
+// here. The first six are declared in plugin/build.gradle; the rest arrive
+// transitively and are listed because the import map must cover every bare
+// specifier the graph resolves, not just the ones the shim names.
+const moduleWebjars = [
+    { specifier: '@codemirror/state',                     webjar: 'codemirror__state',           file: 'dist/index.js' },
+    { specifier: '@codemirror/view',                      webjar: 'codemirror__view',            file: 'dist/index.js' },
+    { specifier: '@codemirror/commands',                  webjar: 'codemirror__commands',        file: 'dist/index.js' },
+    { specifier: '@codemirror/language',                  webjar: 'codemirror__language',        file: 'dist/index.js' },
+    { specifier: '@codemirror/theme-one-dark',            webjar: 'codemirror__theme-one-dark',  file: 'dist/index.js' },
+    { specifier: '@codemirror/legacy-modes/mode/groovy',  webjar: 'codemirror__legacy-modes',    file: 'mode/groovy.js' },
+    { specifier: '@lezer/common',                         webjar: 'lezer__common',               file: 'dist/index.js' },
+    { specifier: '@lezer/highlight',                      webjar: 'lezer__highlight',            file: 'dist/index.js' },
+    { specifier: '@lezer/lr',                             webjar: 'lezer__lr',                   file: 'dist/index.js' },
+    { specifier: '@marijn/find-cluster-break',            webjar: 'marijn__find-cluster-break',  file: 'src/index.js' },
+    { specifier: 'style-mod',                             webjar: 'style-mod',                   file: 'src/style-mod.js' },
+    { specifier: 'crelt',                                 webjar: 'crelt',                       file: 'index.js' },
+    { specifier: 'w3c-keyname',                           webjar: 'w3c-keyname',                 file: 'index.js' },
+];
 
 const vendorCssAssets = [
     {
@@ -113,6 +134,7 @@ export const paths = {
         cssAssets: vendorCssAssets,
         jsAssets: vendorJsAssets,
         webjars,
+        moduleWebjars,
     },
     test: [
         './js/tests/**.js'

@@ -52,6 +52,9 @@ grails:
     plugin:
         console:
             enabled: true
+            webjars:
+                enabled: false
+            layout: console
             csrfProtection:
                 enabled: true
 dataSource:

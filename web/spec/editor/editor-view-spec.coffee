@@ -17,8 +17,12 @@ describe 'App.Editor.EditorView', ->
     expect(@view.getValue()).toBe 'test value'
 
   it 'should syncEditorSettings', ->
-    App.settings.set 'theme', 'test-theme'
-    expect(@view.editor.getOption 'theme').toBe 'test-theme'
+    darkTheme = window.CM6.EditorView.darkTheme
+    expect(@view.editor.state.facet darkTheme).toBe false
+    App.settings.set 'theme', 'one-dark'
+    expect(@view.editor.state.facet darkTheme).toBe true
+    App.settings.set 'theme', 'default'
+    expect(@view.editor.state.facet darkTheme).toBe false
 
   it 'should execute new on click', ->
     spyOn App, 'execute'

@@ -32,6 +32,10 @@ const installGlobals = window => {
   global.KeyboardEvent = window.KeyboardEvent;
   global.MouseEvent = window.MouseEvent;
   global.getComputedStyle = window.getComputedStyle.bind(window);
+  // CodeMirror 6's EditorView constructs a DOMObserver immediately
+  global.MutationObserver = window.MutationObserver;
+  global.DOMParser = window.DOMParser;
+  global.Range = window.Range;
   global.requestAnimationFrame = window.requestAnimationFrame.bind(window);
   global.cancelAnimationFrame = window.cancelAnimationFrame.bind(window);
   global.setTimeout = timers.setTimeout;
@@ -176,6 +180,33 @@ const loadSpecs = context => {
   glob.sync(resolveFromRoot('build/spec/**/*spec.*')).sort().forEach(file => loadScript(file, context));
 };
 
+// In the browser, index.gsp's import map plus a module script put CodeMirror 6's
+// exports on window.CM6 before the console boots. jsdom honours neither, so the
+// same surface is assembled here from the installed packages.
+const loadCodeMirror = async window => {
+  const [state, view, commands, language, groovyMode, oneDarkTheme] = await Promise.all([
+    import('@codemirror/state'),
+    import('@codemirror/view'),
+    import('@codemirror/commands'),
+    import('@codemirror/language'),
+    import('@codemirror/legacy-modes/mode/groovy'),
+    import('@codemirror/theme-one-dark'),
+  ]);
+  window.CM6 = {
+    EditorState: state.EditorState, Compartment: state.Compartment,
+    EditorView: view.EditorView, keymap: view.keymap, lineNumbers: view.lineNumbers,
+    highlightActiveLine: view.highlightActiveLine,
+    highlightActiveLineGutter: view.highlightActiveLineGutter,
+    defaultKeymap: commands.defaultKeymap, history: commands.history,
+    historyKeymap: commands.historyKeymap, indentWithTab: commands.indentWithTab,
+    StreamLanguage: language.StreamLanguage, bracketMatching: language.bracketMatching,
+    indentUnit: language.indentUnit, syntaxHighlighting: language.syntaxHighlighting,
+    defaultHighlightStyle: language.defaultHighlightStyle,
+    groovy: groovyMode.groovy, oneDark: oneDarkTheme.oneDark,
+  };
+  global.CM6 = window.CM6;
+};
+
 const run = async () => {
   const dom = buildDom();
   const { window } = dom;
@@ -183,6 +214,7 @@ const run = async () => {
 
   installGlobals(window);
   loadBrowserLibraries(context);
+  await loadCodeMirror(window);
 
   global.$ = window.$;
   global.jQuery = window.jQuery;

@@ -23,7 +23,16 @@ dependencies {
     runtimeOnly platform("org.apache.grails:grails-bom:$grailsVersion")
     runtimeOnly "org.webjars.npm:jquery"
     runtimeOnly "org.webjars.npm:jquery-ui:${project.jqueryUiVersion}"
-    runtimeOnly "org.webjars.npm:codemirror:${project.codeMirrorVersion}"
+    // CodeMirror 6 is ESM-only, so index.gsp emits an import map over these and a
+    // module shim rather than plain script tags. Only what the editor imports is
+    // declared; the rest of the graph (@lezer/*, style-mod, crelt, w3c-keyname,
+    // @marijn/find-cluster-break) arrives transitively from these webjars' POMs.
+    runtimeOnly "org.webjars.npm:codemirror__state:${project.codeMirrorStateVersion}"
+    runtimeOnly "org.webjars.npm:codemirror__view:${project.codeMirrorViewVersion}"
+    runtimeOnly "org.webjars.npm:codemirror__commands:${project.codeMirrorCommandsVersion}"
+    runtimeOnly "org.webjars.npm:codemirror__language:${project.codeMirrorLanguageVersion}"
+    runtimeOnly "org.webjars.npm:codemirror__legacy-modes:${project.codeMirrorLegacyModesVersion}"
+    runtimeOnly "org.webjars.npm:codemirror__theme-one-dark:${project.codeMirrorThemeOneDarkVersion}"
     runtimeOnly "org.webjars.npm:bootstrap:${project.bootstrapVersion}"
     runtimeOnly "org.webjars.npm:bootstrap-icons:${project.bootstrapIconsVersion}"
 
