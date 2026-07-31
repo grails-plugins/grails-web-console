@@ -62,12 +62,18 @@ console's own stylesheets still win the cascade:
 
 ```gsp
 <head>
-  <asset:stylesheet href="webjars/bootstrap/5.3.8/dist/css/bootstrap.css"/>
-  <asset:stylesheet href="webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css"/>
-  <asset:javascript src="webjars/bootstrap/5.3.8/dist/js/bootstrap.bundle.js"/>
+  <asset:stylesheet href="webjars/bootstrap/%/dist/css/bootstrap.css"/>
+  <asset:stylesheet href="webjars/bootstrap-icons/%/font/bootstrap-icons.css"/>
+  <asset:javascript src="webjars/bootstrap/%/dist/js/bootstrap.bundle.js"/>
   <g:layoutHead/>
 </head>
 ```
+
+`%` (or `*`) stands in for the version, so the layout survives a Bootstrap
+upgrade — asset-pipeline matches it against the compiled manifest in production
+and against its classpath resolvers in development. Keep exactly one version of
+each webjar on the classpath: the wildcard takes the first manifest key that
+matches, and iteration order is unspecified.
 
 The console still needs Bootstrap 5 CSS, the Bootstrap Icons font CSS, and the
 Bootstrap JS bundle — it renders unstyled without them.
