@@ -15,6 +15,7 @@ const gradleProperties = Object.fromEntries(
 const bootstrapVersion = gradleProperties.bootstrapVersion;
 const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
 const jqueryUiVersion = gradleProperties.jqueryUiVersion;
+const codeMirrorVersion = gradleProperties.codeMirrorVersion;
 
 // Assets served from the consuming app's webjar classpath rather than copied
 // into the plugin's public resources. The generated GSP resolves the version
@@ -27,6 +28,8 @@ const webjars = {
         // the theme's images/ sit beside this file inside the jar, so its relative
         // url() references resolve without copying anything into the plugin
         { name: 'jquery-ui', file: 'dist/themes/base/jquery-ui.min.css', defaultVersion: jqueryUiVersion },
+        { name: 'codemirror', file: 'lib/codemirror.css', defaultVersion: codeMirrorVersion },
+        { name: 'codemirror', file: 'theme/lesser-dark.css', defaultVersion: codeMirrorVersion },
     ],
     js: [
         // jQuery first: the console's bundle expects it as a global. No
@@ -35,18 +38,13 @@ const webjars = {
         { name: 'jquery', file: 'dist/jquery.min.js' },
         { name: 'jquery-ui', file: 'dist/jquery-ui.min.js', defaultVersion: jqueryUiVersion },
         { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
+        // the groovy mode registers itself against the core, so it follows it
+        { name: 'codemirror', file: 'lib/codemirror.js', defaultVersion: codeMirrorVersion },
+        { name: 'codemirror', file: 'mode/groovy/groovy.js', defaultVersion: codeMirrorVersion },
     ],
 };
 
 const vendorCssAssets = [
-    {
-        src: './node_modules/codemirror/lib/codemirror.css',
-        publicPath: '/vendor/codemirror/lib/codemirror.css',
-    },
-    {
-        src: './node_modules/codemirror/theme/lesser-dark.css',
-        publicPath: '/vendor/codemirror/theme/lesser-dark.css',
-    },
     {
         src: './web/vendor/jquery-layout/css/jquery.layout.css',
         publicPath: '/vendor/jquery-layout/css/jquery.layout.css',
@@ -85,14 +83,6 @@ const vendorJsAssets = [
     {
         src: './web/vendor/js/plugins/jquery.hotkeys.js',
         publicPath: '/vendor/js/plugins/jquery.hotkeys.js',
-    },
-    {
-        src: './node_modules/codemirror/lib/codemirror.js',
-        publicPath: '/vendor/codemirror/lib/codemirror.js',
-    },
-    {
-        src: './node_modules/codemirror/mode/groovy/groovy.js',
-        publicPath: '/vendor/codemirror/mode/groovy/groovy.js',
     },
 ];
 
