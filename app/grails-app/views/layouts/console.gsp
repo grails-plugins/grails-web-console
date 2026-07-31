@@ -9,9 +9,7 @@
        jQuery is defined before its bundle runs. --%>
   <asset:stylesheet href="webjars/bootstrap/%/dist/css/bootstrap.css"/>
   <asset:stylesheet href="webjars/bootstrap-icons/%/font/bootstrap-icons.css"/>
-  <asset:stylesheet href="webjars/jquery-ui/%/dist/themes/base/jquery-ui.css"/>
   <asset:javascript src="webjars/jquery/%/dist/jquery.js"/>
-  <asset:javascript src="webjars/jquery-ui/%/dist/jquery-ui.js"/>
   <asset:javascript src="webjars/bootstrap/%/dist/js/bootstrap.bundle.js"/>
   <g:layoutHead/>
 </head>

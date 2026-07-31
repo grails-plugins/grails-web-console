@@ -53,7 +53,16 @@ body {
   }
 }
 
+.results-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
 .script-result-section {
+  flex: 1 1 auto;
+  min-height: 0;
   font-size: 12px;
   font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
   overflow: auto;
@@ -227,14 +236,48 @@ body {
   font-size: 14px;
 }
 
-.ui-layout-pane {
+// Flexbox splitter (App.Util.Splitter). The bar is the only draggable part;
+// the fixed pane's width/height comes from its flex-basis.
+.splitter-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  min-height: 0;
+
+  &.splitter-vertical {
+    flex-direction: column;
+  }
+}
+
+.splitter-pane {
   padding: 0;
   border: 0;
   background: transparent;
+  // without this a flex item refuses to shrink below its content's size, which
+  // makes long output push the editor off-screen instead of scrolling
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
-.ui-layout-content {
-  padding: 0;
+.splitter-pane-flexible {
+  flex: 1 1 auto;
+}
+
+.splitter-bar {
+  // 3px, as jquery.layout used, is a fiddly target; 6 is grabbable without
+  // being visually heavy
+  flex: 0 0 6px;
+  cursor: ew-resize;
+  touch-action: none;
+
+  &.dragging {
+    background-color: #6c8cd5;
+  }
+
+  .splitter-vertical > & {
+    cursor: ns-resize;
+  }
 }
 
 .cm-editor {
@@ -242,8 +285,22 @@ body {
   font-size: 14px;
 }
 
+#editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
 #code-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
+}
+
+.outer-center {
+  min-width: 0;
+  min-height: 0;
 }
 
 // Replacements for font-awesome's fa-lg and fa-spin utilities
@@ -386,6 +443,16 @@ body {
   }
 }
 
+.modal-resize-grip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
 .modal-dialog {
   margin: 1.75rem auto;
   .modal-content {
@@ -426,8 +493,8 @@ body[data-chrome="light"] {
     }
   }
 
-  .ui-layout-toggler {
-    background-color: #aaa;
+  .splitter-bar {
+    background-color: #ccc;
   }
 
   .btn-toolbar {
@@ -454,7 +521,17 @@ body[data-chrome="light"] {
   }
 
 
-  .modal-dialog {
+  .modal-resize-grip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.modal-dialog {
     .modal-content {
       background-color: #e9e9e7;
     }
@@ -517,12 +594,8 @@ body[data-chrome="dark"] {
       }
     }
   }
-  .ui-layout-resizer {
+  .splitter-bar {
     background-color: #444;
-  }
-
-  .ui-layout-toggler {
-    background-color: #777;
   }
   .modal-content {
     background-color: #202020;
@@ -599,7 +672,17 @@ body[data-chrome="dark"] {
     }
   }
 
-  .modal-dialog {
+  .modal-resize-grip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+  touch-action: none;
+}
+
+.modal-dialog {
     .modal-content {
       border-color: #333;
     }

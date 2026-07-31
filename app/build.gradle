@@ -39,7 +39,6 @@ dependencies {
     testAndDevelopmentOnly("org.webjars.npm:jquery")
     testAndDevelopmentOnly("org.webjars.npm:bootstrap")
     testAndDevelopmentOnly("org.webjars.npm:bootstrap-icons")
-    testAndDevelopmentOnly("org.webjars.npm:jquery-ui:1.14.2")  // not managed by grails-bom
     runtimeOnly("com.h2database:h2")
     runtimeOnly("org.apache.tomcat:tomcat-jdbc")
     runtimeOnly("org.fusesource.jansi:jansi")
@@ -56,7 +55,6 @@ dependencies {
     // the plugin's import map.
     implementation(project(':grails-web-console')) {
         exclude group: 'org.webjars.npm', module: 'jquery'
-        exclude group: 'org.webjars.npm', module: 'jquery-ui'
         exclude group: 'org.webjars.npm', module: 'bootstrap'
         exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
     }
@@ -79,9 +77,6 @@ assets {
             'webjars/bootstrap/*/dist/css/bootstrap.css',
             'webjars/bootstrap-icons/*/font/bootstrap-icons.css',
             'webjars/bootstrap-icons/*/font/fonts/*',
-            'webjars/jquery-ui/*/dist/jquery-ui.js',
-            'webjars/jquery-ui/*/dist/themes/base/jquery-ui.css',
-            'webjars/jquery-ui/*/dist/themes/base/images/*',
     ]
 }
 

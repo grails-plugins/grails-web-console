@@ -17,12 +17,11 @@ dependencies {
     // Served by Spring Boot's /webjars/** classpath mapping in the consuming app.
     // The platform manages jQuery, so its version lives in the Grails BOM rather
     // than here; the generated GSP resolves whatever the app's own dependency
-    // management settles on regardless (see WebjarVersions). Bootstrap, jQuery UI and CodeMirror
+    // management settles on regardless (see WebjarVersions). Bootstrap and CodeMirror
     // are not in the BOM, so their versions stay in gradle.properties, read by both
     // this build and gulp so the /webjars links it writes cannot drift.
     runtimeOnly platform("org.apache.grails:grails-bom:$grailsVersion")
     runtimeOnly "org.webjars.npm:jquery"
-    runtimeOnly "org.webjars.npm:jquery-ui:${project.jqueryUiVersion}"
     // CodeMirror 6 is ESM-only, so index.gsp emits an import map over these and a
     // module shim rather than plain script tags. Only what the editor imports is
     // declared; the rest of the graph (@lezer/*, style-mod, crelt, w3c-keyname,

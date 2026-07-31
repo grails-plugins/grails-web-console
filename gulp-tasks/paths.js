@@ -14,7 +14,6 @@ const gradleProperties = Object.fromEntries(
 
 const bootstrapVersion = gradleProperties.bootstrapVersion;
 const bootstrapIconsVersion = gradleProperties.bootstrapIconsVersion;
-const jqueryUiVersion = gradleProperties.jqueryUiVersion;
 
 // Assets served from the consuming app's webjar classpath rather than copied
 // into the plugin's public resources. The generated GSP resolves the version
@@ -24,16 +23,12 @@ const webjars = {
     css: [
         { name: 'bootstrap', file: 'dist/css/bootstrap.min.css', defaultVersion: bootstrapVersion },
         { name: 'bootstrap-icons', file: 'font/bootstrap-icons.min.css', defaultVersion: bootstrapIconsVersion },
-        // the theme's images/ sit beside this file inside the jar, so its relative
-        // url() references resolve without copying anything into the plugin
-        { name: 'jquery-ui', file: 'dist/themes/base/jquery-ui.min.css', defaultVersion: jqueryUiVersion },
     ],
     js: [
         // jQuery first: the console's bundle expects it as a global. No
         // defaultVersion — the Grails BOM manages this one, so there is no
         // build-time version here to fall back to.
         { name: 'jquery', file: 'dist/jquery.min.js' },
-        { name: 'jquery-ui', file: 'dist/jquery-ui.min.js', defaultVersion: jqueryUiVersion },
         { name: 'bootstrap', file: 'dist/js/bootstrap.bundle.min.js', defaultVersion: bootstrapVersion },
     ],
 };
@@ -66,10 +61,6 @@ const moduleWebjars = [
 ];
 
 const vendorCssAssets = [
-    {
-        src: './web/vendor/jquery-layout/css/jquery.layout.css',
-        publicPath: '/vendor/jquery-layout/css/jquery.layout.css',
-    },
 ];
 
 const vendorJsAssets = [
@@ -96,10 +87,6 @@ const vendorJsAssets = [
     {
         src: './web/vendor/js/plugins/jquery.selector-polyfill.js',
         publicPath: '/vendor/js/plugins/jquery.selector-polyfill.js',
-    },
-    {
-        src: './web/vendor/jquery-layout/js/jquery.layout-latest.min.js',
-        publicPath: '/vendor/jquery-layout/js/jquery.layout-latest.min.js',
     },
     {
         src: './web/vendor/js/plugins/jquery.hotkeys.js',

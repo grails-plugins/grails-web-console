@@ -4,6 +4,9 @@ App.Result.ResultCollectionView = Marionette.CompositeView.extend
 
   template: 'result/results'
 
+  attributes:
+    class: 'results-view'
+
   childViewContainer: '.inner'
 
   events:
