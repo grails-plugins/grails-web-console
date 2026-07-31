@@ -74,20 +74,20 @@ export const build = async (isDebug, options) => {
             .pipe(gulp.dest(options.outputDir))),
     ]);
 
-    // Webjar assets have no file under webDir to wrap, so their tags are
-    // prepended to the generated fragments. They resolve against the consuming
-    // app's /webjars/** classpath mapping at runtime.
+    // Webjar assets have no file under webDir to wrap, so they get their own
+    // fragments rather than being folded into _css.gsp/_js.gsp: index.gsp
+    // renders them ahead of those fragments (preserving cascade and load order)
+    // and only when the consuming app has not set
+    // grails.plugin.console.bootstrap.enabled = false. They resolve against the
+    // app's /webjars/** classpath mapping at runtime. Written unconditionally,
+    // empty if there are no tags, so the render never hits a missing template.
     const webjars = options.paths.vendor.webjars || { css: [], js: [] };
-    const prepend = async (fragment, tags) => {
-        if (!tags.length) {
-            return;
-        }
-        const file = path.join(options.outputDir, fragment);
-        const existing = await fs.readFile(file, 'utf8');
-        await fs.writeFile(file, tags.join('\n') + '\n' + existing);
-    };
+    const writeFragment = (fragment, tags) => fs.writeFile(
+        path.join(options.outputDir, fragment),
+        tags.length ? tags.join('\n') + '\n' : ''
+    );
     await Promise.all([
-        prepend('_css.gsp', webjars.css.map(options.webjarCssWrap)),
-        prepend('_js.gsp', webjars.js.map(options.webjarJsWrap)),
+        writeFragment('_webjarsCss.gsp', webjars.css.map(options.webjarCssWrap)),
+        writeFragment('_webjarsJs.gsp', webjars.js.map(options.webjarJsWrap)),
     ]);
 };

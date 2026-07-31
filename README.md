@@ -33,6 +33,45 @@ follow from this:
   the plugin's requested version), so overriding the Bootstrap version in your
   app is safe.
 
+#### Supplying your own Bootstrap
+
+An application that already ships Bootstrap — through asset-pipeline, its own
+webjar dependency, or a CDN — can opt out of the plugin's copy:
+
+```yaml
+grails:
+    plugin:
+        console:
+            bootstrap:
+                enabled: false
+```
+
+That suppresses the `/webjars/**` `<link>` and `<script>` tags on the console
+page. Drop the runtime dependencies too, so the jars stop shipping:
+
+```groovy
+implementation('org.grails.plugins:grails-web-console:8.0.0') {
+    exclude group: 'org.webjars.npm', module: 'bootstrap'
+    exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
+}
+```
+
+Bootstrap then becomes yours to supply. Point `grails.plugin.console.layout` at
+a layout of your own that emits the tags ahead of `<g:layoutHead/>`, so the
+console's own stylesheets still win the cascade:
+
+```gsp
+<head>
+  <asset:stylesheet href="webjars/bootstrap/5.3.8/dist/css/bootstrap.css"/>
+  <asset:stylesheet href="webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css"/>
+  <asset:javascript src="webjars/bootstrap/5.3.8/dist/js/bootstrap.bundle.js"/>
+  <g:layoutHead/>
+</head>
+```
+
+The console still needs Bootstrap 5 CSS, the Bootstrap Icons font CSS, and the
+Bootstrap JS bundle — it renders unstyled without them.
+
 ## Installation
 
 Add a dependency in build.gradle
