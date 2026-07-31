@@ -21,11 +21,20 @@ A web-based Groovy console for interactive runtime application management and de
 ### Webjars (8.x)
 
 As of 8.x the plugin no longer bundles its third-party libraries in its own
-resources. It declares `org.webjars.npm:jquery`, `org.webjars.npm:jquery-ui`,
-`org.webjars.npm:bootstrap`, `org.webjars.npm:bootstrap-icons` and
-`org.webjars.npm:codemirror` as transitive runtime dependencies, served through
-Spring Boot's standard `/webjars/**` classpath mapping. Two things follow from
-this:
+resources. It declares them as transitive runtime dependencies, served through
+Spring Boot's standard `/webjars/**` classpath mapping, in two groups:
+
+- **Replaceable** — `org.webjars.npm:jquery`, `org.webjars.npm:jquery-ui`,
+  `org.webjars.npm:bootstrap` and `org.webjars.npm:bootstrap-icons`, linked with
+  ordinary `<link>` and `<script>` tags. An application that already ships these
+  can supply its own; see below.
+- **Not replaceable** — CodeMirror 6, which is ES-module-only. The plugin emits
+  an import map covering the whole module graph (`@codemirror/*`, `@lezer/*`,
+  `style-mod`, `crelt`, `w3c-keyname`, `@marijn/find-cluster-break`) and a module
+  shim that loads it. Asset tags cannot substitute for that, so these are always
+  plugin-supplied and **must not be excluded**.
+
+Two things follow:
 
 - If your security configuration restricts URLs, `/webjars/**` must remain
   reachable. Bootstrap and the jQuery UI theme only affect styling, but the
@@ -35,7 +44,8 @@ this:
   the plugin's requested version), so overriding any of these versions in your
   app is safe. jQuery has no version pinned here at all; the BOM supplies it.
   The BOM does not manage jQuery UI or CodeMirror, so those carry versions from
-  the plugin's `gradle.properties`.
+  the plugin's `gradle.properties`, and the import map resolves each module's
+  version from the classpath at render time.
 
 #### Supplying your own copies
 
@@ -50,8 +60,9 @@ grails:
                 enabled: false
 ```
 
-That suppresses the `/webjars/**` `<link>` and `<script>` tags on the console
-page. Drop the runtime dependencies too, so the jars stop shipping:
+That suppresses the `<link>` and `<script>` tags for the four replaceable
+libraries. The CodeMirror import map is unaffected — it is emitted either way.
+Drop the four runtime dependencies too, so those jars stop shipping:
 
 ```groovy
 implementation('org.grails.plugins:grails-web-console:8.0.0') {
@@ -59,35 +70,29 @@ implementation('org.grails.plugins:grails-web-console:8.0.0') {
     exclude group: 'org.webjars.npm', module: 'jquery-ui'
     exclude group: 'org.webjars.npm', module: 'bootstrap'
     exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
-    exclude group: 'org.webjars.npm', module: 'codemirror'
 }
 ```
 
-Supplying them then becomes your job — all of them, since the flag is
-all-or-nothing. Point `grails.plugin.console.layout` at a layout of your own that
-emits the tags ahead of `<g:layoutHead/>`, so the console's own stylesheets still
-win the cascade and jQuery is defined before its bundle runs:
+Do not exclude the `codemirror__*` artifacts; the editor will not load without
+them. Supplying the other four then becomes your job — all of them, since the
+flag is all-or-nothing. Point `grails.plugin.console.layout` at a layout of your
+own that emits the tags ahead of `<g:layoutHead/>`, so the console's own
+stylesheets still win the cascade and jQuery is defined before its bundle runs:
 
 ```gsp
 <head>
   <asset:stylesheet href="webjars/bootstrap/%/dist/css/bootstrap.css"/>
   <asset:stylesheet href="webjars/bootstrap-icons/%/font/bootstrap-icons.css"/>
   <asset:stylesheet href="webjars/jquery-ui/%/dist/themes/base/jquery-ui.css"/>
-  <asset:stylesheet href="webjars/codemirror/%/lib/codemirror.css"/>
-  <asset:stylesheet href="webjars/codemirror/%/theme/lesser-dark.css"/>
   <asset:javascript src="webjars/jquery/%/dist/jquery.js"/>
   <asset:javascript src="webjars/jquery-ui/%/dist/jquery-ui.js"/>
   <asset:javascript src="webjars/bootstrap/%/dist/js/bootstrap.bundle.js"/>
-  <asset:javascript src="webjars/codemirror/%/lib/codemirror.js"/>
-  <asset:javascript src="webjars/codemirror/%/mode/groovy/groovy.js"/>
   <g:layoutHead/>
 </head>
 ```
 
-Order matters: jQuery UI extends jQuery, and the groovy mode registers itself
-against the CodeMirror core. Serving five libraries yourself is a fair amount of
-work — unless your application already ships all of them, leaving the flag at its
-default is usually the better trade.
+Order matters: jQuery UI extends jQuery. The bundled `app/` in this repository
+runs exactly this arrangement, so the recipe is exercised on every build.
 
 `%` (or `*`) stands in for the version, so the layout survives a Bootstrap
 upgrade — asset-pipeline matches it against the compiled manifest in production

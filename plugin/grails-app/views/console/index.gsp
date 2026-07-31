@@ -9,7 +9,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
   <g:render template="favicon" />
   <g:if test="${webjarsEnabled}"><g:render template="webjarsCss" /></g:if>
-  <g:if test="${webjarsEnabled}"><g:render template="webjarsModules" /></g:if>
+  <%-- Always rendered: the import map and module shim are how the console loads
+       CodeMirror 6 at all, not a library a host application could already have.
+       An app cannot substitute these with asset tags, so they sit outside the
+       opt-out, and the codemirror webjars must not be excluded. --%>
+  <g:render template="webjarsModules" />
   <g:render template="css" />
   
   <meta name="layout" content="${grailsApplication.config['grails.plugin.console.layout'] ?: 'console-plugin-layout'}"/>
