@@ -19,6 +19,9 @@ App.Util = App.Util || {}
 #     onResizeEnd: (size) -> ...
 
 MIN_PANE = 40
+KEY_STEP = 12
+KEY_STEP_LARGE = 60
+PERSIST_DELAY = 250
 
 class Splitter
 
@@ -46,9 +49,15 @@ class Splitter
         # something a screen reader can name, which it never was before
         @$bar = $('<div class="splitter-bar" title="Resize" role="separator"></div>')
         @$bar.attr 'aria-orientation', if @horizontal then 'vertical' else 'horizontal'
+        # tabindex makes the separator reachable; a focusable separator is the
+        # one ARIA allows to carry value attributes, so the position can be
+        # announced as it moves
+        @$bar.attr 'tabindex', '0'
+        @$bar.attr 'aria-label', 'Resize panes'
         if @before then @$bar.insertAfter(@fixed) else @$bar.insertBefore(@fixed)
 
         @$bar.on 'pointerdown', @onPointerDown
+        @$bar.on 'keydown', @onKeyDown
         @applySize()
 
     # --- sizing ---------------------------------------------------------
@@ -81,6 +90,15 @@ class Splitter
         prop = if @horizontal then 'width' else 'height'
         @fixed.css 'flex', "0 0 #{@clamp @size}px"
         @fixed.css prop, ''    # flex-basis drives it; a stale width would fight it
+        @announce()
+
+    announce: ->
+        total = @extent()
+        return unless total > 0
+        bar = if @horizontal then @$bar.outerWidth() else @$bar.outerHeight()
+        @$bar.attr 'aria-valuenow', Math.round @size
+        @$bar.attr 'aria-valuemin', MIN_PANE
+        @$bar.attr 'aria-valuemax', Math.max MIN_PANE, total - MIN_PANE - bar
 
     setSize: (size) ->
         @size = @clamp size
@@ -154,7 +172,47 @@ class Splitter
         @onResize?()
         @onResizeEnd? @size
 
+    # --- keyboard -------------------------------------------------------
+
+    # Arrow keys nudge the bar along its own axis, shift for a coarser step, and
+    # Home/End jump to the extremes. Movement is expressed as right/down positive
+    # and then mapped through @before exactly as a drag is, so the pane grows in
+    # the direction the bar visually travels.
+    onKeyDown: (event) =>
+        movement = switch event.key
+            when 'ArrowLeft'  then if @horizontal then -1 else 0
+            when 'ArrowRight' then if @horizontal then 1 else 0
+            when 'ArrowUp'    then if @horizontal then 0 else -1
+            when 'ArrowDown'  then if @horizontal then 0 else 1
+            when 'Home'       then 'min'
+            when 'End'        then 'max'
+            else null
+        return if not movement? or movement is 0
+
+        event.preventDefault()
+        @size ?= @resolveSize()
+        return unless @size?
+
+        if movement is 'min'
+            @setSize MIN_PANE
+        else if movement is 'max'
+            @setSize @extent()
+        else
+            step = if event.shiftKey then KEY_STEP_LARGE else KEY_STEP
+            delta = movement * step
+            delta = -delta unless @before
+            @setSize @size + delta
+
+        @onResize?()
+        # one write per burst of keypresses rather than one per key
+        clearTimeout @persistTimer if @persistTimer
+        @persistTimer = setTimeout =>
+            @persistTimer = null
+            @onResizeEnd? @size
+        , PERSIST_DELAY
+
     destroy: ->
+        clearTimeout @persistTimer if @persistTimer
         @$bar.off()
         @$bar.remove()
 
