@@ -167,12 +167,22 @@ Application = Marionette.Application.extend
     $('body').css 'visibility', 'visible'
 
   _initKeybindings: ->
-    $(document).on 'keydown', null, 'Ctrl+return Meta+return', => @execute 'execute'
-    $(document).on 'keydown', null, 'Ctrl+s Meta+s', (event) =>
+    # Document-wide so the shortcuts work with focus anywhere — the scripts
+    # panel, nothing at all. App.Util.Keys applies the two guards: not while
+    # typing in a field, and not for keys the editor's own keymap already
+    # handled.
+    keys = App.Util.Keys
+
+    keys.global ((event) -> event.key is 'Enter' and keys.mod event), =>
+      @execute 'execute'
+
+    keys.global ((event) -> event.key?.toLowerCase() is 's' and keys.mod event), (event) =>
       event.preventDefault()
       event.stopPropagation()
       @execute 'save'
-    $(document).on 'keydown', null, 'esc', => @execute 'clear'
+
+    keys.global ((event) -> event.key is 'Escape'), =>
+      @execute 'clear'
 
   createLink: (action, params) ->
     link = "#{@data.baseUrl}/#{action}"

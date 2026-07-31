@@ -20,8 +20,6 @@ App.Main.ContentView = Marionette.View.extend
         @resultsView = options.resultsView
         @scriptsView = options.scriptsView
 
-        @listenTo @editorView, 'render', => @layout.initContent 'center'
-        @listenTo @scriptsView, 'render', => @layoutOuter.initContent 'west'
 
 
     onRender: ->
@@ -34,78 +32,63 @@ App.Main.ContentView = Marionette.View.extend
 
         @updateInnerLayout()
 
+    # onRender fires before the view is in the document, so the panes cannot
+    # measure their container yet; percentage sizes only resolve once attached.
+    onAttach: ->
+        @updateOuterLayout()
+        @updateInnerLayout()
+
     refresh: ->
         @editorView.refresh()
-        @layoutOuter.resizeAll()
-        @layout.resizeAll()
         @updateInnerLayout()
 
     initLayout: ->
-        @layoutOuter = @$el.layout
-            center__paneSelector: '.outer-center'
-            west__paneSelector: '.outer-west'
-            west__contentSelector: '.files-wrapper'
-            west__size: App.settings.get('layout.west.size')
-            west__initClosed: App.settings.get('layout.west.isClosed')
-            west__spacing_closed: 0
-            west__togglerLength_open: 0
-            west__togglerLength_closed: 0
-            west__onresize_end: (name, $el, state, opts) ->
-                App.settings.set 'layout.west.size', state.size
+        # west (scripts) | everything else
+        @layoutOuter = new App.Util.Splitter @$el,
+            direction: 'horizontal'
+            before: true
+            fixed: @$('.outer-west')
+            flexible: @$('.outer-center')
+            size: App.settings.get('layout.west.size')
+            onResizeEnd: (size) ->
+                App.settings.set 'layout.west.size', size
                 App.settings.save()
-            west__resizerCursor: 'ew-resize'
-            resizable: true
-            findNestedContent: true
-            fxName: ''
-            spacing_open: 3
-            spacing_closed: 3
-            slidable: false
-            enableCursorHotkey: false
 
-        @layout = @$('.outer-center').layout
-            center__paneSelector: '.center'
-            center__contentSelector: '#code-wrapper'
-            center__onresize: => @editorView.refresh()
-            east__paneSelector: '.east'
-            east__contentSelector: '.script-result-section'
-            east__initHidden: App.settings.get('orientation') isnt 'vertical' or not App.settings.get 'results.showPane'
-            east__size: App.settings.get('layout.east.size')
-            east__onresize_end: (name, $el, state, opts) ->
-                App.settings.set 'layout.east.size', state.size
+        # editor | results, side by side or stacked depending on orientation
+        @layoutEast = new App.Util.Splitter @$('.outer-center'),
+            direction: 'horizontal'
+            fixed: @$('.east')
+            flexible: @$('.center')
+            size: App.settings.get('layout.east.size')
+            onResize: => @editorView.refresh()
+            onResizeEnd: (size) ->
+                App.settings.set 'layout.east.size', size
                 App.settings.save()
-            east__resizerCursor: 'ew-resize'
-            east__spacing_closed: 0
-            south__paneSelector: '.south'
-            south__contentSelector: '.script-result-section'
-            south__initHidden: App.settings.get('orientation') isnt 'horizontal' or not App.settings.get 'results.showPane'
-            south__size: App.settings.get('layout.south.size')
-            south__onresize_end: (name, $el, state, opts) ->
-                App.settings.set 'layout.south.size', state.size
+
+        @layoutSouth = new App.Util.Splitter @$('.outer-center'),
+            direction: 'vertical'
+            fixed: @$('.south')
+            flexible: @$('.center')
+            size: App.settings.get('layout.south.size')
+            onResize: => @editorView.refresh()
+            onResizeEnd: (size) ->
+                App.settings.set 'layout.south.size', size
                 App.settings.save()
-            south__resizerCursor: 'ns-resize'
-            south__spacing_closed: 0
-            resizable: true
-            closable: true
-            findNestedContent: true
-            fxName: ''
-            spacing_open: 3
-            spacing_closed: 3
-            slidable: false
-            enableCursorHotkey: false
-            togglerLength_open: 0
-            togglerLength_closed: 0
+
+        @layoutEast.hide()
+        @layoutSouth.hide()
+        @layoutOuter.hide() if App.settings.get 'layout.west.isClosed'
 
     toggleScripts: ->
-        App.settings.set 'layout.west.isClosed', not @layoutOuter.state['west'].isClosed
+        App.settings.set 'layout.west.isClosed', not @layoutOuter.isHidden()
         App.settings.save()
         @updateOuterLayout()
 
     updateOuterLayout: ->
         if App.settings.get 'layout.west.isClosed'
-            @layoutOuter.hide 'west'
+            @layoutOuter.hide()
         else
-            @layoutOuter.hide 'west'
-            @layoutOuter.show 'west'
+            @layoutOuter.show()
 
     toggleResults: ->
         App.settings.set 'results.showPane', not App.settings.get('results.showPane')
@@ -114,19 +97,17 @@ App.Main.ContentView = Marionette.View.extend
 
     updateInnerLayout: ->
         if not App.settings.get 'results.showPane'
-            @layout.hide 'south'
-            @layout.hide 'east'
+            @layoutSouth.hide()
+            @layoutEast.hide()
+            @editorView.refresh()
             return
 
-        orientation = App.settings.get('orientation')
-        if orientation is 'vertical'
+        if App.settings.get('orientation') is 'vertical'
             @$('.east').append @resultsView.el
-            @layout.hide 'south'
-            @layout.show 'east'
-            @layout.initContent 'east'
+            @layoutSouth.hide()
+            @layoutEast.show()
         else
             @$('.south').append @resultsView.el
-            @layout.hide 'east'
-            @layout.show 'south'
-            @layout.initContent 'south'
+            @layoutEast.hide()
+            @layoutSouth.show()
         @editorView.refresh()

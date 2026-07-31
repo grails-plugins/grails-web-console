@@ -15,26 +15,22 @@ dependencies {
     console("org.apache.grails:grails-console")
 
     // Served by Spring Boot's /webjars/** classpath mapping in the consuming app.
-    // The platform manages jQuery, so its version lives in the Grails BOM rather
-    // than here; the generated GSP resolves whatever the app's own dependency
-    // management settles on regardless (see WebjarVersions). Bootstrap, jQuery UI and CodeMirror
-    // are not in the BOM, so their versions stay in gradle.properties, read by both
-    // this build and gulp so the /webjars links it writes cannot drift.
+    // The platform manages jQuery, Bootstrap and Bootstrap Icons, so no version is
+    // stated for them; the generated GSP resolves whatever the consuming app's own
+    // dependency management settles on regardless (see WebjarVersions). CodeMirror
+    // is not in the BOM, so those versions live in gradle.properties.
     runtimeOnly platform("org.apache.grails:grails-bom:$grailsVersion")
     runtimeOnly "org.webjars.npm:jquery"
-    runtimeOnly "org.webjars.npm:jquery-ui:${project.jqueryUiVersion}"
     // CodeMirror 6 is ESM-only, so index.gsp emits an import map over these and a
-    // module shim rather than plain script tags. Only what the editor imports is
-    // declared; the rest of the graph (@lezer/*, style-mod, crelt, w3c-keyname,
-    // @marijn/find-cluster-break) arrives transitively from these webjars' POMs.
-    runtimeOnly "org.webjars.npm:codemirror__state:${project.codeMirrorStateVersion}"
-    runtimeOnly "org.webjars.npm:codemirror__view:${project.codeMirrorViewVersion}"
+    // module shim rather than plain script tags. Only the three roots are declared
+    // — @codemirror/state, view and language are dependencies of all of them, and
+    // arrive transitively along with @lezer/*, style-mod, crelt, w3c-keyname and
+    // @marijn/find-cluster-break.
     runtimeOnly "org.webjars.npm:codemirror__commands:${project.codeMirrorCommandsVersion}"
-    runtimeOnly "org.webjars.npm:codemirror__language:${project.codeMirrorLanguageVersion}"
     runtimeOnly "org.webjars.npm:codemirror__legacy-modes:${project.codeMirrorLegacyModesVersion}"
     runtimeOnly "org.webjars.npm:codemirror__theme-one-dark:${project.codeMirrorThemeOneDarkVersion}"
-    runtimeOnly "org.webjars.npm:bootstrap:${project.bootstrapVersion}"
-    runtimeOnly "org.webjars.npm:bootstrap-icons:${project.bootstrapIconsVersion}"
+    runtimeOnly "org.webjars.npm:bootstrap"
+    runtimeOnly "org.webjars.npm:bootstrap-icons"
 
     testImplementation platform("org.apache.grails:grails-bom:$grailsVersion")
     testImplementation("org.apache.grails:grails-testing-support-web")

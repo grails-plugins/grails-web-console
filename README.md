@@ -24,10 +24,9 @@ As of 8.x the plugin no longer bundles its third-party libraries in its own
 resources. It declares them as transitive runtime dependencies, served through
 Spring Boot's standard `/webjars/**` classpath mapping, in two groups:
 
-- **Replaceable** — `org.webjars.npm:jquery`, `org.webjars.npm:jquery-ui`,
-  `org.webjars.npm:bootstrap` and `org.webjars.npm:bootstrap-icons`, linked with
-  ordinary `<link>` and `<script>` tags. An application that already ships these
-  can supply its own; see below.
+- **Replaceable** — `org.webjars.npm:jquery`, `org.webjars.npm:bootstrap` and
+  `org.webjars.npm:bootstrap-icons`, linked with ordinary `<link>` and `<script>`
+  tags. An application that already ships these can supply its own; see below.
 - **Not replaceable** — CodeMirror 6, which is ES-module-only. The plugin emits
   an import map covering the whole module graph (`@codemirror/*`, `@lezer/*`,
   `style-mod`, `crelt`, `w3c-keyname`, `@marijn/find-cluster-break`) and a module
@@ -37,15 +36,15 @@ Spring Boot's standard `/webjars/**` classpath mapping, in two groups:
 Two things follow:
 
 - If your security configuration restricts URLs, `/webjars/**` must remain
-  reachable. Bootstrap and the jQuery UI theme only affect styling, but the
-  console does not work at all without jQuery, jQuery UI or CodeMirror.
+  reachable. Bootstrap only affects styling, but the console does not work at
+  all without jQuery or CodeMirror.
 - The console links whatever webjar version your application actually resolves
   (your dependency management — typically the `grails-bom` platform — wins over
   the plugin's requested version), so overriding any of these versions in your
   app is safe. jQuery has no version pinned here at all; the BOM supplies it.
-  The BOM does not manage jQuery UI or CodeMirror, so those carry versions from
-  the plugin's `gradle.properties`, and the import map resolves each module's
-  version from the classpath at render time.
+  The BOM does not manage CodeMirror, so those carry versions from the plugin's
+  `gradle.properties`, and the import map resolves each module's version from
+  the classpath at render time.
 
 #### Supplying your own copies
 
@@ -67,14 +66,13 @@ Drop the four runtime dependencies too, so those jars stop shipping:
 ```groovy
 implementation('org.grails.plugins:grails-web-console:8.0.0') {
     exclude group: 'org.webjars.npm', module: 'jquery'
-    exclude group: 'org.webjars.npm', module: 'jquery-ui'
     exclude group: 'org.webjars.npm', module: 'bootstrap'
     exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
 }
 ```
 
 Do not exclude the `codemirror__*` artifacts; the editor will not load without
-them. Supplying the other four then becomes your job — all of them, since the
+them. Supplying the other three then becomes your job — all of them, since the
 flag is all-or-nothing. Point `grails.plugin.console.layout` at a layout of your
 own that emits the tags ahead of `<g:layoutHead/>`, so the console's own
 stylesheets still win the cascade and jQuery is defined before its bundle runs:
@@ -83,16 +81,14 @@ stylesheets still win the cascade and jQuery is defined before its bundle runs:
 <head>
   <asset:stylesheet href="webjars/bootstrap/%/dist/css/bootstrap.css"/>
   <asset:stylesheet href="webjars/bootstrap-icons/%/font/bootstrap-icons.css"/>
-  <asset:stylesheet href="webjars/jquery-ui/%/dist/themes/base/jquery-ui.css"/>
   <asset:javascript src="webjars/jquery/%/dist/jquery.js"/>
-  <asset:javascript src="webjars/jquery-ui/%/dist/jquery-ui.js"/>
   <asset:javascript src="webjars/bootstrap/%/dist/js/bootstrap.bundle.js"/>
   <g:layoutHead/>
 </head>
 ```
 
-Order matters: jQuery UI extends jQuery. The bundled `app/` in this repository
-runs exactly this arrangement, so the recipe is exercised on every build.
+The bundled `app/` in this repository runs exactly this arrangement, so the
+recipe is exercised on every build.
 
 `%` (or `*`) stands in for the version, so the layout survives a Bootstrap
 upgrade — asset-pipeline matches it against the compiled manifest in production
