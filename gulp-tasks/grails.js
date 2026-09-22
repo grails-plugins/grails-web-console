@@ -3,21 +3,23 @@ import { deleteSync } from 'del';
 import { build } from './grails-builder.js';
 import { paths } from './paths.js';
 
-// Emits a GSP expression resolving the webjar version actually on the runtime
-// classpath. Webjars carrying a build-time version fall back to it; the ones the
-// Grails BOM manages have none, and resolution can only fail when the app has
-// excluded the dependency outright — in which case the link would 404 whatever
-// version it named.
-const webjarVersionExpression = webjar => webjar.defaultVersion
-    ? `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}') ?: '${webjar.defaultVersion}'}`
-    : `\${org.grails.plugins.console.WebjarVersions.version('${webjar.name}')}`;
+// Emits a GSP expression building the webjar's URL: the version comes from the
+// runtime classpath (webjars carrying a build-time version fall back to it; the
+// ones the Grails BOM manages have none), and the base from
+// grails.plugin.console.webjars.baseUrl, so an app can serve these files from a
+// CDN it already mirrors static files to. Resolution can only fail when the app
+// has excluded the dependency outright — in which case the link would 404
+// whatever version it named.
+const webjarUrlExpression = (name, file, defaultVersion) => defaultVersion
+    ? `\${org.grails.plugins.console.WebjarVersions.url(request.contextPath, '${name}', '${file}', '${defaultVersion}')}`
+    : `\${org.grails.plugins.console.WebjarVersions.url(request.contextPath, '${name}', '${file}')}`;
 
 // The import map must carry a concrete version per specifier, so each is resolved
 // from the runtime classpath. A module missing from the classpath yields an empty
 // version and a broken URL, which only happens when the app has excluded the
 // dependency — the same situation in which it would 404 whatever we wrote.
 const importMapEntry = m =>
-    `    "${m.specifier}": "\${request.contextPath}/webjars/${m.webjar}/\${org.grails.plugins.console.WebjarVersions.version('${m.webjar}')}/${m.file}"`;
+    `    "${m.specifier}": "${webjarUrlExpression(m.webjar, m.file)}"`;
 
 const moduleShim = modules => [
     '<script type="importmap">',
@@ -51,8 +53,8 @@ const options = {
     faviconWrap: path => `<link rel="icon" type="image/png" href="\${resource(file: '${path}')}" />`,
     jsWrap:      path => `<script type="text/javascript" src="\${resource(file: '${path}')}" ></script>`,
     cssWrap:     path => `<link rel="stylesheet" media="screen" href="\${resource(file: '${path}')}" />`,
-    webjarJsWrap:  webjar => `<script type="text/javascript" src="\${request.contextPath}/webjars/${webjar.name}/${webjarVersionExpression(webjar)}/${webjar.file}" ></script>`,
-    webjarCssWrap: webjar => `<link rel="stylesheet" media="screen" href="\${request.contextPath}/webjars/${webjar.name}/${webjarVersionExpression(webjar)}/${webjar.file}" />`,
+    webjarJsWrap:  webjar => `<script type="text/javascript" src="${webjarUrlExpression(webjar.name, webjar.file, webjar.defaultVersion)}" ></script>`,
+    webjarCssWrap: webjar => `<link rel="stylesheet" media="screen" href="${webjarUrlExpression(webjar.name, webjar.file, webjar.defaultVersion)}" />`,
     moduleShim,
     paths:       paths
 };

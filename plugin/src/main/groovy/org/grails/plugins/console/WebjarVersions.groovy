@@ -1,5 +1,6 @@
 package org.grails.plugins.console
 
+import grails.util.Holders
 import groovy.transform.CompileStatic
 
 import java.util.concurrent.ConcurrentHashMap
@@ -25,6 +26,25 @@ class WebjarVersions {
             resolve(name) ?: NOT_FOUND
         }
         cached == NOT_FOUND ? null : cached
+    }
+
+    /**
+     * A URL for a file inside a webjar, or null when that webjar is not on the classpath — so a
+     * caller can leave the tag out rather than emit a link with "null" where the version goes.
+     *
+     * Set {@code grails.plugin.console.webjars.baseUrl} to serve the same files from somewhere
+     * else: a CDN an application already mirrors its static files to, or any host that keeps
+     * /webjars/** off its own origin. Default is {@code <contextPath>/webjars}, which is Spring
+     * Boot's classpath mapping and needs no configuration at all.
+     */
+    static String url(String contextPath, String webjarName, String path, String defaultVersion = null) {
+        String version = version(webjarName) ?: defaultVersion
+        version ? "${baseUrl(contextPath)}/${webjarName}/${version}/${path}".toString() : null
+    }
+
+    static String baseUrl(String contextPath) {
+        String configured = Holders.config?.getProperty('grails.plugin.console.webjars.baseUrl', String)
+        configured?.trim() ? configured.trim().replaceAll('/+$', '') : "${contextPath ?: ''}/webjars".toString()
     }
 
     private static String resolve(String name) {

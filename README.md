@@ -46,6 +46,25 @@ Two things follow:
   `gradle.properties`, and the import map resolves each module's version from
   the classpath at render time.
 
+#### Serving the same files from elsewhere
+
+`/webjars/**` is served by the application itself. To serve those exact files from somewhere else —
+a CDN the application already mirrors its static files to, or a host that keeps `/webjars/**` off
+its own origin — point the plugin at that base instead:
+
+```yaml
+grails:
+    plugin:
+        console:
+            webjars:
+                baseUrl: 'https://cdn.example.com/webjars'
+```
+
+Every link the plugin emits follows it, the import map included, keeping the version each URL
+carries resolved from the classpath. The default is `<contextPath>/webjars`, which needs no
+configuration. This is a different choice from the one below: here the plugin still decides which
+files and versions it needs, and only where they are fetched from changes.
+
 #### Supplying your own copies
 
 An application that already ships these — through asset-pipeline, its own webjar
