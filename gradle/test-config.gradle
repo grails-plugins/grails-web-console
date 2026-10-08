@@ -9,10 +9,10 @@ tasks.withType(Test) {
 
 apply plugin: 'com.adarshr.test-logger'
 testlogger {
-    theme 'mocha'
-    showFullStackTraces true
-    showStandardStreams true
-    showPassedStandardStreams false
-    showSkippedStandardStreams false
-    showFailedStandardStreams true
+    theme = 'mocha'
+    showFullStackTraces = true
+    showStandardStreams = true
+    showPassedStandardStreams = false
+    showSkippedStandardStreams = false
+    showFailedStandardStreams = true
 }
