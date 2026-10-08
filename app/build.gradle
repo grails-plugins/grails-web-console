@@ -31,7 +31,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-logging")
     implementation("org.springframework.boot:spring-boot-starter-tomcat")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    console("org.apache.grails:grails-console")
     runtimeOnly("cloud.wondrify:asset-pipeline-grails")
     // jQuery and Bootstrap come from webjars rather than checked-in copies. Versions are
     // managed by grails-bom, and testAndDevelopmentOnly keeps the jars out of the packaged

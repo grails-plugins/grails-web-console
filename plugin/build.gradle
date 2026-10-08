@@ -12,8 +12,6 @@ dependencies {
     compileOnly platform("org.apache.grails:grails-bom:$grailsVersion")
     compileOnly('org.apache.grails:grails-dependencies-starter-web')
 
-    console("org.apache.grails:grails-console")
-
     // Served by Spring Boot's /webjars/** classpath mapping in the consuming app.
     // The platform manages jQuery, Bootstrap and Bootstrap Icons, so no version is
     // stated for them; the generated GSP resolves whatever the consuming app's own
@@ -44,5 +42,5 @@ apply {
 }
 
 grails {
-    springDependencyManagement = false
+    bom = null
 }
