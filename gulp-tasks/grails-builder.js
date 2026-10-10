@@ -51,13 +51,6 @@ export const build = async (isDebug, options) => {
     await Promise.all([
         written(gulp.src(appSrc, { encoding: false }).pipe(gulp.dest(options.webDir))),
         written(gulp.src('./web/img/**/*', { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
-        written(gulp.src([
-            './web/vendor/**/*',
-            // test-only, loaded from web/ by run-jasmine-jsdom.cjs — never shipped
-            '!./web/vendor/js/plugins/jasmine-jquery.js',
-            // vendored scripts are concatenated into the release bundle too
-            ...(isDebug ? [] : ['!./web/vendor/**/*.js']),
-        ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
 
