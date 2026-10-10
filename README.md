@@ -120,15 +120,11 @@ CodeMirror leave it blank.
 
 ## Installation
 
-Add a dependency in build.gradle
+The plugin is published to Maven Central. Add a dependency in build.gradle
 
 ```groovy
-repositories {
-    maven { url "https://repo.grails.org/grails/core/" }
-}
-
 dependencies {
-    runtimeOnly 'com.github.grails-plugins:grails-web-console:7.0.0-M1'
+    implementation 'org.grails.plugins:grails-web-console:8.0.0'
 }
 ```
 
