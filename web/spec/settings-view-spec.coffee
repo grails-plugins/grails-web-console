@@ -17,26 +17,26 @@ describe 'App.Main.SettingsView', ->
     @$el.remove()
 
   it 'should preselect the correct settings', ->
-    expect(@view.$('.orientation-horizontal')).not.toHaveClass 'selected'
-    expect(@view.$('.orientation-vertical')).toHaveClass 'selected'
-    expect(@view.$('.results-wrap')).toHaveClass 'selected'
-    expect(@view.$('.theme[data-theme="default"]')).not.toHaveClass 'selected'
-    expect(@view.$('.theme[data-theme="one-dark"]')).toHaveClass 'selected'
+    expect(@view.$('.orientation-horizontal')[0]).not.toHaveClass 'selected'
+    expect(@view.$('.orientation-vertical')[0]).toHaveClass 'selected'
+    expect(@view.$('.results-wrap')[0]).toHaveClass 'selected'
+    expect(@view.$('.theme[data-theme="default"]')[0]).not.toHaveClass 'selected'
+    expect(@view.$('.theme[data-theme="one-dark"]')[0]).toHaveClass 'selected'
 
   it 'should handle click events', ->
     @view.$('.orientation-horizontal').click()
     expect(@settings.get('orientation')).toBe 'horizontal'
-    expect(@view.$('.orientation-horizontal')).toHaveClass 'selected'
-    expect(@view.$('.orientation-vertical')).not.toHaveClass 'selected'
+    expect(@view.$('.orientation-horizontal')[0]).toHaveClass 'selected'
+    expect(@view.$('.orientation-vertical')[0]).not.toHaveClass 'selected'
 
     @view.$('.results-wrap').click()
     expect(@settings.get('results.wrapText')).toBe false
-    expect(@view.$('.results-wrap')).not.toHaveClass 'selected'
+    expect(@view.$('.results-wrap')[0]).not.toHaveClass 'selected'
 
     @view.$('.theme[data-theme="default"]').click()
     expect(@settings.get('theme')).toBe 'default'
-    expect(@view.$('.theme[data-theme="default"]')).toHaveClass 'selected'
-    expect(@view.$('.theme[data-theme="one-dark"]')).not.toHaveClass 'selected'
+    expect(@view.$('.theme[data-theme="default"]')[0]).toHaveClass 'selected'
+    expect(@view.$('.theme[data-theme="one-dark"]')[0]).not.toHaveClass 'selected'
 
 
 

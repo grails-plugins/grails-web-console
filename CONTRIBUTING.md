@@ -30,8 +30,7 @@ This plugin uses [Gulp](http://gulpjs.com/) to build its resources.
     │   ├── img
     │   ├── spec            # jasmine
     │   ├── styles          # less
-    │   ├── templates       # handlebars templates
-    │   └── vendor          # vendor libs
+    │   └── templates       # handlebars templates
     ├── gulpfile.js
     └── package.json
 
