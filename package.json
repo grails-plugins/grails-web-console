@@ -12,7 +12,7 @@
     "backbone": "^1.6.1",
     "backbone.marionette": "^3.5.1",
     "backbone.radio": "^2.0.0",
-    "del": "^8.0.1",
+    "del": "^9.0.1",
     "glob": "^13.0.6",
     "gulp": "^5.0.1",
     "gulp-clean-css": "^4.3.0",
