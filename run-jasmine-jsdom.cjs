@@ -115,14 +115,10 @@ const installStubs = window => {
 };
 
 const installJasmine = window => {
-  const jasmine = jasmineCore.core(jasmineCore);
-  const env = jasmine.getEnv();
-  const jasmineInterface = jasmineCore.interface(jasmine, env);
+  const env = jasmineCore.jasmine.getEnv();
 
-  window.jasmine = jasmine;
-  window.jasmineRequire = jasmineCore;
-  Object.assign(window, jasmineInterface);
-  Object.assign(global, jasmineInterface);
+  jasmineCore.installGlobals(window);
+  jasmineCore.installGlobals(global);
 
   env.configure({ random: false });
 
@@ -173,8 +169,6 @@ const loadCompiledSources = context => {
 };
 
 const loadSpecs = context => {
-  loadScript(resolveFromRoot('web/vendor/js/plugins/jasmine-jquery.js'), context);
-
   glob.sync(resolveFromRoot('build/spec/**/*helper.*')).sort().forEach(file => loadScript(file, context));
   glob.sync(resolveFromRoot('build/spec/**/*spec.*')).sort().forEach(file => loadScript(file, context));
 };

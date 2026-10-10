@@ -6,6 +6,7 @@ import { mkdirp } from 'mkdirp';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { finished } from 'node:stream/promises';
+import through from 'through2';
 
 import wrapPath from './wrap-path.js'
 
@@ -16,6 +17,16 @@ const written = (stream) => {
     stream.resume();
     return finished(stream);
 };
+
+// gulp-concat gives its output the newest input's mtime and gulp.dest writes
+// that back, so a rebuild that only changes the app.<timestamp> name leaves a
+// fragment's size and mtime as they were. Gradle's file hash cache then reuses
+// the old hash and compileGroovyPages keeps the stale fragment, so the GSP links
+// an app.<timestamp>.js that no longer exists. Stamp the time of this write.
+const stampWriteTime = () => through.obj((file, encoding, callback) => {
+    file.stat.mtime = new Date();
+    callback(null, file);
+});
 
 export const build = async (isDebug, options) => {
     let appSrc, jsSrc, cssSrc;
@@ -51,13 +62,6 @@ export const build = async (isDebug, options) => {
     await Promise.all([
         written(gulp.src(appSrc, { encoding: false }).pipe(gulp.dest(options.webDir))),
         written(gulp.src('./web/img/**/*', { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
-        written(gulp.src([
-            './web/vendor/**/*',
-            // test-only, loaded from web/ by run-jasmine-jsdom.cjs — never shipped
-            '!./web/vendor/js/plugins/jasmine-jquery.js',
-            // vendored scripts are concatenated into the release bundle too
-            ...(isDebug ? [] : ['!./web/vendor/**/*.js']),
-        ], { base: './web/', encoding: false }).pipe(gulp.dest(options.webDir))),
         ...externalAssetStreams.map(written),
     ]);
 
@@ -67,16 +71,19 @@ export const build = async (isDebug, options) => {
         written(gulp.src([options.paths.favicon].map(path => options.webDir + path))
             .pipe(wrapPath(options.relativeDir, options.faviconWrap))
             .pipe(concat('_favicon.gsp'))
+            .pipe(stampWriteTime())
             .pipe(gulp.dest(options.outputDir))),
 
         written(gulp.src(jsSrc)
             .pipe(wrapPath(options.relativeDir, options.jsWrap))
             .pipe(concat('_js.gsp'))
+            .pipe(stampWriteTime())
             .pipe(gulp.dest(options.outputDir))),
 
         written(gulp.src(cssSrc)
             .pipe(wrapPath(options.relativeDir, options.cssWrap))
             .pipe(concat('_css.gsp'))
+            .pipe(stampWriteTime())
             .pipe(gulp.dest(options.outputDir))),
     ]);
 
