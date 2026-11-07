@@ -40,7 +40,7 @@ App.Editor.EditorView = Marionette.View.extend
                 cm.history()
                 cm.bracketMatching()
                 cm.syntaxHighlighting(cm.defaultHighlightStyle, fallback: true)
-                cm.StreamLanguage.define(cm.groovy)
+                cm.groovy()
                 cm.indentUnit.of(if App.data.indentWithTabs then '\t' else indent)
                 cm.keymap.of([
                     {key: 'Mod-Enter', run: run('execute')}

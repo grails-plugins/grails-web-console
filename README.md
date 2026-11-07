@@ -29,7 +29,8 @@ Spring Boot's standard `/webjars/**` classpath mapping, in two groups:
   tags. An application that already ships these can supply its own; see below.
 - **Not replaceable** — CodeMirror 6, which is ES-module-only. The plugin emits
   an import map covering the whole module graph (`@codemirror/*`, `@lezer/*`,
-  `style-mod`, `crelt`, `w3c-keyname`, `@marijn/find-cluster-break`) and a module
+  `codemirror-lang-groovy`, `style-mod`, `crelt`, `w3c-keyname`,
+  `@marijn/find-cluster-break`) and a module
   shim that loads it. Asset tags cannot substitute for that, so these are always
   plugin-supplied and **must not be excluded**.
 
@@ -90,8 +91,8 @@ implementation('org.grails.plugins:grails-web-console:8.0.0') {
 }
 ```
 
-Do not exclude the `codemirror__*` artifacts; the editor will not load without
-them. Supplying the other three then becomes your job — all of them, since the
+Do not exclude the `codemirror__*` and `codemirror-lang-groovy` artifacts; the
+editor will not load without them. Supplying the other three then becomes your job — all of them, since the
 flag is all-or-nothing. Point `grails.plugin.console.layout` at a layout of your
 own that emits the tags ahead of `<g:layoutHead/>`, so the console's own
 stylesheets still win the cascade and jQuery is defined before its bundle runs:

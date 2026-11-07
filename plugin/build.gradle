@@ -23,9 +23,10 @@ dependencies {
     // module shim rather than plain script tags. Only the three roots are declared
     // — @codemirror/state, view and language are dependencies of all of them, and
     // arrive transitively along with @codemirror/streamparser, @lezer/*, style-mod,
-    // crelt, w3c-keyname and @marijn/find-cluster-break.
+    // crelt, w3c-keyname and @marijn/find-cluster-break. Groovy highlighting comes
+    // from codemirror-lang-groovy, a Lezer grammar.
     runtimeOnly "org.webjars.npm:codemirror__commands:${project.codeMirrorCommandsVersion}"
-    runtimeOnly "org.webjars.npm:codemirror__legacy-modes:${project.codeMirrorLegacyModesVersion}"
+    runtimeOnly "org.webjars.npm:codemirror-lang-groovy:${project.codeMirrorLangGroovyVersion}"
     runtimeOnly "org.webjars.npm:codemirror__theme-one-dark:${project.codeMirrorThemeOneDarkVersion}"
     runtimeOnly "org.webjars.npm:bootstrap"
     runtimeOnly "org.webjars.npm:bootstrap-icons"
