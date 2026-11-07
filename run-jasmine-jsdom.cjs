@@ -177,11 +177,12 @@ const loadSpecs = context => {
 // exports on window.CM6 before the console boots. jsdom honours neither, so the
 // same surface is assembled here from the installed packages.
 const loadCodeMirror = async window => {
-  const [state, view, commands, language, groovyLanguage, oneDarkTheme] = await Promise.all([
+  const [state, view, commands, language, autocomplete, groovyLanguage, oneDarkTheme] = await Promise.all([
     import('@codemirror/state'),
     import('@codemirror/view'),
     import('@codemirror/commands'),
     import('@codemirror/language'),
+    import('@codemirror/autocomplete'),
     import('codemirror-lang-groovy'),
     import('@codemirror/theme-one-dark'),
   ]);
@@ -195,6 +196,9 @@ const loadCodeMirror = async window => {
     bracketMatching: language.bracketMatching,
     indentUnit: language.indentUnit, syntaxHighlighting: language.syntaxHighlighting,
     defaultHighlightStyle: language.defaultHighlightStyle,
+    foldGutter: language.foldGutter, foldKeymap: language.foldKeymap,
+    indentOnInput: language.indentOnInput, syntaxTree: language.syntaxTree,
+    autocompletion: autocomplete.autocompletion, CompletionContext: autocomplete.CompletionContext,
     groovy: groovyLanguage.groovy, oneDark: oneDarkTheme.oneDark,
   };
   global.CM6 = window.CM6;

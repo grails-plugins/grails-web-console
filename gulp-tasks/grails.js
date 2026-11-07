@@ -33,7 +33,9 @@ const moduleShim = modules => [
     '  import { EditorState, Compartment } from "@codemirror/state"',
     '  import { EditorView, keymap, lineNumbers, highlightActiveLine, highlightActiveLineGutter } from "@codemirror/view"',
     '  import { defaultKeymap, history, historyKeymap, indentWithTab } from "@codemirror/commands"',
-    '  import { bracketMatching, indentUnit, syntaxHighlighting, defaultHighlightStyle, HighlightStyle } from "@codemirror/language"',
+    '  import { bracketMatching, indentUnit, syntaxHighlighting, defaultHighlightStyle, HighlightStyle,',
+    '      foldGutter, foldKeymap, indentOnInput, syntaxTree } from "@codemirror/language"',
+    '  import { autocompletion, CompletionContext } from "@codemirror/autocomplete"',
     '  import { tags } from "@lezer/highlight"',
     '  import { groovy } from "codemirror-lang-groovy"',
     '  import { oneDark } from "@codemirror/theme-one-dark"',
@@ -42,7 +44,8 @@ const moduleShim = modules => [
     '  window.CM6 = { EditorState, EditorView, Compartment, keymap, lineNumbers,',
     '      highlightActiveLine, highlightActiveLineGutter, defaultKeymap, history,',
     '      historyKeymap, indentWithTab, bracketMatching, indentUnit,',
-    '      syntaxHighlighting, defaultHighlightStyle, HighlightStyle, tags, groovy, oneDark }',
+    '      syntaxHighlighting, defaultHighlightStyle, HighlightStyle, tags, groovy, oneDark,',
+    '      foldGutter, foldKeymap, indentOnInput, syntaxTree, autocompletion, CompletionContext }',
     '</script>',
 ].join('\n');
 

@@ -34,6 +34,7 @@ const moduleWebjars = [
     { specifier: '@codemirror/language',                  webjar: 'codemirror__language',        file: 'dist/index.js' },
     { specifier: '@codemirror/theme-one-dark',            webjar: 'codemirror__theme-one-dark',  file: 'dist/index.js' },
     { specifier: 'codemirror-lang-groovy',                webjar: 'codemirror-lang-groovy',      file: 'dist/index.js' },
+    { specifier: '@codemirror/autocomplete',              webjar: 'codemirror__autocomplete',    file: 'dist/index.js' },
     { specifier: '@codemirror/streamparser',              webjar: 'codemirror__streamparser',    file: 'dist/index.js' },
     { specifier: '@lezer/common',                         webjar: 'lezer__common',               file: 'dist/index.js' },
     { specifier: '@lezer/highlight',                      webjar: 'lezer__highlight',            file: 'dist/index.js' },

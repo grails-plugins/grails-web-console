@@ -40,6 +40,9 @@ buildTheme = (c, dark) ->
     '.cm-activeLineGutter': {backgroundColor: c.gutterBg, color: c.fg}
     '.cm-matchingBracket, .cm-nonmatchingBracket':
       {backgroundColor: c.selection, outline: "1px solid #{c.gutterFg}"}
+    '.cm-foldPlaceholder': {backgroundColor: c.selection, color: c.fg, border: 'none'}
+    '.cm-tooltip': {backgroundColor: c.gutterBg, color: c.fg, border: "1px solid #{c.selection}"}
+    '.cm-tooltip-autocomplete > ul > li[aria-selected]': {backgroundColor: c.selection, color: c.fg}
   , dark: dark
 
 # The tag-to-colour mapping is identical in shape for every theme; only the
