@@ -48,9 +48,9 @@ dependencies {
 
     // The console's replaceable webjars are declined; this app already compiles
     // jQuery, jQuery UI, Bootstrap and Bootstrap Icons through asset-pipeline and
-    // hands them to the console via layouts/console.gsp. The codemirror__*
-    // artifacts are deliberately not excluded — the editor cannot load without
-    // the plugin's import map.
+    // hands them to the console via layouts/console.gsp. The codemirror__* and
+    // codemirror-lang-groovy artifacts are deliberately not excluded — the editor
+    // cannot load without the plugin's import map.
     implementation(project(':grails-web-console')) {
         exclude group: 'org.webjars.npm', module: 'jquery'
         exclude group: 'org.webjars.npm', module: 'bootstrap'

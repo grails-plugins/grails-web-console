@@ -23,6 +23,8 @@ jobs:
           node-version: '24.22.2'
       - name: "Pull node dependencies"
         run: npm ci
+      - name: "🧪 Run JavaScript tests"
+        run: npm test
       - name: "Package node dependencies"
         run: npx gulp grailsRelease
       - name: "☕️ Setup JDK"

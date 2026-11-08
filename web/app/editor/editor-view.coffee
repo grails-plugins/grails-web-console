@@ -39,15 +39,18 @@ App.Editor.EditorView = Marionette.View.extend
                 cm.highlightActiveLineGutter()
                 cm.history()
                 cm.bracketMatching()
+                cm.foldGutter()
                 cm.syntaxHighlighting(cm.defaultHighlightStyle, fallback: true)
-                cm.StreamLanguage.define(cm.groovy)
+                cm.groovy()
+                cm.indentOnInput()
+                cm.autocompletion(override: [App.Editor.implicitVarCompletions])
                 cm.indentUnit.of(if App.data.indentWithTabs then '\t' else indent)
                 cm.keymap.of([
                     {key: 'Mod-Enter', run: run('execute')}
                     {key: 'Mod-s',     run: run('save'), preventDefault: true}
                     {key: 'Escape',    run: run('clear')}
                     cm.indentWithTab
-                ].concat(cm.defaultKeymap, cm.historyKeymap))
+                ].concat(cm.defaultKeymap, cm.historyKeymap, cm.foldKeymap))
                 @themeCompartment.of(@themeExtension())
             ]
         textarea.remove()
