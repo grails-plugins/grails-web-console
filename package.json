@@ -12,7 +12,7 @@
     "backbone": "^1.6.1",
     "backbone.marionette": "^3.5.1",
     "backbone.radio": "^2.0.0",
-    "codemirror-lang-groovy": "^0.1.1",
+    "codemirror-lang-groovy": "^0.1.2",
     "del": "^9.0.1",
     "glob": "^13.0.6",
     "gulp": "^5.0.1",
