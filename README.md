@@ -17,6 +17,7 @@ A web-based Groovy console for interactive runtime application management and de
 - `6.X.X` for Grails 6+
 - `7.X.X` for Grails 7+
 - `8.X.X` for Grails 8+
+- `9.X.X` for Grails 9+
 
 ### Webjars (8.x)
 
@@ -84,7 +85,7 @@ libraries. The CodeMirror import map is unaffected — it is emitted either way.
 Drop the four runtime dependencies too, so those jars stop shipping:
 
 ```groovy
-implementation('org.grails.plugins:grails-web-console:8.0.0') {
+implementation('org.grails.plugins:grails-web-console:9.0.0-SNAPSHOT') {
     exclude group: 'org.webjars.npm', module: 'jquery'
     exclude group: 'org.webjars.npm', module: 'bootstrap'
     exclude group: 'org.webjars.npm', module: 'bootstrap-icons'
@@ -125,9 +126,14 @@ The plugin is published to Maven Central. Add a dependency in build.gradle
 
 ```groovy
 dependencies {
-    implementation 'org.grails.plugins:grails-web-console:8.0.0'
+    implementation 'org.grails.plugins:grails-web-console:9.0.0-SNAPSHOT'
 }
 ```
+
+Until Grails 9.0.0 is released, 9.x is published only as snapshots, built
+against Grails 9.0.0-SNAPSHOT, to
+`https://repo.grails.org/artifactory/plugins3-snapshots-local`. Add that
+repository to the build to use them.
 
 
 ## Usage

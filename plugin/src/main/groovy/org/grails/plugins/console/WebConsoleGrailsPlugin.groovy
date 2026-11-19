@@ -5,7 +5,7 @@ import grails.plugins.*
 class WebConsoleGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "8.0.0 > *"
+    def grailsVersion = "9.0.0 > *"
 
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
@@ -18,7 +18,7 @@ class WebConsoleGrailsPlugin extends Plugin {
     def profiles = ['web']
 
     // URL to the plugin's documentation
-    String documentation = 'https://github.com/grails-plugins/grails-web-console/blob/8.0.x/README.md'
+    String documentation = 'https://github.com/grails-plugins/grails-web-console/blob/9.0.x/README.md'
 
     String license = 'APACHE'
     def developers = [
